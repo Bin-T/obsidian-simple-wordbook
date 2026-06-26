@@ -124,7 +124,7 @@
 
 ### 📸 预览
 
-![[截图展示.png]]
+![[sidebar-preview.png]]
 
 ---
 
