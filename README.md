@@ -124,7 +124,7 @@
 
 ### 📸 预览
 
-![preview](preview.png)
+![preview](images/preview.png)
 
 ---
 
