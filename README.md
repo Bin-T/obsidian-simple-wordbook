@@ -2,7 +2,7 @@
 
 [简体中文](./README-ZH.md) | English
 
-> ✅ **Current Version**: v1.5.0 | Minimum Obsidian Compatibility: v1.0.0 (verified on v1.12.7)
+> ✅ **Current Version**: v1.5.2 | Minimum Obsidian Compatibility: v1.12.7 (verified on v1.12.7)
 > 
 > 📦 **Plugin ID**: `simple-wordbook`
 > 
