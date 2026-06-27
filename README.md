@@ -138,7 +138,7 @@ Refer to the namespace in the plugin's `styles.css` for more customization optio
 
 ### 📸 Preview
 
-![[截图展示.png]]
+![preview](images/preview.png)
 
 ---
 
