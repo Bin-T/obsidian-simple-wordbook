@@ -1,9 +1,0 @@
-{
-  "id": "simple-wordbook",
-  "name": "Simple Wordbook",
-  "version": "1.5.0",
-  "minAppVersion": "1.0.0",
-  "description": "Wordbook with highlighting, sidebar, mastery/ignore, and fuzzy definitions.",
-  "author": "Bryn",
-  "isDesktopOnly": false
-}
