@@ -1,6 +1,6 @@
 # Simple Wordbook
 
-[简体中文](./README-ZH.md) | English
+简体中文 | [English](./README.md)
 
 > ✅ **当前版本**：v1.5.0 | 最低兼容 Obsidian v1.0.0（在 v1.12.7 上验证通过）  
 > 📦 **插件 ID**：`simple-wordbook`  
