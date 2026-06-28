@@ -2,7 +2,7 @@
 
 简体中文 | [English](./README.md)
 
-> ✅ **当前版本**：v1.5.2 | 最低兼容 Obsidian v1.12.7（在 v1.12.7 上验证通过）  
+> ✅ **当前版本**：v1.5.3 | 最低兼容 Obsidian v1.12.7（在 v1.12.7 上验证通过）  
 > 📦 **插件 ID**：`simple-wordbook`  
 > 📌 **项目结构**：纯 JavaScript 编写，无构建工具，`main.js` 即源码  
 > 💡 **灵感来源**：[obsidian-language-learner](https://github.com/guopenghui/obsidian-language-learner) 和 [HiWords](https://github.com/CatMuse/HiWords)
