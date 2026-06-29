@@ -2088,6 +2088,7 @@ class HoverPreview {
 
     const masteryBtn = buttonGroup.createDiv({ cls: "clickable-icon tooltip-mastery-btn" });
     setIcon(masteryBtn, isMastered ? "meh" : "smile");
+    masteryBtn.classList.add(isMastered ? "icon-meh" : "icon-smile");
     masteryBtn.style.cursor = "pointer";
     masteryBtn.style.opacity = "0.7";
     const masteryLabel = isMastered ? t("notice_mastery_label_on") : t("notice_mastery_label_off");
@@ -2197,6 +2198,7 @@ class HoverPreview {
     fromLabel.style.fontSize = "0.75em";
 
     if (allCards.length > 1) {
+      tooltip.classList.add('has-source-select');
       const select = footerDiv.createEl("select", { cls: "tooltip-source-select" });
       for (const card of allCards) {
         const option = select.createEl("option", {
@@ -2531,6 +2533,7 @@ class SidebarView extends ItemView {
     if (this.plugin.settings.enableMastery) {
       const masteryBtn = actionsDiv.createDiv({ cls: "action-icon" });
       setIcon(masteryBtn, wordObj.mastered ? "meh" : "smile");
+      masteryBtn.classList.add(wordObj.mastered ? "icon-meh" : "icon-smile");
       masteryBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newState = !wordObj.mastered;
@@ -2542,6 +2545,7 @@ class SidebarView extends ItemView {
     }
     const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
     setIcon(ignoreBtn, wordObj.ignored ? "eye-off" : "eye");
+    ignoreBtn.classList.add(wordObj.ignored ? "icon-eye-off" : "icon-eye");
     ignoreBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       const newIgnore = !wordObj.ignored;
@@ -2872,6 +2876,7 @@ class LookupView extends ItemView {
       const masteryBtn = actionsDiv.createDiv({ cls: "action-icon" });
       const isMastered = this.plugin.masteryStore.isMastered(card._stateKey || card.word);
       setIcon(masteryBtn, isMastered ? "meh" : "smile");
+      masteryBtn.classList.add(isMastered ? "icon-meh" : "icon-smile");
       masteryBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newState = !isMastered;
@@ -2884,6 +2889,7 @@ class LookupView extends ItemView {
     const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
     const isIgnored = this.plugin.masteryStore.isIgnored(card._stateKey || card.word);
     setIcon(ignoreBtn, isIgnored ? "eye-off" : "eye");
+    ignoreBtn.classList.add(isIgnored ? "icon-eye-off" : "icon-eye");
     ignoreBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       const newIgnore = !isIgnored;

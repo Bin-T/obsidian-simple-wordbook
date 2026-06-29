@@ -105,30 +105,37 @@
 }
 
 /* 部件：操作按钮图标颜色 */
-.action-icon:has(.lucide-smile) {
-  color: var(--color-green);
-}
-.action-icon:has(.lucide-smile):hover {
-  color: var(--color-green);
-}
-.action-icon:has(.lucide-meh) {
-  color: var(--text-muted);
-}
-.action-icon:has(.lucide-meh):hover {
-  color: var(--text-normal);
-}
-.action-icon:has(.lucide-eye) {
-  color: var(--color-blue);
-}
-.action-icon:has(.lucide-eye):hover {
-  color: var(--color-blue);
-}
-.action-icon:has(.lucide-eye-off) {
-  color: var(--color-blue);
-}
-.action-icon:has(.lucide-eye-off):hover {
-  color: var(--color-blue);
-}
+  .action-icon.icon-smile {
+    color: var(--color-green);
+  }
+
+  .action-icon.icon-smile:hover {
+    color: var(--color-green);
+  }
+
+  .action-icon.icon-meh {
+    color: var(--text-muted);
+  }
+
+  .action-icon.icon-meh:hover {
+    color: var(--text-normal);
+  }
+
+  .action-icon.icon-eye {
+    color: var(--color-blue);
+  }
+
+  .action-icon.icon-eye:hover {
+    color: var(--color-blue);
+  }
+
+  .action-icon.icon-eye-off {
+    color: var(--color-blue);
+  }
+
+  .action-icon.icon-eye-off:hover {
+    color: var(--color-blue);
+  }
 
 /* 部件：卡片单词行 */
 .word-line {
@@ -336,7 +343,7 @@
   flex-direction: column;
   overflow: hidden;
 }
-.simple-wordbook-tooltip:has(.tooltip-footer select) {
+.simple-wordbook-tooltip.has-source-select {
   padding-bottom: 2px;
 }
 
@@ -386,22 +393,22 @@
 }
 
 /* 部件：弹窗按钮图标颜色 */
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-smile) {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-smile {
   color: var(--color-green);
 }
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-smile):hover {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-smile:hover {
   color: var(--color-green);
 }
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-meh) {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-meh {
   color: var(--text-muted);
 }
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-meh):hover {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-meh:hover {
   color: var(--text-normal);
 }
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-crosshair) {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-crosshair {
   color: var(--text-accent);
 }
-.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon:has(.lucide-crosshair):hover {
+.simple-wordbook-tooltip .tooltip-title-buttons .clickable-icon.icon-crosshair:hover {
   color: var(--text-accent);
   background: var(--background-modifier-hover);
 }
@@ -468,7 +475,7 @@
   border-top: 1px solid var(--background-modifier-border);
   padding: 8px 0 2px 0;
 }
-.simple-wordbook-tooltip .tooltip-footer:has(select) {
+.simple-wordbook-tooltip.has-source-select .tooltip-footer {
   padding-top: 4px;
 }
 .simple-wordbook-tooltip .tooltip-from-label,
