@@ -2,7 +2,7 @@
 
 [简体中文](./README-ZH.md) | English
 
-> ✅ **Current Version**: v1.5.3 | Minimum Obsidian Compatibility: v1.0.0 (verified on v1.12.7)
+> ✅ **Current Version**: v1.5.4 | Minimum Obsidian Compatibility: v1.0.0 (verified on v1.12.7)
 > 
 > 📦 **Plugin ID**: `simple-wordbook`
 > 
@@ -127,10 +127,10 @@ css
 .word-card .simple-wordbook-highlight,
 .word-card-content .simple-wordbook-highlight,
 .lookup-result .word-card .simple-wordbook-highlight {
-  background-color: color-mix(in srgb, var(--card-color) 10%, transparent) !important;
-  text-decoration: none !important;
-  border-radius: 6px !important;
-  padding: 0 2px !important;
+  background-color: color-mix(in srgb, var(--card-color) 10%, transparent);
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 0 2px;
 }
 ```
 
