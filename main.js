@@ -39,6 +39,7 @@ const locale = {
     color_purple: "Purple",
     color_pink: "Pink",
     color_cyan: "Cyan",
+    color_none: "None",
     save: "Save",
     cancel: "Cancel",
     word_required: "Word is required",
@@ -48,8 +49,20 @@ const locale = {
     word_updated: "updated",
     save_failed: "Failed to save",
     settings_wordbook_files: "Wordbook Files",
-    settings_add_wordbook: "Add Wordbook File",
-    settings_add_wordbook_desc: "Please add a .json wordbook file (empty or with correct format).",
+    settings_new_wordbook: "New Wordbook",
+    settings_add_wordbook: "Add Wordbook",
+    settings_add_wordbook_desc: "Add an existing .json wordbook file or create a new one.",
+    settings_new_wordbook_folder: "Folder",
+    settings_new_wordbook_select_folder: "Select Folder",
+    settings_new_wordbook_root: "Root (Vault root)",
+    settings_new_wordbook_file_name: "File Name",
+    settings_new_wordbook_file_name_desc: "Enter the name (without .json extension)",
+    settings_new_wordbook_placeholder: "my_wordbook",
+    settings_new_wordbook_enter_name: "Please enter a file name.",
+    settings_new_wordbook_file_exists: 'File "{0}" already exists.',
+    settings_new_wordbook_created: 'Wordbook "{0}" created and added.',
+    settings_new_wordbook_failed: "Failed to create wordbook: {0}",
+    settings_new_wordbook_selected: "Selected:",
     settings_mastery_mode: "Mastery/Ignore Mode",
     settings_mastery_mode_desc: "Choose whether mastery/ignore status is managed per-source or globally",
     mastery_mode_per_source: "Per-source",
@@ -104,6 +117,7 @@ const locale = {
     settings_scope_sidebar: "Sidebar Display",
     settings_scope_sidebar_desc: "When enabled, the sidebar only shows words from documents matching the paths; when disabled, shows words from all documents.",
     settings_scope_mode: "Scope Mode",
+    settings_scope_mode_desc: "If the highlight scope includes wordbook files, matching words in the corresponding card will also be highlighted.",
     settings_scope_mode_include: "Include only these paths",
     settings_scope_mode_exclude: "Exclude these paths",
     settings_scope_paths: "Path List",
@@ -240,6 +254,7 @@ const locale = {
     color_purple: "紫色",
     color_pink: "粉色",
     color_cyan: "青色",
+    color_none: "无",
     save: "保存",
     cancel: "取消",
     word_required: "请输入单词",
@@ -249,8 +264,20 @@ const locale = {
     word_updated: "更新",
     save_failed: "保存失败",
     settings_wordbook_files: "单词本文件",
-    settings_add_wordbook: "添加单词本文件",
-    settings_add_wordbook_desc: "请添加一个空白/存有正确格式单词的 `.json` 单词本文件",
+    settings_new_wordbook: "新建单词本",
+    settings_add_wordbook: "添加单词本",
+    settings_add_wordbook_desc: "添加已有的 `.json` 单词本文件，或新建一个。",
+    settings_new_wordbook_folder: "文件夹",
+    settings_new_wordbook_select_folder: "选择文件夹",
+    settings_new_wordbook_root: "根目录",
+    settings_new_wordbook_file_name: "文件名",
+    settings_new_wordbook_file_name_desc: "输入名称（不含 .json 后缀）",
+    settings_new_wordbook_placeholder: "我的单词本",
+    settings_new_wordbook_enter_name: "请输入文件名。",
+    settings_new_wordbook_file_exists: '文件 "{0}" 已存在。',
+    settings_new_wordbook_created: '单词本 "{0}" 已创建并添加。',
+    settings_new_wordbook_failed: "创建单词本失败：{0}",
+    settings_new_wordbook_selected: "已选择：",
     settings_mastery_mode: "掌握/忽略模式",
     settings_mastery_mode_desc: "选择掌握/忽略状态是按词源独立管理还是全局统一",
     mastery_mode_per_source: "按词源独立",
@@ -305,6 +332,7 @@ const locale = {
     settings_scope_sidebar: "侧边栏显示",
     settings_scope_sidebar_desc: "开启后，侧边栏仅显示匹配路径的文档中的单词；关闭后，显示所有文档的单词。",
     settings_scope_mode: "高亮模式",
+    settings_scope_mode_desc: "如果高亮范围包含词源文件，那么单词卡片中对应的词源匹配词也会高亮。",
     settings_scope_mode_include: "仅包含以下路径",
     settings_scope_mode_exclude: "仅排除以下路径",
     settings_scope_paths: "路径列表",
@@ -1059,12 +1087,16 @@ class Highlighter {
     else if (underline === 'dotted') classes.push('hi-dotted');
     else if (underline === 'wavy') classes.push('hi-wavy');
     else if (underline === 'double') classes.push('hi-double');
-    classes.push('hi-background');
+    // ↓ 仅当高亮颜色不是 "none" 时才添加背景类
+    if (this.plugin.settings.highlightColor !== "none") {
+      classes.push('hi-background');
+    }
     if (styles.bold) classes.push('hi-bold');
     return classes.join(' ');
   }
 
   getMainColor(wordColor) {
+    if (this.plugin.settings.highlightColor === "none") return "transparent";
     if (this.plugin.settings.followCardColor) {
       if (wordColor) return `var(--color-${wordColor})`;
       return 'var(--interactive-accent)';
@@ -1078,6 +1110,15 @@ class Highlighter {
   getUnderlineColor(wordColor) {
     const customUnderline = this.plugin.settings.underlineColor;
     if (customUnderline && customUnderline.trim()) return customUnderline;
+
+    const highlight = this.plugin.settings.highlightColor;
+    // ↓高亮为"无"时，下划线不回退为透明
+    if (highlight === "none") {
+      if (this.plugin.settings.followCardColor && wordColor) {
+        return `var(--color-${wordColor})`;
+      }
+      return 'var(--interactive-accent)';
+    }
     return this.getMainColor(wordColor);
   }
 
@@ -3571,22 +3612,27 @@ class WordbookSettingTab extends PluginSettingTab {
     container.createEl("h3", { text: t("settings_wordbook_files") });
 
     const buttonContainer = container.createDiv({ cls: "wordbook-button-container" });
-    buttonContainer.style.cssText = "display: flex; gap: 8px; margin-bottom: 4px;";
+    buttonContainer.style.cssText = "display: flex; gap: 20px; margin-bottom: 4px; flex-wrap: wrap;";
 
+    // 1. 新建单词本按钮
+    const newBtn = buttonContainer.createEl("button", { text: t("settings_new_wordbook") });
+    newBtn.addEventListener("click", () => this.showNewWordbookModal());
+
+    // 2. 添加已有单词本按钮
     const addBtn = buttonContainer.createEl("button", { text: t("settings_add_wordbook") });
     addBtn.addEventListener("click", () => this.selectWordbookFile());
 
+    // 3. 刷新按钮
     const refreshBtn = buttonContainer.createEl("button");
     setIcon(refreshBtn, "refresh-cw");
     refreshBtn.setAttribute("aria-label", t("refresh_wordbook"));
     refreshBtn.style.cursor = "pointer";
-    refreshBtn.style.marginLeft = "16px";
     refreshBtn.addEventListener("click", async () => {
       await this.plugin.reloadAllCards(true);
       await this.plugin.highlighter.refresh();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
       new Notice(t("wordbook_refreshed"));
-      await this.updateWordCounts();  // 手动更新当前设置界面的计数
+      await this.updateWordCounts();
     });
 
     const desc = container.createEl("div", { text: t("settings_add_wordbook_desc") });
@@ -3839,6 +3885,7 @@ class WordbookSettingTab extends PluginSettingTab {
     container.createEl("h3", { text: t("settings_highlight_styles") });
 
     const colorOptions = [
+      { value: "none", label: t("color_none") },
       { value: "", label: t("color_default_desc") },
       { value: "#ff0000", label: t("color_red") },
       { value: "#ff7f00", label: t("color_orange") },
@@ -3860,16 +3907,22 @@ class WordbookSettingTab extends PluginSettingTab {
           this.plugin.settings.highlightColor = val;
           await this.plugin.saveSettings();
           await this.plugin.highlighter.refresh();
-          const newColor = val && val !== "" ? val : "var(--interactive-accent)";
-          previewSpan.style.backgroundColor = newColor;
+          updatePreview(); // 调用完整的预览更新函数
         });
         return drop;
       });
     const previewSpan = document.createElement("span");
     previewSpan.style.cssText = "display:inline-block; width:20px; height:20px; border-radius:4px; margin-left:8px; border:1px solid var(--background-modifier-border);";
+    // 高亮颜色预览块
     const updatePreview = () => {
       const val = this.plugin.settings.highlightColor;
-      previewSpan.style.backgroundColor = val && val !== "" ? val : "var(--interactive-accent)";
+      if (val === "none") {
+        previewSpan.style.backgroundColor = "transparent";
+        previewSpan.style.backgroundImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.1) 5px, rgba(0,0,0,0.1) 10px)";
+      } else {
+        previewSpan.style.backgroundColor = val && val !== "" ? val : "var(--interactive-accent)";
+        previewSpan.style.backgroundImage = "none";
+      }
     };
     updatePreview();
     mainColorSetting.controlEl.appendChild(previewSpan);
@@ -3892,25 +3945,36 @@ class WordbookSettingTab extends PluginSettingTab {
       .addDropdown(drop => {
         drop.addOption("", t("underline_color_default"));
         for (const opt of colorOptions) {
-          if (opt.value !== "") drop.addOption(opt.value, opt.label);
+          if (opt.value !== "" && opt.value !== "none") {
+            drop.addOption(opt.value, opt.label);
+          }
         }
         drop.setValue(this.plugin.settings.underlineColor || "");
         drop.onChange(async (val) => {
           this.plugin.settings.underlineColor = val;
           await this.plugin.saveSettings();
           await this.plugin.highlighter.refresh();
-          const baseColor = this.plugin.settings.highlightColor || "var(--interactive-accent)";
-          const newColor = val && val !== "" ? val : baseColor;
-          underlinePreview.style.backgroundColor = newColor;
+          updateUnderlinePreview(); // 调用完整的预览更新函数
         });
         return drop;
       });
     const underlinePreview = document.createElement("span");
     underlinePreview.style.cssText = "display:inline-block; width:20px; height:20px; border-radius:4px; margin-left:8px; border:1px solid var(--background-modifier-border);";
+    // 下划线颜色预览块
     const updateUnderlinePreview = () => {
       const val = this.plugin.settings.underlineColor;
-      const baseColor = this.plugin.settings.highlightColor || "var(--interactive-accent)";
-      underlinePreview.style.backgroundColor = val && val !== "" ? val : baseColor;
+      const baseColor = this.plugin.settings.highlightColor;
+      let color;
+      if (val && val.trim()) {
+        color = val;
+      } else if (baseColor === "none") {
+        // 高亮为"无"时，下划线预览默认用主题强调色
+        color = "var(--interactive-accent)";
+      } else {
+        color = baseColor || "var(--interactive-accent)";
+      }
+      underlinePreview.style.backgroundColor = color;
+      underlinePreview.style.backgroundImage = "none";
     };
     updateUnderlinePreview();
     underlineColorSetting.controlEl.appendChild(underlinePreview);
@@ -3935,7 +3999,7 @@ class WordbookSettingTab extends PluginSettingTab {
       await this.plugin.saveSettings();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
     }));
-    new Setting(container).setName(t("settings_scope_mode")).addDropdown(drop => drop.addOption("include", t("settings_scope_mode_include")).addOption("exclude", t("settings_scope_mode_exclude")).setValue(this.plugin.settings.scopeMode).onChange(async (val) => {
+    new Setting(container).setName(t("settings_scope_mode")).setDesc(t("settings_scope_mode_desc")).addDropdown(drop => drop.addOption("include", t("settings_scope_mode_include")).addOption("exclude", t("settings_scope_mode_exclude")).setValue(this.plugin.settings.scopeMode).onChange(async (val) => {
       this.plugin.settings.scopeMode = val;
       await this.plugin.saveSettings();
       await this.plugin.highlighter.refresh();
@@ -4300,6 +4364,106 @@ class WordbookSettingTab extends PluginSettingTab {
     });
     modal.open();
   }
+
+  async showNewWordbookModal() {
+    const { app, plugin } = this;
+    let selectedFolder = ''; // 空字符串表示根目录
+    let folderDisplay = 'Root (Vault root)';
+    let fileNameInput = null;
+
+    const modal = new Modal(app);
+    modal.titleEl.setText(t("settings_new_wordbook"));
+
+    // 文件夹选择区域
+    const folderSetting = new Setting(modal.contentEl)
+      .setName(t("settings_new_wordbook_folder"))
+      .setDesc(`${t("settings_new_wordbook_selected")} ${folderDisplay}`)
+      .addButton(btn => {
+        btn.setButtonText(t("settings_new_wordbook_select_folder"))
+          .onClick(() => {
+            new FolderSuggestModal(app, (folderPath) => {
+              selectedFolder = folderPath;
+              folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
+              folderSetting.setDesc(`${t("settings_new_wordbook_selected")} ${folderDisplay}`);
+            }).open();
+          });
+      });
+
+    // 文件名输入
+    const nameSetting = new Setting(modal.contentEl)
+      .setName(t("settings_new_wordbook_file_name"))
+      .setDesc(t("settings_new_wordbook_file_name_desc"))
+      .addText(text => {
+        text.setPlaceholder(t("settings_new_wordbook_placeholder"))
+          .inputEl.style.width = "100%";
+        fileNameInput = text;
+      });
+
+    // 按钮
+    const buttonDiv = modal.contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+    const confirmBtn = buttonDiv.createEl("button", { text: t("save"), cls: "mod-cta" });
+    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+
+    const doCreate = async () => {
+      if (!fileNameInput) return;
+      const fileName = fileNameInput.getValue().trim();
+      if (!fileName) {
+        new Notice(t("settings_new_wordbook_enter_name"));
+        return;
+      }
+      // 清理文件名（移除非法字符）
+      const cleanName = fileName.replace(/[^a-zA-Z0-9\-_\u4e00-\u9fa5]/g, '_');
+      const fullPath = selectedFolder ? `${selectedFolder}/${cleanName}.json` : `${cleanName}.json`;
+      try {
+        // 检查文件是否已存在
+        const existing = app.vault.getAbstractFileByPath(fullPath);
+        if (existing) {
+          new Notice(t("settings_new_wordbook_file_exists", fullPath));
+          return;
+        }
+        // 确保文件夹存在
+        if (selectedFolder) {
+          const dir = app.vault.getAbstractFileByPath(selectedFolder);
+          if (!dir) {
+            await app.vault.createFolder(selectedFolder);
+          }
+        }
+        // 创建空 JSON 文件
+        await app.vault.create(fullPath, JSON.stringify([], null, 2));
+        // 自动添加到设置列表
+        plugin.settings.wordbookFiles.push({
+          path: fullPath,
+          name: cleanName,
+          enabled: true,
+          readonly: false
+        });
+        await plugin.saveSettings();
+        await plugin.reloadAllCards();
+        await plugin.highlighter.refresh();
+        plugin.app.workspace.trigger("simple-wordbook:data-updated");
+        new Notice(t("settings_new_wordbook_created", fullPath));
+        modal.close();
+        // 刷新设置界面
+        this.display();
+      } catch (e) {
+        new Notice(t("settings_new_wordbook_failed", e.message));
+      }
+    };
+
+    confirmBtn.addEventListener("click", doCreate);
+    cancelBtn.addEventListener("click", () => modal.close());
+    // 支持回车
+    if (fileNameInput) {
+      fileNameInput.inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doCreate();
+      });
+      modal.open();
+      setTimeout(() => fileNameInput.inputEl.focus(), 50);
+    } else {
+      modal.open();
+    }
+  }
 }
 
 class FileSuggestionModal extends FuzzySuggestModal {
@@ -4307,6 +4471,27 @@ class FileSuggestionModal extends FuzzySuggestModal {
   getItems() { return this.files; }
   getItemText(item) { return item.path; }
   onChooseItem(item) { this.onChoose(item); }
+}
+
+class FolderSuggestModal extends FuzzySuggestModal {
+  constructor(app, onChoose) {
+    super(app);
+    this.onChoose = onChoose;
+  }
+  getItems() {
+    // 获取所有文件夹（包括根目录，用空字符串表示）
+    const folders = this.app.vault.getAllLoadedFiles()
+      .filter(f => f instanceof TFolder)
+      .map(f => f.path);
+    // 添加根目录选项（空字符串）
+    return ['', ...folders];
+  }
+  getItemText(item) {
+    return item === '' ? 'Root (Vault root)' : item;
+  }
+  onChooseItem(item) {
+    this.onChoose(item);
+  }
 }
 
 // ========== 主插件类 ==========

@@ -510,14 +510,14 @@
 /* 部件：列表样式 */
 .tooltip-content ul,
 .word-card-content ul {
-  list-style-type: disc !important;
-  padding-left: 1.2em !important;
+  list-style-type: disc;
+  padding-left: 1.2em;
   margin: 0.5em 0;
 }
 .tooltip-content ol,
 .word-card-content ol {
-  list-style-type: decimal !important;
-  padding-left: 1em !important;
+  list-style-type: decimal;
+  padding-left: 1em;
   margin: 0.5em 0;
 }
 .tooltip-content li,
@@ -526,44 +526,36 @@
   list-style-position: outside;
 }
 
-/* 部件：弹窗高亮样式重置 */
-.tooltip-content .simple-wordbook-highlight {
-  background-color: transparent !important;
-  text-decoration: none !important;
-  font-weight: normal !important;
-  padding: 0 !important;
-}
-
 /* 侧边栏 & 查词面板卡片内的匹配词 —— 背景跟随卡片颜色 */
 .word-card .simple-wordbook-highlight,
 .word-card-content .simple-wordbook-highlight,
 .lookup-result .word-card .simple-wordbook-highlight {
-  background-color: color-mix(in srgb, var(--card-color) 10%, transparent) !important;
+  background-color: color-mix(in srgb, var(--card-color) 15%, transparent);
    /* 去除下划线 */
-  text-decoration: none !important;
+  text-decoration: none;
   /* 如果有下划线，让其颜色也跟随卡片 */
-  text-decoration-color: var(--card-color) !important;
+  text-decoration-color: var(--card-color);
   /* 保留一点点圆角，视觉更柔和 */
-  border-radius: 6px !important;
+  border-radius: 6px;
   /* 可选：加一点内边距，让背景不紧贴文字 */
-  padding: 0 2px !important;
+  padding: 0 2px;
 }
 
 
-/* ===== 模块八：文本选择控制 ===== */
+/* ===== 模块八：悬停弹窗和单词卡片文本选择控制 ===== */
 
 /* 默认禁止选择整个卡片和弹窗 */
 .simple-wordbook-tooltip,
 .word-card {
-  user-select: none !important;
-  -webkit-user-select: none !important;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 /* 允许选中内容区域 */
 .simple-wordbook-tooltip .tooltip-content,
 .word-card .word-card-content {
-  user-select: text !important;
-  -webkit-user-select: text !important;
+  user-select: text;
+  -webkit-user-select: text;
   cursor: text;
 }
 
@@ -636,8 +628,9 @@
 .word-card-content::-webkit-scrollbar,
 .simple-wordbook-tooltip .tooltip-content table::-webkit-scrollbar,
 .word-list::-webkit-scrollbar,
-.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar {
-  cursor: default !important;
+.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar,
+.lookup-result::-webkit-scrollbar {
+  cursor: default;
 }
 
 /* 部件：滚动条滑块 - 手型 */
@@ -645,18 +638,21 @@
 .word-card-content::-webkit-scrollbar-thumb,
 .simple-wordbook-tooltip .tooltip-content table::-webkit-scrollbar-thumb,
 .word-list::-webkit-scrollbar-thumb,
-.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar-thumb {
-  cursor: grab !important;
+.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar-thumb,
+.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar-thumb,
+.lookup-result::-webkit-scrollbar-thumb {
+  cursor: grab;
 }
 
 /* 部件：滚动条滑块拖动中 - 抓取 */
-.word-card .word-card-content table::-webkit-scrollbar-thumb:active,
-.word-card-content::-webkit-scrollbar-thumb:active,
-.simple-wordbook-tooltip .tooltip-content table::-webkit-scrollbar-thumb:active,
-.word-list::-webkit-scrollbar-thumb:active,
-.simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar-thumb:active {
-  cursor: grabbing !important;
-}
+  .word-card .word-card-content table::-webkit-scrollbar-thumb:active,
+  .word-card-content::-webkit-scrollbar-thumb:active,
+  .simple-wordbook-tooltip .tooltip-content table::-webkit-scrollbar-thumb:active,
+  .word-list::-webkit-scrollbar-thumb:active,
+  .simple-wordbook-tooltip .tooltip-content::-webkit-scrollbar-thumb:active,
+  .lookup-result::-webkit-scrollbar-thumb:active {
+    cursor: grabbing;
+  }
 
 
 /* ===== 模块十一：查词面板 ===== */
@@ -711,8 +707,8 @@
   min-height: 200px;
   margin-bottom: 10px;
   line-height: 1.6;
-  user-select: text !important;        /* 允许选中 */
-  -webkit-user-select: text !important; /* 兼容 */
+  user-select: text;        /* 允许选中 */
+  -webkit-user-select: text; /* 兼容 */
   cursor: text;
 }
 
