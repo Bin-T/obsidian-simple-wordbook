@@ -115,10 +115,10 @@
 .word-card .simple-wordbook-highlight,
 .word-card-content .simple-wordbook-highlight,
 .lookup-result .word-card .simple-wordbook-highlight {
-  background-color: color-mix(in srgb, var(--card-color) 10%, transparent) !important;
-  text-decoration: none !important;
-  border-radius: 6px !important;
-  padding: 0 2px !important;
+  background-color: color-mix(in srgb, var(--card-color) 15%, transparent);
+  text-decoration: none;
+  border-radius: 6px;
+  padding: 0 2px;
 }
 ```
 
