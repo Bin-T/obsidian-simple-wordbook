@@ -144,6 +144,13 @@ Refer to the namespace in the plugin's `styles.css` for more customization optio
 
 ## 🚀 Installation
 
+### From Obsidian Community Plugin Marketplace (Recommended)
+
+1. Open Obsidian Settings → **Community plugins** → **Browse**.
+2. Search for `Simple Wordbook` in the search bar.
+3. Click **Install**.
+4. After installation, click **Enable** in the installed plugins list.
+
 ### Manual Installation
 
 1. Download `main.js`, `manifest.json`, `styles.css`.
