@@ -505,23 +505,26 @@
 }
 
 
-/* ===== 模块七：全局样式 ===== */
+/* ===== 模块七：列表样式 ===== */
 
 /* 部件：列表样式 */
 .tooltip-content ul,
-.word-card-content ul {
+.word-card-content ul,
+.lookup-result ul {
   list-style-type: disc;
   padding-left: 1.2em;
   margin: 0.5em 0;
 }
 .tooltip-content ol,
-.word-card-content ol {
+.word-card-content ol,
+.lookup-result ol {
   list-style-type: decimal;
   padding-left: 1em;
   margin: 0.5em 0;
 }
 .tooltip-content li,
-.word-card-content li {
+.word-card-content li,
+.lookup-result li {
   margin-bottom: 0.2em;
   list-style-position: outside;
 }
