@@ -534,7 +534,7 @@
    /* 去除下划线 */
   text-decoration: none;
   /* 如果有下划线，让其颜色也跟随卡片 */
-  text-decoration-color: var(--card-color);
+  /*text-decoration-color: var(--card-color);*/
   /* 保留一点点圆角，视觉更柔和 */
   border-radius: 6px;
   /* 可选：加一点内边距，让背景不紧贴文字 */
@@ -881,16 +881,24 @@
   color: inherit;
 }
 
-/* AI 配置标签页提示词框 */
+/* AI 配置提示词名框 */
 .wordbook-setting-ai-container .custom-prompt-item input[type="text"] {
-  flex: 0 0 200px;  /* 不伸缩，固定宽度 200px */
-  height: 35px;
+  flex: 0 0 120px;          /* 不伸缩，固定宽度 */
+  width: 120px;
   box-sizing: border-box;
+  padding: 4px;
 }
-
+/* 系统提示词下拉选择器 */
+.wordbook-setting-ai-container .custom-prompt-item select.system-select {
+  flex: 0 0 120px;
+  width: 120px;
+  box-sizing: border-box;
+  padding: 4px;
+}
+/* AI 配置提示词文本框 */
 .wordbook-setting-ai-container .custom-prompt-item textarea {
-  min-height: 35px;        /* 自定义提示词内容框高度 */
-  height: 35px;           /* 初始高度 */
+  min-height: 32px;        /* 自定义提示词内容框高度 */
+  height: 32px;            /* 初始高度 */
   resize: vertical;
   padding: 4px;
   flex: 0 0 auto;         /* 不伸缩，由自身尺寸决定 */
@@ -1005,6 +1013,21 @@
     width: 100%;
     box-sizing: border-box;
     resize: vertical;          /* 右下角拖拽调整高度 */
+  }
+
+  /* ---- 自定义提示词的系统提示词下拉选择器样式 ---- */
+  .wordbook-setting-ai-container .custom-prompt-item select.system-select {
+    flex: 0 0 auto;
+    width: 100%;
+    height: 46px;
+    box-sizing: border-box;
+    padding: 4px 8px;
+    font-size: 1em;
+    border-radius: 6px;
+    border: 1px solid var(--background-modifier-border);
+    /*background: var(--background-primary);*/
+    color: var(--text-normal);
+    appearance: auto;
   }
 
   .wordbook-setting-ai-container .custom-prompt-item button {

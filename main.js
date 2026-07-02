@@ -40,6 +40,7 @@ const locale = {
     color_pink: "Pink",
     color_cyan: "Cyan",
     color_none: "None",
+    color_custom: "Custom",
     save: "Save",
     cancel: "Cancel",
     word_required: "Word is required",
@@ -63,6 +64,10 @@ const locale = {
     settings_new_wordbook_created: 'Wordbook "{0}" created and added.',
     settings_new_wordbook_failed: "Failed to create wordbook: {0}",
     settings_new_wordbook_selected: "Selected:",
+    rename_success: 'Wordbook path updated: "{0}"',
+    relocate_tooltip: "Relocate",
+    relocate_success: 'Wordbook relocated to "{0}"',
+    remove_tooltip: "Remove",
     settings_mastery_mode: "Mastery/Ignore Mode",
     settings_mastery_mode_desc: "Choose whether mastery/ignore status is managed per-source or globally",
     mastery_mode_per_source: "Per-source",
@@ -80,6 +85,7 @@ const locale = {
     settings_highlight_color: "Highlight color",
     settings_highlight_color_desc: "Highlight color. 'Default' uses theme accent.",
     color_default_desc: "Default (theme accent)",
+    color_custom_picker_tooltip: "Custom: Click to pick color",
     settings_follow_card: "Follow card color",
     settings_follow_card_desc: "When ON, background highlight follows card color.",
     settings_underline_color: "Underline color (optional)",
@@ -139,6 +145,7 @@ const locale = {
     lookup_no_writable_book: "No writable wordbook file available",
     lookup_save_success: "Word saved",
     settings_tab_ai: "AI Config",
+    settings_api_config: "API Configuration",
     settings_ai_provider: "Service Provider",
     settings_ai_provider_desc: "Select a preset provider or choose Custom",
     settings_ai_api_url: "API URL",
@@ -148,6 +155,24 @@ const locale = {
     api_url_placeholder_preset: "Auto-filled",
     api_key_placeholder: "Enter API Key",
     api_model_placeholder: "Model name",
+    settings_prompts: "Prompts",
+    settings_system_prompts: "System Prompts",
+    settings_system_prompt_desc: "Set AI's persona (style/format of AI responses)",
+    settings_builtin_prompts: "Built-in System Prompts",
+    settings_builtin_desc: "Select a preset below to preview its content, then copy it to create a custom version.",
+    settings_select_builtin: "Select built-in style",
+    settings_copy_content: "📋 Copy Content",
+    settings_copied: "Copied to clipboard!",
+    settings_copy_empty: "No content to copy.",
+    builtin_label: "Built-in",
+    settings_system_prompt_name: "Name",
+    settings_system_prompt_content: "System Prompt Content",
+    settings_add_system_prompt: "Add System Prompt",
+    settings_default_system_prompt: "System Prompt for Default Prompt",
+    settings_default_system_prompt_desc: "Select the system prompt associated with this prompt, 'None' means no system instruction",
+    settings_system_prompt_none: "None",
+    settings_system_prompt_duplicate: "Name already exists",
+    settings_system_prompt_empty: "Name and content cannot be empty",
     settings_ai_default_prompt: "Default Prompt",
     settings_ai_default_prompt_desc: "Use {word} as placeholder for the word",
     settings_ai_custom_prompts: "Custom Prompts",
@@ -221,6 +246,21 @@ const locale = {
     match_label_alias_prefix: "Alias Prefix",
     match_label_alias_contains: "Alias Contains",
     match_label_alias_fuzzy: "Alias Fuzzy",
+
+    builtin_prompt_default_name: "Default",
+    builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
+    builtin_prompt_cute_name: "Cute & Soft",
+    builtin_prompt_cute_content: "Cute and soft girl style, using short and playful words, suitable for beauty, pets, and lifestyle content. Tone is light and gentle, avoiding formal expressions. Respond in the same language as the user's query.",
+    builtin_prompt_trendy_name: "Trendy & Cool",
+    builtin_prompt_trendy_content: "Trendy internet style, using mild internet slang, understanding slang and translating it into easy-to-understand memes. Relaxed and casual, suitable for social platforms. Respond in the same language as the user's query.",
+    builtin_prompt_daily_name: "Daily Colloquial",
+    builtin_prompt_daily_content: "Everyday colloquial style, with short and easy-to-understand sentences, abandoning formal expressions, suitable for short video subtitles. Respond in the same language as the user's query.",
+    builtin_prompt_business_name: "Business Formal",
+    builtin_prompt_business_content: "Standard professional formal style, with rigorous and appropriate wording, standardized sentence patterns, suitable for business emails, reports, and corporate communications. Neutral and polite. Respond in the same language as the user's query.",
+    builtin_prompt_academic_name: "Academic Solemn",
+    builtin_prompt_academic_content: "Academic standard translation, meeting journal paper writing standards, with accurate and objective professional terms, logical rigor, third-person objective narration. Suitable for research reports and papers. Respond in the same language as the user's query.",
+    builtin_prompt_literary_name: "Literary Aesthetic",
+    builtin_prompt_literary_content: "Literary aesthetic translation, with prose style, preserving the original mood and emotion, using beautiful and picturesque wording, suitable for essays and lyrical copy. Respond in the same language as the user's query.",
   },
   zh: {
     sidebar_title: "侧边栏显示",
@@ -255,6 +295,7 @@ const locale = {
     color_pink: "粉色",
     color_cyan: "青色",
     color_none: "无",
+    color_custom: "自定义",
     save: "保存",
     cancel: "取消",
     word_required: "请输入单词",
@@ -278,6 +319,10 @@ const locale = {
     settings_new_wordbook_created: '单词本 "{0}" 已创建并添加。',
     settings_new_wordbook_failed: "创建单词本失败：{0}",
     settings_new_wordbook_selected: "已选择：",
+    rename_success: '单词本路径已更新为 "{0}"',
+    relocate_tooltip: "重新定位",
+    relocate_success: '单词本已重新定位到 "{0}"',
+    remove_tooltip: "删除",
     settings_mastery_mode: "掌握/忽略模式",
     settings_mastery_mode_desc: "选择掌握/忽略状态是按词源独立管理还是全局统一",
     mastery_mode_per_source: "按词源独立",
@@ -295,6 +340,7 @@ const locale = {
     settings_highlight_color: "高亮颜色",
     settings_highlight_color_desc: "高亮颜色，“默认”则使用主题强调色。",
     color_default_desc: "默认（主题强调色）",
+    color_custom_picker_tooltip: "自定义：点击选择颜色",
     settings_follow_card: "跟随卡片颜色",
     settings_follow_card_desc: "开启后，背景高亮跟随侧边栏卡片颜色。",
     settings_underline_color: "下划线颜色（可选）",
@@ -354,6 +400,7 @@ const locale = {
     lookup_no_writable_book: "没有可写的单词本文件",
     lookup_save_success: "单词已保存",
     settings_tab_ai: "AI 配置",
+    settings_api_config: "API 配置",
     settings_ai_provider: "服务提供商",
     settings_ai_provider_desc: "选择预设服务商或自定义",
     settings_ai_api_url: "API 地址",
@@ -363,6 +410,24 @@ const locale = {
     api_url_placeholder_preset: "自动填充",
     api_key_placeholder: "请输入 API Key",
     api_model_placeholder: "模型名称",
+    settings_prompts: "提示词",
+    settings_system_prompts: "系统提示词",
+    settings_system_prompt_desc: "设定 AI 的“人设”（AI 回复的风格/格式）",
+    settings_builtin_prompts: "内置系统提示词",
+    settings_builtin_desc: "选择预设风格预览内容，可一键复制后粘贴到自定义列表中修改。",
+    settings_select_builtin: "选择内置风格",
+    settings_copy_content: "📋 复制内容",
+    settings_copied: "已复制到剪贴板！",
+    settings_copy_empty: "没有可复制的内容。",
+    builtin_label: "内置",
+    settings_system_prompt_name: "名称",
+    settings_system_prompt_content: "系统提示内容",
+    settings_add_system_prompt: "添加系统提示词",
+    settings_default_system_prompt: "默认提示词关联的系统提示词",
+    settings_default_system_prompt_desc: "选择本提示词关联的系统提示词，'无'表示不发送系统指令",
+    settings_system_prompt_none: "无",
+    settings_system_prompt_duplicate: "名称已存在",
+    settings_system_prompt_empty: "名称和内容不能为空",
     settings_ai_default_prompt: "默认提示词",
     settings_ai_default_prompt_desc: "使用 {word} 作为单词占位符",
     settings_ai_custom_prompts: "自定义提示词",
@@ -436,6 +501,21 @@ const locale = {
     match_label_alias_prefix: "别名前缀",
     match_label_alias_contains: "别名包含",
     match_label_alias_fuzzy: "别名模糊",
+
+    builtin_prompt_default_name: "默认",
+    builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
+    builtin_prompt_cute_name: "可爱软萌风",
+    builtin_prompt_cute_content: "软萌可爱少女风格，用词简短俏皮，适合美妆、宠物、生活种草文案，语气轻快柔和，避免正式生硬表达。用与用户提问相同的语言回复。",
+    builtin_prompt_trendy_name: "网络潮酷风",
+    builtin_prompt_trendy_content: "走年轻网友网感风格，合理使用温和网络流行语，读懂俚语并转化成与用户提问相同语言的易懂梗，语气轻松随性，适合社交平台。用与用户提问相同的语言回复。",
+    builtin_prompt_daily_name: "日常口语风",
+    builtin_prompt_daily_content: "采用普通人日常口语风格，短句易懂，抛弃书面化表达，贴合短视频字幕语感，不生硬直译，完整保留原意。用与用户提问相同的语言回复。",
+    builtin_prompt_business_name: "商务正式风",
+    builtin_prompt_business_content: "标准职场正式文风，用词严谨得体，句式规范，适配商务邮件、工作汇报、企业对外文案，礼貌中立，不使用口语俚语。用与用户提问相同的语言回复。",
+    builtin_prompt_academic_name: "公文庄重风",
+    builtin_prompt_academic_content: "学术标准翻译，符合期刊论文写作规范，专业术语准确客观，语句逻辑严谨，第三人称客观叙述，无情绪化口语，适配科研报告、论文。用与用户提问相同的语言回复。",
+    builtin_prompt_literary_name: "文艺唯美风",
+    builtin_prompt_literary_content: "文学唯美翻译，散文文艺文风，保留原文意境与情感，用词优美有画面感，句式舒缓细腻，适合随笔、抒情文案，拒绝直白大白话。用与用户提问相同的语言回复。",
   }
 };
 
@@ -451,6 +531,41 @@ function t(key, ...args) {
   return text;
 }
 
+// ========== 内置系统提示词 ==========
+function getBuiltinPromptKeys() {
+  return ["default", "cute", "trendy", "daily", "business", "academic", "literary"];
+}
+
+// 获取所有系统提示词选项（内置+自定义）
+function getAllSystemPromptOptions(settings) {
+  const builtinKeys = getBuiltinPromptKeys();
+  const builtins = builtinKeys.map(key => ({
+    key: "builtin_" + key,
+    name: t("builtin_prompt_" + key + "_name"),
+    content: t("builtin_prompt_" + key + "_content"),
+    type: 'builtin'
+  }));
+  const customs = (settings.systemPrompts || []).map(p => ({
+    key: p.name,
+    name: p.name,
+    content: p.content,
+    type: 'custom'
+  }));
+  return [...builtins, ...customs];
+}
+
+// 根据 key 获取系统提示词内容
+function getSystemPromptContent(key, settings) {
+  if (!key) return null;
+  if (key.startsWith("builtin_")) {
+    const builtinKey = key.replace("builtin_", "");
+    return t("builtin_prompt_" + builtinKey + "_content");
+  } else {
+    const custom = (settings.systemPrompts || []).find(p => p.name === key);
+    return custom ? custom.content : null;
+  }
+}
+
 
 const DEFAULT_SETTINGS = {
   wordbookFiles: [],
@@ -462,6 +577,7 @@ const DEFAULT_SETTINGS = {
   enableBlurDefinition: false,
   enableMastery: true,
   highlightColor: "",
+  customHighlightColor: "",
   underlineColor: "",
   followCardColor: true,
   highlightStyles: {
@@ -483,8 +599,10 @@ const DEFAULT_SETTINGS = {
   apiBaseUrl: "https://api.openai.com/v1/chat/completions",
   apiKey: "",
   apiModel: "gpt-3.5-turbo",
+  systemPrompts: [],          // [{ name: "词典助手", content: "You are a dictionary assistant..." }]
+  defaultSystemPrompt: "",    // 默认提示词关联的系统提示词名称
   defaultPrompt: "用中文解释单词 {word}的释义。",
-  customPrompts: [],          // [{ name: "快速释义", content: "给出 {word} 的中文释义" }]
+  customPrompts: [],          // [{ name: "快速释义", content: "给出 {word} 的中文释义", system_prompt: ""  }]
   selectedPrompt: "默认",     // 当前选中的提示词名称
 
   selectedSourceMap: {}
@@ -3201,13 +3319,18 @@ class LookupView extends ItemView {
     const promptName = this.promptSelect ? this.promptSelect.value : "默认";
     this.currentPromptName = promptName;
 
+    // 声明 systemName
+    let systemName = "";
+
     // 获取提示词内容
     let promptContent;
     if (promptName === "默认") {
       promptContent = this.plugin.settings.defaultPrompt || "请解释单词 {word}";
+      systemName = this.plugin.settings.defaultSystemPrompt || "";
     } else {
       const custom = this.plugin.settings.customPrompts.find(p => p.name === promptName);
       promptContent = custom ? custom.content : this.plugin.settings.defaultPrompt;
+      systemName = custom ? custom.system_prompt || "" : "";
     }
     if (!promptContent) {
       new Notice(t("notice_prompt_empty"));
@@ -3215,12 +3338,18 @@ class LookupView extends ItemView {
     }
     const finalPrompt = promptContent.replace(/{word}/g, this.currentWord);
 
+    // 获取系统提示词内容
+    let systemContent = null;
+    if (systemName) {
+      systemContent = getSystemPromptContent(systemName, this.plugin.settings);
+    }
+
     this.setLoading(true);
     this.resultContainer.empty();
     this.resultContainer.setText(t("lookup_loading"));
 
     try {
-      const response = await this.plugin.callAI(finalPrompt);
+      const response = await this.plugin.callAI(finalPrompt, systemContent);
       this.resultMarkdown = response || "";
       this.resultContainer.empty();
       // 如果需要显示回退提示，先添加提示
@@ -3646,7 +3775,11 @@ class WordbookSettingTab extends PluginSettingTab {
         const setting = new Setting(container)
           .setName(file.name)
           .setDesc(`⚠️ File not found: ${file.path}`)
-          .addButton(btn => btn.setIcon("trash").setTooltip("Remove").onClick(async () => {
+          .addButton(btn => btn.setIcon("folder-search").setTooltip(t("relocate_tooltip")).onClick(async () => {
+            // 调用重新定位方法
+            await this.relocateWordbookFile(file, idx);
+          }))
+          .addButton(btn => btn.setIcon("trash").setTooltip(t("remove_tooltip")).onClick(async () => {
             this.plugin.settings.wordbookFiles.splice(idx, 1);
             delete this._wordCountCache[file.path];   // 从缓存中移除
             await this.plugin.saveSettings();
@@ -3666,7 +3799,7 @@ class WordbookSettingTab extends PluginSettingTab {
       }
 
       const setting = new Setting(container)
-        .setName(file.name)   // 先设置原始名称
+        .setName(file.name)
         .setDesc(file.path)
         .addToggle(toggle => toggle.setValue(file.enabled).onChange(async (val) => {
           file.enabled = val;
@@ -3675,9 +3808,12 @@ class WordbookSettingTab extends PluginSettingTab {
           await this.plugin.highlighter.refresh();
           this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
         }))
-        .addButton(btn => btn.setIcon("trash").setTooltip("Remove").onClick(async () => {
+        .addButton(btn => btn.setIcon("folder-search").setTooltip(t("relocate_tooltip")).onClick(async () => {
+          await this.relocateWordbookFile(file, idx);
+        }))
+        .addButton(btn => btn.setIcon("trash").setTooltip(t("remove_tooltip")).onClick(async () => {
           this.plugin.settings.wordbookFiles.splice(idx, 1);
-          delete this._wordCountCache[file.path];   // 从缓存中移除
+          delete this._wordCountCache[file.path];
           await this.plugin.saveSettings();
           await this.plugin.reloadAllCards();
           await this.plugin.highlighter.refresh();
@@ -3894,58 +4030,198 @@ class WordbookSettingTab extends PluginSettingTab {
       { value: "#00bfff", label: t("color_blue") },
       { value: "#8a2be2", label: t("color_purple") },
       { value: "#ff69b4", label: t("color_pink") },
-      { value: "#00ffff", label: t("color_cyan") }
+      { value: "#00ffff", label: t("color_cyan") },
+      { value: "custom", label: t("color_custom") }
     ];
 
+    // ---- 预先声明下划线预览元素和更新函数（占位） ----
+    let underlinePreview = null;
+    const updateUnderlinePreview = () => {
+      if (!underlinePreview) return;
+      const val = this.plugin.settings.underlineColor;
+      const baseColor = this.plugin.settings.highlightColor;
+      let color;
+      if (val && val.trim()) {
+        color = val;
+      } else if (baseColor === "none") {
+        color = "var(--interactive-accent)";
+      } else {
+        color = baseColor || "var(--interactive-accent)";
+      }
+      underlinePreview.style.backgroundColor = color;
+      underlinePreview.style.backgroundImage = "none";
+    };
+
+    // ---- 高亮颜色设置 ----
     const mainColorSetting = new Setting(container)
       .setName(t("settings_highlight_color"))
       .setDesc(t("settings_highlight_color_desc"))
       .addDropdown(drop => {
         for (const opt of colorOptions) drop.addOption(opt.value, opt.label);
-        drop.setValue(this.plugin.settings.highlightColor || "");
+        // 获取当前高亮颜色
+        const currentColor = this.plugin.settings.highlightColor || "";
+        // 预设颜色值列表（包括 "none"、空字符串、色值等）
+        const presetValues = colorOptions.map(opt => opt.value);
+        // 如果当前颜色是预设值之一，则直接使用；否则视为自定义，下拉选 "custom"
+        const initialValue = presetValues.includes(currentColor) ? currentColor : "custom";
+        drop.setValue(initialValue);
         drop.onChange(async (val) => {
-          this.plugin.settings.highlightColor = val;
-          await this.plugin.saveSettings();
-          await this.plugin.highlighter.refresh();
-          updatePreview(); // 调用完整的预览更新函数
+          if (val === "custom") {
+            // 如果之前保存过自定义颜色，则使用它；否则保持当前高亮色
+            if (this.plugin.settings.customHighlightColor) {
+              this.plugin.settings.highlightColor = this.plugin.settings.customHighlightColor;
+            } else {
+              // 如果自定义颜色为空，则用当前高亮色作为初始自定义色
+              this.plugin.settings.customHighlightColor = this.plugin.settings.highlightColor;
+            }
+            await this.plugin.saveSettings();
+            await this.plugin.highlighter.refresh();
+            updatePreview();
+            updateUnderlinePreview();
+          } else {
+            this.plugin.settings.highlightColor = val;
+            await this.plugin.saveSettings();
+            await this.plugin.highlighter.refresh();
+            updatePreview();
+            updateUnderlinePreview();
+          }
         });
         return drop;
       });
+
+    // ---- 圆形按钮（取色器触发器） ----
+    const colorPickerBtn = document.createElement("span");
+    colorPickerBtn.style.cssText = `
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  margin-left: 6px;
+  border: 2px solid var(--background-modifier-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background-color: var(--interactive-accent);
+  position: relative;
+`;
+    colorPickerBtn.title = t("color_custom_picker_tooltip");
+
+    // 内部取色器 input（覆盖按钮，点击即触发）
+    const colorInput = document.createElement("input");
+    colorInput.type = "color";
+    colorInput.style.cssText = `
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+`;
+    colorPickerBtn.appendChild(colorInput);
+    mainColorSetting.controlEl.appendChild(colorPickerBtn);
+
+    // 监听取色器事件
+    colorInput.addEventListener("input", (ev) => {
+      const val = ev.target.value;
+      this.plugin.settings.customHighlightColor = val;
+      this.plugin.saveSettings();
+      const drop = mainColorSetting.controlEl.querySelector("select");
+      if (drop.value === "custom") {
+        this.plugin.settings.highlightColor = val;
+        this.plugin.highlighter.refresh();
+      }
+      updatePreview();
+      updateUnderlinePreview();
+    });
+
+    colorInput.addEventListener("change", async (ev) => {
+      const val = ev.target.value;
+      this.plugin.settings.customHighlightColor = val;
+      const drop = mainColorSetting.controlEl.querySelector("select");
+      if (drop.value === "custom") {
+        this.plugin.settings.highlightColor = val;
+      }
+      await this.plugin.saveSettings();
+      if (drop.value === "custom") {
+        await this.plugin.highlighter.refresh();
+      }
+      updatePreview();
+      updateUnderlinePreview();
+    });
+
+    // ---- 高亮颜色预览块（方形） ----
     const previewSpan = document.createElement("span");
     previewSpan.style.cssText = "display:inline-block; width:20px; height:20px; border-radius:4px; margin-left:8px; border:1px solid var(--background-modifier-border);";
-    // 高亮颜色预览块
-    const updatePreview = () => {
-      const val = this.plugin.settings.highlightColor;
-      if (val === "none") {
-        previewSpan.style.backgroundColor = "transparent";
-        previewSpan.style.backgroundImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.1) 5px, rgba(0,0,0,0.1) 10px)";
-      } else {
-        previewSpan.style.backgroundColor = val && val !== "" ? val : "var(--interactive-accent)";
-        previewSpan.style.backgroundImage = "none";
-      }
-    };
-    updatePreview();
     mainColorSetting.controlEl.appendChild(previewSpan);
 
-    new Setting(container).setName(t("settings_follow_card")).setDesc(t("settings_follow_card_desc")).addToggle(toggle => toggle.setValue(this.plugin.settings.followCardColor).onChange(async (val) => {
-      this.plugin.settings.followCardColor = val;
-      await this.plugin.saveSettings();
-      await this.plugin.highlighter.refresh();
-    }));
+    // 预览更新函数（含自定义逻辑）
+    const updatePreview = () => {
+      const val = this.plugin.settings.highlightColor;
+      const drop = mainColorSetting.controlEl.querySelector("select");
+      const isCustom = drop && drop.value === "custom";
 
-    new Setting(container).setName(t("settings_style_underline_type")).addDropdown(drop => drop.addOption("none", t("settings_style_none")).addOption("solid", t("settings_style_solid")).addOption("dashed", t("settings_style_dashed")).addOption("dotted", t("settings_style_dotted")).addOption("wavy", t("settings_style_wavy")).addOption("double", t("settings_style_double")).setValue(this.plugin.settings.highlightStyles.underlineType).onChange(async (val) => {
-      this.plugin.settings.highlightStyles.underlineType = val;
-      await this.plugin.saveSettings();
-      await this.plugin.highlighter.refresh();
-    }));
+      // 方形预览块
+      if (isCustom) {
+        const color = (val && val !== "none") ? val : "var(--interactive-accent)";
+        previewSpan.style.backgroundColor = color;
+        previewSpan.style.backgroundImage = "none";
+      } else {
+        if (val === "none") {
+          previewSpan.style.backgroundColor = "transparent";
+          previewSpan.style.backgroundImage = "repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(0,0,0,0.1) 5px, rgba(0,0,0,0.1) 10px)";
+        } else {
+          previewSpan.style.backgroundColor = val && val !== "" ? val : "var(--interactive-accent)";
+          previewSpan.style.backgroundImage = "none";
+        }
+      }
 
+      // 圆形按钮：显示自定义颜色
+      const customColor = this.plugin.settings.customHighlightColor;
+      if (customColor && customColor !== "none") {
+        colorPickerBtn.style.backgroundColor = customColor;
+        colorPickerBtn.style.border = "2px solid var(--background-modifier-border)";
+      } else {
+        colorPickerBtn.style.backgroundColor = "var(--interactive-accent)";
+        colorPickerBtn.style.border = "2px dashed var(--text-muted)";
+      }
+      colorPickerBtn.style.opacity = "1";
+      colorPickerBtn.style.pointerEvents = "auto";
+    };
+
+    // 初次渲染高亮预览
+    updatePreview();
+
+    // ---- 下划线样式 ----
+    new Setting(container)
+      .setName(t("settings_style_underline_type"))
+      .addDropdown(drop => drop
+        .addOption("none", t("settings_style_none"))
+        .addOption("solid", t("settings_style_solid"))
+        .addOption("dashed", t("settings_style_dashed"))
+        .addOption("dotted", t("settings_style_dotted"))
+        .addOption("wavy", t("settings_style_wavy"))
+        .addOption("double", t("settings_style_double"))
+        .setValue(this.plugin.settings.highlightStyles.underlineType)
+        .onChange(async (val) => {
+          this.plugin.settings.highlightStyles.underlineType = val;
+          await this.plugin.saveSettings();
+          await this.plugin.highlighter.refresh();
+        })
+      );
+
+    // ---- 下划线颜色 ----
     const underlineColorSetting = new Setting(container)
       .setName(t("settings_underline_color"))
       .setDesc(t("settings_underline_color_desc"))
       .addDropdown(drop => {
         drop.addOption("", t("underline_color_default"));
         for (const opt of colorOptions) {
-          if (opt.value !== "" && opt.value !== "none") {
+          if (opt.value !== "" && opt.value !== "none" && opt.value !== "custom") {
             drop.addOption(opt.value, opt.label);
           }
         }
@@ -3954,36 +4230,29 @@ class WordbookSettingTab extends PluginSettingTab {
           this.plugin.settings.underlineColor = val;
           await this.plugin.saveSettings();
           await this.plugin.highlighter.refresh();
-          updateUnderlinePreview(); // 调用完整的预览更新函数
+          updateUnderlinePreview();
         });
         return drop;
       });
-    const underlinePreview = document.createElement("span");
-    underlinePreview.style.cssText = "display:inline-block; width:20px; height:20px; border-radius:4px; margin-left:8px; border:1px solid var(--background-modifier-border);";
-    // 下划线颜色预览块
-    const updateUnderlinePreview = () => {
-      const val = this.plugin.settings.underlineColor;
-      const baseColor = this.plugin.settings.highlightColor;
-      let color;
-      if (val && val.trim()) {
-        color = val;
-      } else if (baseColor === "none") {
-        // 高亮为"无"时，下划线预览默认用主题强调色
-        color = "var(--interactive-accent)";
-      } else {
-        color = baseColor || "var(--interactive-accent)";
-      }
-      underlinePreview.style.backgroundColor = color;
-      underlinePreview.style.backgroundImage = "none";
-    };
-    updateUnderlinePreview();
-    underlineColorSetting.controlEl.appendChild(underlinePreview);
 
-    new Setting(container).setName(t("settings_style_bold")).addToggle(toggle => toggle.setValue(this.plugin.settings.highlightStyles.bold).onChange(async (val) => {
-      this.plugin.settings.highlightStyles.bold = val;
-      await this.plugin.saveSettings();
-      await this.plugin.highlighter.refresh();
-    }));
+    // 下划线预览元素（实际创建）
+    underlinePreview = document.createElement("span");
+    underlinePreview.style.cssText = "display:inline-block; width:20px; height:20px; border-radius:4px; margin-left:8px; border:1px solid var(--background-modifier-border);";
+    underlineColorSetting.controlEl.appendChild(underlinePreview);
+    // 初次渲染下划线预览
+    updateUnderlinePreview();
+
+    // ---- 粗体 ----
+    new Setting(container)
+      .setName(t("settings_style_bold"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.highlightStyles.bold)
+        .onChange(async (val) => {
+          this.plugin.settings.highlightStyles.bold = val;
+          await this.plugin.saveSettings();
+          await this.plugin.highlighter.refresh();
+        })
+      );
 
     // ===== 高亮范围 =====
     container.createEl("h3", { text: t("settings_scope_title") });
@@ -4095,7 +4364,7 @@ class WordbookSettingTab extends PluginSettingTab {
     const plugin = this.plugin;
     const settings = plugin.settings;
 
-    container.createEl("h3", { text: t("settings_ai_provider") });
+    container.createEl("h3", { text: t("settings_api_config") });
 
     // 服务商映射
     const providerMap = {
@@ -4179,7 +4448,298 @@ class WordbookSettingTab extends PluginSettingTab {
         return text;
       });
 
-    container.createEl("h3", { text: t("settings_ai_default_prompt") });
+    // 测试连接
+    new Setting(container)
+      .setName(t("settings_ai_test_connection"))
+      .addButton(btn => {
+        btn.setButtonText(t("settings_ai_test_button"))
+          .setCta()
+          .onClick(async () => {
+            const prompt = "Say 'OK' if you can hear me.";
+            try {
+              const result = await plugin.callAI(prompt);
+              new Notice(t("settings_ai_test_success", result.slice(0, 50) + "..."));
+            } catch (err) {
+              new Notice(t("settings_ai_test_fail", err.message));
+            }
+          });
+        return btn;
+      });
+
+    // ===== 提示词分组标题 =====
+    container.createEl("h3", { text: t("settings_prompts") });
+
+    // ======== 内置系统提示词 ======== //
+
+    container.createEl("h4", { text: t("settings_builtin_prompts") });
+
+    const builtinDesc = container.createEl("p", { text: t("settings_builtin_desc") });
+    builtinDesc.style.cssText = "font-size: 0.85em; color: var(--text-muted); margin: -12px 0 12px 15px;";
+
+    // 1. 下拉选择器
+    const builtinSelectSetting = new Setting(container)
+      .setName(t("settings_select_builtin"))
+      .addDropdown(drop => {
+        const keys = getBuiltinPromptKeys();
+        keys.forEach((key, idx) => drop.addOption(key, t("builtin_prompt_" + key + "_name")));
+        if (keys.length > 0) drop.setValue(keys[0]);
+        drop.onChange(val => {
+          previewArea.value = t("builtin_prompt_" + val + "_content");
+        });
+        return drop;
+      });
+
+    // 2. 内容预览（只读文本域）
+    const previewArea = container.createEl("textarea", { cls: "builtin-preview" });
+    previewArea.readOnly = true;
+    previewArea.rows = 4;
+    previewArea.style.width = "100%";
+    previewArea.style.marginTop = "4px";
+    previewArea.style.marginBottom = "6px";
+    previewArea.style.background = "var(--background-secondary)";
+    previewArea.style.color = "var(--text-muted)";
+    previewArea.style.fontSize = "0.9em";
+    const initialKeys = getBuiltinPromptKeys();
+    if (initialKeys.length > 0) previewArea.value = t("builtin_prompt_" + initialKeys[0] + "_content");
+
+    // 3. 复制按钮
+    const copyBtnContainer = container.createDiv({ cls: "builtin-copy-container" });
+    copyBtnContainer.style.cssText = "display: flex; justify-content: flex-end; margin-bottom: 20px;";
+    const copyBtn = copyBtnContainer.createEl("button", { text: t("settings_copy_content"), cls: "mod-cta" });
+    copyBtn.addEventListener("click", async () => {
+      const content = previewArea.value;
+      if (!content) {
+        new Notice(t("settings_copy_empty"));
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(content);
+        new Notice(t("settings_copied"));
+      } catch (e) {
+        previewArea.select();
+        document.execCommand('copy');
+        new Notice(t("settings_copied"));
+      }
+    });
+
+    // ======== 自定义系统提示词 ======== //
+
+    container.createEl("h4", { text: t("settings_system_prompts") });
+    const systemDesc = container.createEl("p", { text: t("settings_system_prompt_desc") });
+    systemDesc.style.cssText = "font-size: 0.85em; color: var(--text-muted); margin: -12px 0 20px 15px;";
+
+    const systemList = container.createDiv({ cls: "custom-prompts-list" });
+
+    // 自定义系统提示词渲染函数（包含内置+自定义）
+    const renderSystemPrompts = () => {
+      systemList.empty();
+      const prompts = settings.systemPrompts || [];
+      for (let i = 0; i < prompts.length; i++) {
+        const p = prompts[i];
+        const item = systemList.createDiv({ cls: "custom-prompt-item" });
+        const nameInput = item.createEl("input", { type: "text", placeholder: t("settings_system_prompt_name") });
+        nameInput.value = p.name;
+        nameInput.style.marginRight = "8px";
+
+        // ★★★ 系统提示词下拉使用 getAllSystemPromptOptions（内置+自定义）★★★
+        const systemSelect = document.createElement("select");
+        systemSelect.className = "system-select";
+        systemSelect.style.marginRight = "8px";
+        const populateSelect = () => {
+          systemSelect.innerHTML = '';
+          const noneOption = document.createElement("option");
+          noneOption.value = "";
+          noneOption.textContent = t("settings_system_prompt_none");
+          systemSelect.appendChild(noneOption);
+          const allOptions = getAllSystemPromptOptions(settings);
+          allOptions.forEach(pOpt => {
+            const opt = document.createElement("option");
+            opt.value = pOpt.key;
+            opt.textContent = pOpt.type === 'builtin' ? `${pOpt.name}（${t("builtin_label")}）` : pOpt.name;
+            systemSelect.appendChild(opt);
+          });
+          systemSelect.value = p.system_prompt || "";
+        };
+        populateSelect();
+        systemSelect.addEventListener("change", async () => {
+          p.system_prompt = systemSelect.value;
+          await plugin.saveSettings();
+        });
+
+        const contentInput = item.createEl("textarea", { placeholder: t("settings_system_prompt_content") });
+        contentInput.value = p.content;
+        contentInput.style.flex = "1";
+        const delBtn = item.createEl("button", { text: t("settings_ai_delete_prompt") });
+
+        // ---- 删除系统提示词时关联改为默认 ----
+        delBtn.addEventListener("click", async () => {
+          const nameToDelete = p.name;
+          // 获取当前语言下的内置默认系统提示词名称
+          const keys = getBuiltinPromptKeys();
+          const defaultBuiltinKey = keys.length > 0 ? "builtin_" + keys[0] : "";
+
+          // 将所有关联该名称的自定义提示词改为内置默认
+          if (settings.customPrompts) {
+            for (const cp of settings.customPrompts) {
+              if (cp.system_prompt === nameToDelete) {
+                cp.system_prompt = defaultBuiltinKey;
+              }
+            }
+          }
+          // 如果“默认提示词”关联的是该名称，也改为内置默认
+          if (settings.defaultSystemPrompt === nameToDelete) {
+            settings.defaultSystemPrompt = defaultBuiltinKey;
+          }
+
+          settings.systemPrompts.splice(i, 1);
+          await plugin.saveSettings();
+          renderSystemPrompts();
+          renderCustomPrompts();
+          refreshAllSystemSelects();
+        });
+
+        // ---- 更新系统提示词关联 ----
+        const saveSystem = async () => {
+          const newName = nameInput.value.trim();
+          const newContent = contentInput.value.trim();
+          if (!newName || !newContent) {
+            new Notice(t("settings_system_prompt_empty"));
+            return;
+          }
+          if (newName !== p.name || newContent !== p.content) {
+            const oldName = p.name;
+            p.name = newName;
+            p.content = newContent;
+            if (oldName !== newName) {
+              if (settings.customPrompts) {
+                for (const cp of settings.customPrompts) {
+                  if (cp.system_prompt === oldName) {
+                    cp.system_prompt = newName;
+                  }
+                }
+              }
+              // 更新默认关联
+              if (settings.defaultSystemPrompt === oldName) {
+                settings.defaultSystemPrompt = newName;
+              }
+            }
+            await plugin.saveSettings();
+            renderSystemPrompts();
+            renderCustomPrompts();
+            refreshAllSystemSelects();
+          }
+        };
+        nameInput.addEventListener("blur", saveSystem);
+        contentInput.addEventListener("blur", saveSystem);
+        nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") nameInput.blur(); });
+        contentInput.addEventListener("keydown", (e) => { if (e.key === "Enter") contentInput.blur(); });
+      }
+      // 添加按钮
+      const addRow = systemList.createDiv({ cls: "custom-prompt-add-row" });
+      const addBtn = addRow.createEl("button", { text: t("settings_add_system_prompt") });
+      let tempRow = null;
+      addBtn.addEventListener("click", () => {
+        if (tempRow) return;
+        tempRow = systemList.createDiv({ cls: "custom-prompt-item" });
+        const nameInput = tempRow.createEl("input", { type: "text", placeholder: t("settings_system_prompt_name") });
+        const contentInput = tempRow.createEl("textarea", { placeholder: t("settings_system_prompt_content") });
+        contentInput.style.flex = "1";
+        const cancelBtn = tempRow.createEl("button", { text: t("settings_ai_cancel") });
+        cancelBtn.addEventListener("click", () => { tempRow.remove(); tempRow = null; });
+        const saveTemp = async () => {
+          const name = nameInput.value.trim();
+          const content = contentInput.value.trim();
+          if (!name || !content) {
+            new Notice(t("settings_system_prompt_empty"));
+            return;
+          }
+          if (settings.systemPrompts.some(p => p.name === name)) {
+            new Notice(t("settings_system_prompt_duplicate"));
+            return;
+          }
+          settings.systemPrompts.push({ name, content });
+          await plugin.saveSettings();
+          tempRow.remove(); tempRow = null;
+          renderSystemPrompts();
+          refreshAllSystemSelects();
+        };
+        nameInput.addEventListener("blur", saveTemp);
+        contentInput.addEventListener("blur", saveTemp);
+        nameInput.addEventListener("keydown", (e) => { if (e.key === "Enter") nameInput.blur(); });
+        contentInput.addEventListener("keydown", (e) => { if (e.key === "Enter") contentInput.blur(); });
+      });
+    };
+    renderSystemPrompts();
+
+    // ★★★ 刷新所有关联下拉（包含内置 + 自定义）★★★
+    const refreshAllSystemSelects = () => {
+      const allOptions = getAllSystemPromptOptions(settings);
+
+      // 刷新默认提示词的下拉
+      const defaultSelect = container.querySelector('.default-system-select');
+      if (defaultSelect) {
+        const current = defaultSelect.value;
+        defaultSelect.innerHTML = '';
+        const noneOpt = document.createElement('option');
+        noneOpt.value = "";
+        noneOpt.textContent = t("settings_system_prompt_none");
+        defaultSelect.appendChild(noneOpt);
+        allOptions.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.key;
+          opt.textContent = p.type === 'builtin' ? `${p.name}（${t("builtin_label")}）` : p.name;
+          defaultSelect.appendChild(opt);
+        });
+        defaultSelect.value = settings.defaultSystemPrompt || "";
+      }
+
+      // 刷新所有自定义提示词的下拉
+      container.querySelectorAll('.custom-prompt-item select.system-select').forEach(sel => {
+        const current = sel.value;
+        sel.innerHTML = '';
+        const noneOpt = document.createElement('option');
+        noneOpt.value = "";
+        noneOpt.textContent = t("settings_system_prompt_none");
+        sel.appendChild(noneOpt);
+        allOptions.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.key;
+          opt.textContent = p.type === 'builtin' ? `${p.name}（${t("builtin_label")}）` : p.name;
+          sel.appendChild(opt);
+        });
+        sel.value = current;
+      });
+    };
+    window._refreshAllSystemSelects = refreshAllSystemSelects;
+
+    // ===== 默认提示词关联 =====
+    container.createEl("h4", { text: t("settings_ai_default_prompt") });
+
+    // ★★★ 默认提示词关联下拉包含内置 + 自定义 ★★★
+    new Setting(container)
+      .setName(t("settings_default_system_prompt"))
+      .setDesc(t("settings_default_system_prompt_desc"))
+      .addDropdown(drop => {
+        drop.selectEl.addClass('default-system-select');
+        const populate = () => {
+          drop.selectEl.empty();
+          drop.addOption("", t("settings_system_prompt_none"));
+          const allOptions = getAllSystemPromptOptions(settings);
+          allOptions.forEach(p => {
+            const label = p.type === 'builtin' ? `${p.name}（${t("builtin_label")}）` : p.name;
+            drop.addOption(p.key, label);
+          });
+          drop.setValue(settings.defaultSystemPrompt || "");
+        };
+        populate();
+        drop.onChange(async (val) => {
+          settings.defaultSystemPrompt = val;
+          await plugin.saveSettings();
+        });
+        drop._populate = populate;
+        return drop;
+      });
+
     new Setting(container)
       .setDesc(t("settings_ai_default_prompt_desc"))
       .addTextArea(text => {
@@ -4206,6 +4766,36 @@ class WordbookSettingTab extends PluginSettingTab {
         const nameInput = item.createEl("input", { type: "text", placeholder: t("settings_ai_custom_prompt_name") });
         nameInput.value = p.name;
         nameInput.style.marginRight = "8px";
+
+        // 系统提示词下拉选择器
+        const systemSelect = document.createElement("select");
+        systemSelect.className = "system-select";
+        systemSelect.style.marginRight = "8px";
+        //systemSelect.style.minWidth = "80px";
+        nameInput.after(systemSelect);
+        // 填充选项的函数
+        const populateSelect = () => {
+          systemSelect.empty();
+          systemSelect.innerHTML = '';
+          const noneOption = document.createElement("option");
+          noneOption.value = "";
+          noneOption.textContent = t("settings_system_prompt_none");
+          systemSelect.appendChild(noneOption);
+          const allOptions = getAllSystemPromptOptions(settings);
+          allOptions.forEach(pOpt => {
+            const opt = document.createElement("option");
+            opt.value = pOpt.key;
+            opt.textContent = pOpt.type === 'builtin' ? `${pOpt.name}（${t("builtin_label")}）` : pOpt.name;
+            systemSelect.appendChild(opt);
+          });
+          systemSelect.value = p.system_prompt || "";
+        };
+        populateSelect();
+        systemSelect.addEventListener("change", async () => {
+          p.system_prompt = systemSelect.value;
+          await plugin.saveSettings();
+        });
+
         const contentInput = item.createEl("textarea", { placeholder: t("settings_ai_custom_prompt_content") });
         contentInput.value = p.content;
         contentInput.style.flex = "1";
@@ -4261,6 +4851,33 @@ class WordbookSettingTab extends PluginSettingTab {
         if (tempRow) return; // 已存在空白行
         tempRow = customList.createDiv({ cls: "custom-prompt-item" });
         const nameInput = tempRow.createEl("input", { type: "text", placeholder: t("settings_ai_custom_prompt_name") });
+
+        const systemSelect = document.createElement("select");
+        systemSelect.className = "system-select";
+        systemSelect.style.marginRight = "8px";
+        const populateSelect = () => {
+          systemSelect.innerHTML = '';
+          const noneOption = document.createElement("option");
+          noneOption.value = "";
+          noneOption.textContent = t("settings_system_prompt_none");
+          systemSelect.appendChild(noneOption);
+          const allOptions = getAllSystemPromptOptions(settings);
+          allOptions.forEach(pOpt => {
+            const opt = document.createElement("option");
+            opt.value = pOpt.key;
+            opt.textContent = pOpt.type === 'builtin' ? `${pOpt.name}（${t("builtin_label")}）` : pOpt.name;
+            systemSelect.appendChild(opt);
+          });
+        };
+        populateSelect();
+        // 默认选中内置“默认”
+        const keys = getBuiltinPromptKeys();
+        const defaultKey = keys.length > 0 ? "builtin_" + keys[0] : "";
+        if (defaultKey) {
+          systemSelect.value = defaultKey;
+        }
+        nameInput.after(systemSelect);
+
         const contentInput = tempRow.createEl("textarea", { placeholder: t("settings_ai_custom_prompt_content") });
         contentInput.style.flex = "1";
         const cancelBtn = tempRow.createEl("button", { text: t("settings_ai_cancel") });
@@ -4279,7 +4896,8 @@ class WordbookSettingTab extends PluginSettingTab {
             new Notice(t("settings_ai_duplicate_name"));
             return;
           }
-          settings.customPrompts.push({ name, content });
+          // 保存时包含 system_prompt
+          settings.customPrompts.push({ name, content, system_prompt: systemSelect.value });
           await plugin.saveSettings();
           plugin.registerPromptCommands();
           tempRow.remove();
@@ -4299,24 +4917,6 @@ class WordbookSettingTab extends PluginSettingTab {
       });
     };
     renderCustomPrompts();
-
-    // 测试连接
-    new Setting(container)
-      .setName(t("settings_ai_test_connection"))
-      .addButton(btn => {
-        btn.setButtonText(t("settings_ai_test_button"))
-          .setCta()
-          .onClick(async () => {
-            const prompt = "Say 'OK' if you can hear me.";
-            try {
-              const result = await plugin.callAI(prompt);
-              new Notice(t("settings_ai_test_success", result.slice(0, 50) + "..."));
-            } catch (err) {
-              new Notice(t("settings_ai_test_fail", err.message));
-            }
-          });
-        return btn;
-      });
   }
 
   // 异步加载并显示包含的单词总数
@@ -4464,6 +5064,35 @@ class WordbookSettingTab extends PluginSettingTab {
       modal.open();
     }
   }
+
+  // ===== 单词本管理辅助方法 =====
+  async relocateWordbookFile(oldEntry, index) {
+    // 弹出文件选择器，让用户选择一个 JSON 文件
+    const files = this.app.vault.getFiles().filter(f => f.extension === "json");
+    if (files.length === 0) {
+      new Notice(t("notice_no_json"));
+      return;
+    }
+    // 使用现有的 FileSuggestionModal
+    const modal = new FileSuggestionModal(this.app, files, async (file) => {
+      // 检查是否已被其他单词本使用（可选）
+      const conflict = this.plugin.settings.wordbookFiles.some((f, i) => i !== index && f.path === file.path);
+      if (conflict) {
+        new Notice(t("notice_file_already_added"));
+        return;
+      }
+      // 更新该条目
+      oldEntry.path = file.path;
+      oldEntry.name = file.basename;
+      await this.plugin.saveSettings();
+      await this.plugin.reloadAllCards();
+      await this.plugin.highlighter.refresh();
+      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+      new Notice(t("relocate_success", file.path));
+      this.display(); // 刷新设置界面
+    });
+    modal.open();
+  }
 }
 
 class FileSuggestionModal extends FuzzySuggestModal {
@@ -4558,7 +5187,14 @@ class SimpleWordbookPlugin extends Plugin {
       this.app.workspace.revealLeaf(leaf);
     });
     this.addCommand({ id: "open-sidebar", name: t("sidebar_title"), callback: () => this.activateSidebar() });
-    this.addCommand({ id: "add-word", name: t("add_word_title"), callback: () => new WordModal(this.app, this).open() });
+    this.addCommand({
+      id: "add-word",
+      name: t("add_word_title"),
+      callback: () => {
+        const selected = this.getSelectedText();
+        new WordModal(this.app, this, { word: selected || "" }).open();
+      }
+    });
     this.addCommand({ 
       id: "refresh-wordbook", 
       name: t("refresh_wordbook"), 
@@ -4656,6 +5292,30 @@ class SimpleWordbookPlugin extends Plugin {
       }
     }));
 
+    // 监听文件重命名/移动，自动更新单词本路径
+    this.registerEvent(this.app.vault.on("rename", async (file, oldPath) => {
+      // 只处理 JSON 文件
+      if (!(file instanceof TFile) || file.extension !== "json") return;
+
+      let found = false;
+      for (const dict of this.settings.wordbookFiles) {
+        if (dict.path === oldPath) {
+          dict.path = file.path;
+          dict.name = file.basename;  // 同步更新显示名称
+          found = true;
+          break;
+        }
+      }
+
+      if (found) {
+        await this.saveSettings();
+        await this.reloadAllCards(false);
+        await this.highlighter.refresh();
+        this.app.workspace.trigger("simple-wordbook:data-updated");
+        new Notice(t("rename_success", file.name));
+      }
+    }));
+
     // ===== 注册自定义提示词命令 =====
     this.registerPromptCommands();
   }
@@ -4672,7 +5332,7 @@ class SimpleWordbookPlugin extends Plugin {
   }
 
   // 调用 AI API
-  async callAI(prompt) {
+  async callAI(prompt, systemContent = null) {
     const settings = this.settings;
     const url = settings.apiBaseUrl;
     const apiKey = settings.apiKey;
@@ -4688,12 +5348,15 @@ class SimpleWordbookPlugin extends Plugin {
       "Authorization": `Bearer ${apiKey}`
     };
 
+    const messages = [];
+    if (systemContent && systemContent.trim()) {
+      messages.push({ role: "system", content: systemContent });
+    }
+    messages.push({ role: "user", content: prompt });
+
     const body = {
       model: model,
-      messages: [
-        { role: "system", content: "You are a dictionary assistant. Answer accurately and concisely." },
-        { role: "user", content: prompt }
-      ],
+      messages: messages,
       temperature: 0.5,
       max_tokens: 1500
     };
@@ -4915,18 +5578,18 @@ class SimpleWordbookPlugin extends Plugin {
     // 3. 为每个提示词注册命令
     for (const promptName of prompts) {
       const id = `lookup-prompt-${promptName}`;
-      const name = t("command_lookup_prompt", promptName);
+      let displayPromptName = promptName;
+      if (promptName === '默认') {
+        displayPromptName = t("lookup_default_prompt_option");
+      }
+      const name = t("command_lookup_prompt", displayPromptName);
 
       this.addCommand({
         id: id,
         name: name,
         callback: () => {
-          const editor = this.app.workspace.activeEditor?.editor;
-          if (!editor) {
-            new Notice(t("notice_open_editor"));
-            return;
-          }
-          const selected = editor.getSelection().trim();
+          // ★ 使用统一方法获取选中文本
+          const selected = this.getSelectedText();
           if (!selected) {
             new Notice(t("notice_select_word"));
             return;
@@ -4937,6 +5600,23 @@ class SimpleWordbookPlugin extends Plugin {
 
       this.dynamicCommandIds.push(id);
     }
+  }
+
+  // 统一获取选中文本（编辑模式优先，阅读模式fallback）
+  getSelectedText() {
+    // 1. 优先从活动编辑器获取（编辑模式）
+    const activeEditor = this.app.workspace.activeEditor;
+    if (activeEditor && activeEditor.editor) {
+      const selection = activeEditor.editor.getSelection();
+      if (selection && selection.trim()) return selection.trim();
+    }
+    // 2. 从阅读模式的 DOM 选中获取
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0) {
+      const text = selection.toString();
+      if (text && text.trim()) return text.trim();
+    }
+    return null;
   }
 
   // ===== 打开快捷键设置并过滤本插件命令 =====
@@ -4996,7 +5676,8 @@ class SimpleWordbookPlugin extends Plugin {
   }
 
   async loadSettings() { 
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    const rawData = await this.loadData();  // 先获取原始数据
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
     if (!this.settings.highlightStyles) this.settings.highlightStyles = { underlineType: "none", bold: false };
     if (this.settings.highlightStyles.underlineType === undefined) this.settings.highlightStyles.underlineType = "none";
     if (this.settings.highlightStyles.bold === undefined) this.settings.highlightStyles.bold = false;
@@ -5012,6 +5693,26 @@ class SimpleWordbookPlugin extends Plugin {
     if (this.settings.enableSidebarScopeFilter === undefined) this.settings.enableSidebarScopeFilter = false;
     if (this.settings.scopeMode === undefined) this.settings.scopeMode = "include";
     if (this.settings.scopePaths === undefined) this.settings.scopePaths = [];
+    // 自定义颜色字段兼容
+    if (this.settings.customHighlightColor === undefined) {
+      this.settings.customHighlightColor = "";
+    }
+    // 系统提示词兼容
+    if (!this.settings.systemPrompts) this.settings.systemPrompts = [];
+
+    if (!rawData || !rawData.hasOwnProperty('defaultSystemPrompt')) {
+      const keys = getBuiltinPromptKeys();
+      this.settings.defaultSystemPrompt = keys.length > 0 ? "builtin_" + keys[0] : "";
+    }
+    if (this.settings.customPrompts) {
+      const keys = getBuiltinPromptKeys();
+      const defaultBuiltinKey = keys.length > 0 ? "builtin_" + keys[0] : "";
+      for (const p of this.settings.customPrompts) {
+        if (p.system_prompt === undefined) {
+          p.system_prompt = defaultBuiltinKey;
+        }
+      }
+    }
   }
   async saveSettings() { await this.saveData(this.settings); }
 
