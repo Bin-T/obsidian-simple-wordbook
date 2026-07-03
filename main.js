@@ -80,6 +80,17 @@ const locale = {
     settings_ignored_path_desc: "Relative path to store ignored status",
     restore_default: "Restore Default",
     restore_default_tooltip: "Restore to the default path under the plugin folder",
+    import_title: "Import",
+    import_mastered: "Mastered",
+    import_ignored: "Ignored",
+    import_button: "Import",
+    import_no_files: "No TXT files found in your vault.",
+    import_no_words: "No valid words found in the TXT file.",
+    import_success: "Successfully imported {0} words to {1}.",
+    import_no_new: "No new words to import.",
+    import_mastered_desc: "Import words to mark as 'Mastered'. Supports .txt files only, one word or phrase per line, or separated by `,` `;` `Tab` etc.",
+    import_ignored_desc: "Import words to mark as 'Ignored'. Supports .txt files only, one word or phrase per line, or separated by `,` `;` `Tab` etc.",
+
     settings_highlight_preview: "Highlight & Preview",
     settings_enable_highlight: "Enable auto highlight",
     settings_highlight_color: "Highlight color",
@@ -265,7 +276,7 @@ const locale = {
   zh: {
     sidebar_title: "侧边栏显示",
     tab_learning: "学习",
-    tab_mastered: "记住",
+    tab_mastered: "掌握",
     tab_ignored: "忽略",
     search_placeholder: "搜索单词/短语...",
     empty_state: "没有找到单词。",
@@ -335,6 +346,17 @@ const locale = {
     settings_ignored_path_desc: "存储已忽略状态的相对路径",
     restore_default: "恢复默认",
     restore_default_tooltip: "恢复到插件文件夹下的默认路径",
+    import_title: "导入",
+    import_mastered: "掌握",
+    import_ignored: "忽略",
+    import_button: "导入",
+    import_no_files: "库中没有找到 TXT 文件。",
+    import_no_words: "TXT 文件中没有找到有效单词。",
+    import_success: "成功导入 {0} 个单词到 {1}。",
+    import_no_new: "没有需要导入的新单词。",
+    import_mastered_desc: "导入单词以标记为“掌握”。仅支持 .txt 文件，每行一个单词或词组，或用 `,` `，` `;` `；` `Tab` 等分隔。",
+    import_ignored_desc: "导入单词以标记为“忽略”。仅支持 .txt 文件，每行一个单词或词组，或用 `,` `，` `;` `；` `Tab` 等分隔。",
+
     settings_highlight_preview: "高亮与预览",
     settings_enable_highlight: "启用自动高亮",
     settings_highlight_color: "高亮颜色",
@@ -3996,6 +4018,61 @@ class WordbookSettingTab extends PluginSettingTab {
             this.display();
           });
       });
+
+    // ===== 导入模块 =====
+    container.createEl("h3", { text: t("import_title") });
+
+    // 掌握导入行
+    const masteredSetting = new Setting(container)
+      .setName(t("import_mastered"))
+      .setDesc(t("import_mastered_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("import_button"))
+          .setCta()
+          .onClick(() => this.selectTxtFileForImport('mastered'));
+        return btn;
+      });
+
+    // 忽略导入行
+    const ignoredSetting = new Setting(container)
+      .setName(t("import_ignored"))
+      .setDesc(t("import_ignored_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("import_button"))
+          .setCta()
+          .onClick(() => this.selectTxtFileForImport('ignored'));
+        return btn;
+      });
+
+    // ===== GitHub 链接 =====
+    const githubContainer = container.createDiv({ cls: "wordbook-github-link" });
+    githubContainer.style.cssText = "margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--background-modifier-border); text-align: center; font-size: 0.85em; color: var(--text-muted);";
+
+    // 根据语言选择文案
+    const isZh = getLocale() === locale.zh;
+    let htmlContent;
+    if (isZh) {
+      htmlContent = `
+        点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐
+    `;
+    } else {
+      htmlContent = `
+        Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it
+    `;
+    }
+    githubContainer.innerHTML = htmlContent;
+
+    // 为所有链接添加悬停效果
+    githubContainer.querySelectorAll('.github-link').forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        link.style.textDecoration = 'underline';
+        link.style.color = 'var(--text-accent-hover)';
+      });
+      link.addEventListener('mouseleave', () => {
+        link.style.textDecoration = 'none';
+        link.style.color = 'var(--text-accent)';
+      });
+    });
   }
 
   buildGeneralTab(container) {
@@ -5093,6 +5170,185 @@ class WordbookSettingTab extends PluginSettingTab {
     });
     modal.open();
   }
+
+  // ===== 导入功能：选择 TXT 文件 =====
+  async selectTxtFileForImport(type) {
+    const files = this.app.vault.getFiles().filter(f => f.extension === "txt");
+    if (files.length === 0) {
+      new Notice(t("import_no_files"));
+      return;
+    }
+    const modal = new FileSuggestionModal(this.app, files, async (file) => {
+      await this.importFromTxt(file, type);
+    });
+    modal.open();
+  }
+
+  // ===== 导入 TXT 文件逻辑 =====
+  async importFromTxt(file, type) {
+    const content = await this.app.vault.read(file);
+    const lines = content.split('\n');
+    const words = new Set();
+
+    // 逐行解析
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
+
+      // 检测分隔符：逗号、中文逗号、分号、制表符
+      if (/[,，;；\t]/.test(trimmed)) {
+        const parts = trimmed.split(/[,，;；\t]/)
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+        for (const part of parts) {
+          words.add(part.toLowerCase());
+        }
+      } else {
+        // 整行作为一个条目（保留空格，但转为小写）
+        words.add(trimmed.toLowerCase());
+      }
+    }
+
+    if (words.size === 0) {
+      new Notice(t("import_no_words"));
+      return;
+    }
+
+    const isMastered = (type === 'mastered');
+    const store = this.plugin.masteryStore;
+
+    if (isMastered) {
+      await this.importToMastered(words, store);
+    } else {
+      await this.importToIgnored(words, store);
+    }
+
+    // 刷新视图
+    await this.plugin.highlighter.refresh();
+    this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    this._skipCount = true;
+    this.display();
+  }
+
+  // ===== 导入到掌握（含去重和冲突处理） =====
+  async importToMastered(words, store) {
+    const mode = this.plugin.settings.masteryMode;
+    const existingKeys = new Set(Object.keys(store.masteryData));
+    const ignoredKeys = new Set(Object.keys(store.ignoredData));
+    let addedCount = 0;
+
+    const allBookPaths = this.plugin.settings.wordbookFiles
+      .filter(f => f.enabled)
+      .map(f => f.path);
+
+    const toAdd = [];
+
+    for (const word of words) {
+      // 检查是否已被忽略（忽略优先）
+      let isIgnored = false;
+      if (mode === "global") {
+        if (ignoredKeys.has(word)) isIgnored = true;
+      } else {
+        for (const bookPath of allBookPaths) {
+          const key = `${bookPath}::${word}`;
+          if (ignoredKeys.has(key)) { isIgnored = true; break; }
+        }
+      }
+      if (isIgnored) continue;
+
+      // 检查是否已掌握
+      if (mode === "global") {
+        if (!existingKeys.has(word)) {
+          toAdd.push(word);
+          addedCount++;
+        }
+      } else {
+        for (const bookPath of allBookPaths) {
+          const key = `${bookPath}::${word}`;
+          if (!existingKeys.has(key)) {
+            toAdd.push({ key, word });
+            addedCount++;
+          }
+        }
+      }
+    }
+
+    if (addedCount === 0) {
+      new Notice(t("import_no_new"));
+      return;
+    }
+
+    if (mode === "global") {
+      for (const word of toAdd) {
+        store.masteryData[word] = { mastered: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+      }
+    } else {
+      for (const item of toAdd) {
+        store.masteryData[item.key] = { mastered: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+      }
+    }
+
+    await store.saveMastery();
+    const label = t("import_mastered");
+    new Notice(t("import_success", addedCount, label));
+  }
+
+  // ===== 导入到忽略（含去重和冲突处理） =====
+  async importToIgnored(words, store) {
+    const mode = this.plugin.settings.masteryMode;
+    const existingKeys = new Set(Object.keys(store.ignoredData));
+    let addedCount = 0;
+
+    const allBookPaths = this.plugin.settings.wordbookFiles
+      .filter(f => f.enabled)
+      .map(f => f.path);
+
+    const toAdd = [];
+
+    for (const word of words) {
+      if (mode === "global") {
+        if (!existingKeys.has(word)) {
+          // 如果存在于掌握中，移除它
+          if (store.masteryData[word]) {
+            delete store.masteryData[word];
+          }
+          toAdd.push(word);
+          addedCount++;
+        }
+      } else {
+        for (const bookPath of allBookPaths) {
+          const key = `${bookPath}::${word}`;
+          if (!existingKeys.has(key)) {
+            // 如果存在于掌握中，移除它
+            if (store.masteryData[key]) {
+              delete store.masteryData[key];
+            }
+            toAdd.push({ key, word });
+            addedCount++;
+          }
+        }
+      }
+    }
+
+    if (addedCount === 0) {
+      new Notice(t("import_no_new"));
+      return;
+    }
+
+    if (mode === "global") {
+      for (const word of toAdd) {
+        store.ignoredData[word] = { ignored: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+      }
+    } else {
+      for (const item of toAdd) {
+        store.ignoredData[item.key] = { ignored: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+      }
+    }
+
+    await store.saveIgnored();
+    const label = t("import_ignored");
+    new Notice(t("import_success", addedCount, label));
+  }
 }
 
 class FileSuggestionModal extends FuzzySuggestModal {
@@ -5730,3 +5986,4 @@ class SimpleWordbookPlugin extends Plugin {
 }
 
 module.exports = SimpleWordbookPlugin;
+/* nosourcemap */
