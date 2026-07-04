@@ -2973,10 +2973,24 @@ class LookupView extends ItemView {
     // 输入行（输入框 + 清空按钮）
     const inputRow = container.createDiv({ cls: "lookup-input-row" });
     const searchInput = inputRow.createEl("input", { type: "text", placeholder: t("lookup_input_placeholder") });
+
     searchInput.addEventListener("keydown", (e) => {
+      const word = searchInput.value;
+
+      // Shift + Enter → 强制 AI 查询
+      if (e.key === "Enter" && e.shiftKey) {
+        e.preventDefault();  // 防止触发默认行为
+        if (word && word.trim()) {
+          this.doAILookup(word);
+        } else {
+          new Notice(t("lookup_empty_word"));
+        }
+        return;
+      }
+
+      // Enter → 根据模式查询
       if (e.key === "Enter") {
         const mode = this.plugin.settings.enterMode || "local_first";
-        const word = searchInput.value;
         if (mode === "local_only") {
           this.doLocalLookup(word);
         } else if (mode === "ai_only") {
