@@ -59,20 +59,21 @@
 /* 部件：单个单词卡片 */
 .word-card {
   background: color-mix(in srgb, var(--background-primary) 70%, var(--background-secondary) 30%);
+  border: 1px solid color-mix(in srgb, var(--card-color, var(--interactive-accent)) 20%, transparent);
   border-left: 4px solid var(--card-color, var(--interactive-accent));
-  border-radius: 8px;
+  border-radius: 12px;
   padding: 10px 12px;
   position: relative;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   word-wrap: break-word;
   overflow-wrap: break-word;
   word-break: break-word;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: box-shadow 0.2s ease, transform 0.15s ease, background 0.2s ease;
 }
 .word-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  background: var(--background-primary);
+  border-color: var(--card-color, var(--interactive-accent));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--card-color) 20%, transparent);
   transform: translateY(-1px);
 }
 
