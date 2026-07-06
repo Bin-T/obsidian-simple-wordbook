@@ -81,8 +81,8 @@ const locale = {
     restore_default: "Restore Default",
     restore_default_tooltip: "Restore to the default path under the plugin folder",
     import_title: "Import",
-    import_mastered: "Mastered",
-    import_ignored: "Ignored",
+    import_mastered: "Import Mastered",
+    import_ignored: "Import Ignored",
     import_button: "Import",
     import_no_files: "No TXT files found in your vault.",
     import_no_words: "No valid words found in the TXT file.",
@@ -90,6 +90,56 @@ const locale = {
     import_no_new: "No new words to import.",
     import_mastered_desc: "Import words to mark as 'Mastered'. Supports .txt files only, one word or phrase per line, or separated by `,` `;` `Tab` etc.",
     import_ignored_desc: "Import words to mark as 'Ignored'. Supports .txt files only, one word or phrase per line, or separated by `,` `;` `Tab` etc.",
+
+    export_title: "Export",
+    export_name: "Export Wordbook",
+    export_desc: "Export wordbook as Markdown (.md), Anki-compatible TXT (.tsv), etc.",
+    export_button: "Export",
+    export_modal_title: "Export Wordbook",
+    export_select_wordbooks: "Select Wordbooks",
+    export_select_hint: "Only enabled wordbooks shown, multi-select allowed",
+    export_range: "Export Range",
+    export_range_all: "All",
+    export_range_learning: "Learning",
+    export_range_mastered: "Mastered",
+    export_range_ignored: "Ignored",
+    export_range_hint: "Status determined by current mastery/ignore mode",
+    export_format: "Export Format",
+    export_format_markdown: "Markdown (.md) — For reading/printing",
+    export_format_anki: "TXT (Anki-compatible) — Tab-separated TSV",
+    export_options: "Export Options",
+    export_include_phonetic: "Include Phonetic",
+    export_include_aliases: "Include Aliases",
+    export_include_definition: "Include Definition",
+    export_include_source: "Include Source",
+    export_include_status: "Include Status",
+    export_phonetic_label: "Phonetic",
+    export_aliases_label: "Aliases",
+    export_source_label: "Source",
+    export_status_label: "Status",
+    export_convert_html: "Convert to HTML (TXT only, recommended)",
+    export_convert_hint: "Convert Markdown bold and line breaks to Anki-compatible HTML tags (<b> and <br>)",
+    export_one_line_per_word: "One word per line (no quotes, convert line breaks to spaces)",
+    export_save_location: "Save Location",
+    export_select_folder: "Select Folder",
+    export_filename: "Filename",
+    export_success: "Exported successfully to {0}",
+    export_no_wordbook: "Please select at least one wordbook",
+    export_no_word: "No words match the selected range",
+    export_overwrite_confirm: "File already exists. Overwrite?",
+    export_status_learning: "Learning",
+    export_status_mastered: "Mastered",
+    export_status_ignored: "Ignored",
+    export_mastered: "Export Mastered",
+    export_ignored: "Export Ignored",
+    export_mastered_desc: "Export all mastered words as TXT, one per line",
+    export_ignored_desc: "Export all ignored words as TXT, one per line",
+    export_simple_success: "Exported {0} words to {1}",
+    export_simple_no_words: "No {0} words found",
+    export_simple_file_exist: "File already exists, overwrite?",
+    export_mastered_file_name: "mastered_words.txt",
+    export_ignored_file_name: "ignored_words.txt",
+    export_export: "Export",
 
     settings_highlight_preview: "Highlight & Preview",
     settings_enable_highlight: "Enable auto highlight",
@@ -257,6 +307,8 @@ const locale = {
     match_label_alias_prefix: "Alias Prefix",
     match_label_alias_contains: "Alias Contains",
     match_label_alias_fuzzy: "Alias Fuzzy",
+    section_default_title: "Definition",
+    section_content_prefix: "Content",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -347,8 +399,8 @@ const locale = {
     restore_default: "恢复默认",
     restore_default_tooltip: "恢复到插件文件夹下的默认路径",
     import_title: "导入",
-    import_mastered: "掌握",
-    import_ignored: "忽略",
+    import_mastered: "导入掌握",
+    import_ignored: "导入忽略",
     import_button: "导入",
     import_no_files: "库中没有找到 TXT 文件。",
     import_no_words: "TXT 文件中没有找到有效单词。",
@@ -356,6 +408,56 @@ const locale = {
     import_no_new: "没有需要导入的新单词。",
     import_mastered_desc: "导入单词以标记为“掌握”。仅支持 .txt 文件，每行一个单词或词组，或用 `,` `，` `;` `；` `Tab` 等分隔。",
     import_ignored_desc: "导入单词以标记为“忽略”。仅支持 .txt 文件，每行一个单词或词组，或用 `,` `，` `;` `；` `Tab` 等分隔。",
+
+    export_title: "导出",
+    export_name: "导出单词本",
+    export_desc: "将单词本导出为 Markdown (.md)、Anki 兼容的 TXT (.tsv) 等格式。",
+    export_button: "导出",
+    export_modal_title: "导出单词本",
+    export_select_wordbooks: "选择单词本",
+    export_select_hint: "仅显示已启用的词库，可多选",
+    export_range: "导出范围",
+    export_range_all: "全部",
+    export_range_learning: "学习中",
+    export_range_mastered: "掌握",
+    export_range_ignored: "忽略",
+    export_range_hint: "状态依据当前“掌握/忽略模式”判定",
+    export_format: "导出格式",
+    export_format_markdown: "Markdown (.md) — 适合阅读/打印",
+    export_format_anki: "TXT (Anki 导入兼容) — 制表符分隔 TSV",
+    export_options: "导出选项",
+    export_include_phonetic: "包含音标",
+    export_include_aliases: "包含别名",
+    export_include_definition: "包含释义",
+    export_include_source: "包含来源",
+    export_include_status: "包含状态",
+    export_phonetic_label: "音标",
+    export_aliases_label: "别名",
+    export_source_label: "来源",
+    export_status_label: "状态",
+    export_convert_html: "转换为 HTML（仅 TXT 格式，推荐勾选）",
+    export_convert_hint: "将 Markdown 粗体（**）和换行转为 Anki 可识别的 HTML 标签（<b> 和 <br>），导入时请勾选“允许使用 HTML”。",
+    export_one_line_per_word: "每行一个单词（无引号，换行转空格）",
+    export_save_location: "保存位置",
+    export_select_folder: "选择文件夹",
+    export_filename: "文件名",
+    export_success: "成功导出至 {0}",
+    export_no_wordbook: "请至少选择一个单词本",
+    export_no_word: "所选单词本中没有符合范围的单词",
+    export_overwrite_confirm: "文件已存在，是否覆盖？",
+    export_status_learning: "学习中",
+    export_status_mastered: "掌握",
+    export_status_ignored: "忽略",
+    export_mastered: "导出掌握",
+    export_ignored: "导出忽略",
+    export_mastered_desc: "导出所有标记为掌握的单词，每行一个",
+    export_ignored_desc: "导出所有标记为忽略的单词，每行一个",
+    export_simple_success: "成功导出 {0} 个单词到 {1}",
+    export_simple_no_words: "没有找到 {0} 的单词",
+    export_simple_file_exist: "文件已存在，是否覆盖？",
+    export_mastered_file_name: "掌握单词.txt",
+    export_ignored_file_name: "忽略单词.txt",
+    export_export: "导出",
 
     settings_highlight_preview: "高亮与预览",
     settings_enable_highlight: "启用自动高亮",
@@ -523,6 +625,8 @@ const locale = {
     match_label_alias_prefix: "别名前缀",
     match_label_alias_contains: "别名包含",
     match_label_alias_fuzzy: "别名模糊",
+    section_default_title: "释义",
+    section_content_prefix: "内容",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -545,11 +649,30 @@ const locale = {
 // 轻量级语言工具
 function getLocale() {
   const lang = window.localStorage.getItem("language") || "en";
-  return lang.startsWith("zh") ? locale.zh : locale.en;
+  // 标准化语言代码：'zh-TW' -> 'zh', 'en-US' -> 'en'
+  const normalizedLang = lang.split('-')[0];
+
+  // Obsidian 官方支持的所有语言代码（基于 obsidian-translations 仓库）
+  const supported = [
+    'af', 'am', 'ar', 'az', 'be', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'dv',
+    'el', 'en', 'eo', 'es', 'eu', 'fa', 'fi', 'fr', 'ga', 'gl', 'he', 'hi',
+    'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lv', 'ml', 'ms', 'ne', 'nl', 'nn',
+    'no', 'oc', 'or', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr',
+    'sv', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'vi', 'zh'
+  ];
+
+  if (supported.includes(normalizedLang) && locale[normalizedLang]) {
+    return locale[normalizedLang];
+  }
+  return locale.en;
 }
 function t(key, ...args) {
-  let text = getLocale()[key] || key;
-  for (let i = 0; i < args.length; i++) text = text.replace(`{${i}}`, args[i]);
+  const currentLocale = getLocale();
+  // 优先当前语言，没有则回退到英文，再没有才显示 key 本身
+  let text = currentLocale[key] || locale.en[key] || key;
+  for (let i = 0; i < args.length; i++) {
+    text = text.replace(`{${i}}`, args[i]);
+  }
   return text;
 }
 
@@ -687,7 +810,7 @@ function parseSections(definition) {
       title = titleMatch[1].trim();
       content = trimmed.substring(titleMatch[0].length).trim();
     } else {
-      title = sections.length === 0 ? "释义" : `内容 ${sections.length + 1}`;
+      title = sections.length === 0 ? t("section_default_title") : `${t("section_content_prefix")} ${sections.length + 1}`;
       content = trimmed;
     }
     sections.push({ title, content });
@@ -3431,7 +3554,7 @@ class LookupView extends ItemView {
     // 匹配方括号或斜杠包裹的音标
     const phoneticRegex = /\[[^\]]+\]|\/[^\/]+\//g;
     const labelSet = ['英', '美', 'UK', 'US', 'BrE', 'AmE', 'Br', 'Am', '英式', '美式', '英音', '美音', 'British', 'American'];
-    // ★★★ 修复：添加 'g' 标志以支持 matchAll ★★★
+    // ★★★ 添加 'g' 标志以支持 matchAll ★★★
     const labelRegex = new RegExp(labelSet.join('|'), 'gi');
     let matches = [];
     let match;
@@ -3515,6 +3638,228 @@ class ConfirmModal extends Modal {
   }
 }
 
+// ========== 导出辅助函数 ==========
+
+// 导出专用的章节解析
+function parseSectionsForExport(definition) {
+  if (!definition || !definition.trim()) return [{ title: "释义", content: "" }];
+
+  const parts = definition.split(/\n---\s*\n/);
+  const sections = [];
+
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+
+    const titleMatch = trimmed.match(/^\*\*(.+?)\*\*\s*/);
+    let title, content;
+    if (titleMatch) {
+      title = titleMatch[1].trim();
+      content = trimmed.substring(titleMatch[0].length).trim();
+    } else {
+      // 无标题：与 parseSections 逻辑一致
+      title = sections.length === 0 ? t("section_default_title") : `${t("section_content_prefix")} ${sections.length + 1}`;
+      content = trimmed;
+    }
+    sections.push({ title, content });
+  }
+
+  if (sections.length === 0) {
+    sections.push({ title: t("section_default_title"), content: definition });
+  }
+
+  return sections;
+}
+
+// 将 Markdown 转换为 HTML（用于 Anki 导出）
+function markdownToHtml(text) {
+  if (!text) return '';
+  // 粗体：**content** → <b>content</b>
+  let html = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  // 换行：真实换行符 → <br>
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+// TSV 字段转义：双引号包裹，内部双引号转义为 ""
+function escapeField(str) {
+  if (str == null) return '""';
+  return `"${String(str).replace(/"/g, '""')}"`;
+}
+
+// 获取卡片的显示状态（Markdown）
+function getStatusLabel(card, plugin) {
+  const key = getStudyKey(card.word, card.sourceFile);
+  if (plugin.masteryStore.isIgnored(key)) return t("export_status_ignored");
+  if (plugin.masteryStore.isMastered(key)) return t("export_status_mastered");
+  return t("export_status_learning");
+}
+
+// 获取卡片的英文状态（用于 Anki TSV）
+function getStatusEn(card, plugin) {
+  const key = getStudyKey(card.word, card.sourceFile);
+  if (plugin.masteryStore.isIgnored(key)) return "Ignored";
+  if (plugin.masteryStore.isMastered(key)) return "Mastered";
+  return "Learning";
+}
+
+// 生成 Markdown 导出内容
+function generateMarkdownContent(cards, fileName, options, plugin) {
+  const lines = [`# ${fileName}`, ''];
+
+  for (const card of cards) {
+    lines.push(`## ${card.word}`, '');
+
+    if (options.includePhonetic) {
+      lines.push(`**${t("export_phonetic_label")}**：${card.phonetic || ''}`, '');
+    }
+
+    if (options.includeAliases && card.aliases && card.aliases.length > 0) {
+      lines.push(`**${t("export_aliases_label")}**：${card.aliases.join('、')}`, '');
+    }
+
+    if (options.includeSource) {
+      const source = card.sourceFile?.split('/').pop() || '';
+      lines.push(`**${t("export_source_label")}**：${source}`, '');
+    }
+
+    if (options.includeStatus) {
+      const status = getStatusLabel(card, plugin);
+      lines.push(`**${t("export_status_label")}**：${status}`, '');
+    }
+
+    // 解析并输出定义章节
+    if (options.includeDefinition) {
+      const sections = parseSectionsForExport(card.definition || '');
+      for (const section of sections) {
+        lines.push(`**${section.title}**`);
+        lines.push('');
+        lines.push(section.content);
+        lines.push('');
+      }
+    }
+
+    lines.push('---', '');
+  }
+
+  return lines.join('\n');
+}
+
+// 拆分定义为所有章节，保留原始内容，返回所有章节数组，供 Anki 动态列导出使用
+function splitDefinitionForExport(definition) {
+  if (!definition) return [];
+
+  const parts = definition.split(/\n---\s*\n/);
+  const sections = [];
+
+  for (const part of parts) {
+    const trimmed = part.trim();
+    if (!trimmed) continue;
+
+    const titleMatch = trimmed.match(/^\*\*(.+?)\*\*\s*/);
+    let title, content;
+    if (titleMatch) {
+      title = titleMatch[1].trim();
+      content = trimmed.substring(titleMatch[0].length).trim();
+    } else {
+      // 无标题：作为"释义"
+      title = t("section_default_title");
+      content = trimmed;
+    }
+    sections.push({ title, content });
+  }
+
+  if (sections.length === 0) {
+    sections.push({ title: t("section_default_title"), content: definition });
+  }
+
+  return sections;
+}
+
+// 生成 Anki TSV 导出内容（动态列结构）
+function generateAnkiTsvContent(cards, options, plugin) {
+  if (cards.length === 0) return '';
+
+  // 收集所有章节标题（仅当包含释义时）
+  const allTitles = [];
+  const seenTitles = new Set();
+  if (options.includeDefinition) {
+    for (const card of cards) {
+      const sections = splitDefinitionForExport(card.definition || '');
+      for (const section of sections) {
+        if (!seenTitles.has(section.title)) {
+          seenTitles.add(section.title);
+          allTitles.push(section.title);
+        }
+      }
+    }
+  }
+
+  const lines = [];
+
+  for (const card of cards) {
+    const sections = splitDefinitionForExport(card.definition || '');
+    const contentMap = {};
+    for (const section of sections) {
+      contentMap[section.title] = section.content;
+    }
+
+    // 构建原始字段数组（无转义）
+    const rawFields = [];
+
+    // 单词（始终包含）
+    rawFields.push(card.word);
+
+    // 仅当选项开启时包含音标
+    if (options.includePhonetic) {
+      rawFields.push(card.phonetic || '');
+    }
+
+    // 仅当选项开启时包含别名
+    if (options.includeAliases && card.aliases && card.aliases.length > 0) {
+      rawFields.push(card.aliases.join('、'));
+    }
+
+    // 仅当包含释义时才添加章节字段
+    if (options.includeDefinition) {
+      for (const title of allTitles) {
+        const rawContent = contentMap[title] || '';
+        const fullContent = `**${title}**\n${rawContent}`;
+        const processed = options.convertToHtml ? markdownToHtml(fullContent) : fullContent;
+        rawFields.push(processed);
+      }
+    }
+
+    // 仅当选项开启时包含来源
+    if (options.includeSource) {
+      rawFields.push(card.sourceFile?.split('/').pop() || '');
+    }
+
+    // 仅当选项开启时包含状态
+    if (options.includeStatus) {
+      rawFields.push(getStatusEn(card, plugin));
+    }
+
+    // 根据 oneLinePerWord 选项决定最终字段字符串
+    let finalFields;
+    if (options.oneLinePerWord) {
+      // 无引号，替换换行和制表符为空格
+      finalFields = rawFields.map(f => {
+        let str = String(f);
+        str = str.replace(/[\n\r\t]+/g, ' ');
+        return str;
+      });
+    } else {
+      // 标准 TSV：使用 escapeField 加引号，保留换行
+      finalFields = rawFields.map(f => escapeField(f));
+    }
+
+    lines.push(finalFields.join('\t'));
+  }
+
+  return lines.join('\n');
+}
+
 class WordContextMenu {
   constructor(plugin, wordObj) { this.plugin = plugin; this.wordObj = wordObj; }
   showAtMouseEvent(e) {
@@ -3554,6 +3899,359 @@ class WordContextMenu {
       await this.plugin.highlighter.refresh();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
     } else new Notice(t("delete_failed"));
+  }
+}
+
+// ========== 单词本导出模态窗 ==========
+class ExportModal extends Modal {
+  constructor(app, plugin) {
+    super(app);
+    this.plugin = plugin;
+
+    // 初始化状态
+    this.selectedBooks = new Set();
+    this.range = "all";
+    this.format = "markdown";
+    this.options = {
+      includePhonetic: true,
+      includeAliases: true,
+      includeDefinition: true,
+      includeSource: true,
+      includeStatus: true,
+      convertToHtml: true,
+      oneLinePerWord: false
+    };
+    this.folderPath = "";
+    this.fileName = "wordbook_export";
+    this._folderDisplay = "Root (Vault root)";
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    contentEl.addClass("export-modal");
+    this.titleEl.setText(t("export_modal_title"));
+
+    // ---- 1. 选择单词本 ----
+    new Setting(contentEl)
+      .setName(t("export_select_wordbooks"))
+      .setDesc(t("export_select_hint"));
+
+    const bookList = contentEl.createDiv({ cls: "export-book-list" });
+    bookList.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px; max-height: 200px; overflow-y: auto;";
+
+    const enabledBooks = this.plugin.settings.wordbookFiles.filter(f => f.enabled);
+
+    for (const book of enabledBooks) {
+      const item = bookList.createDiv({ cls: "export-book-item" });
+      item.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+
+      const checkbox = item.createEl("input", { type: "checkbox" });
+      checkbox.value = book.path;
+      checkbox.checked = false;
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          this.selectedBooks.add(book.path);
+        } else {
+          this.selectedBooks.delete(book.path);
+        }
+      });
+
+      const label = item.createSpan({ text: `${book.name} (${book.path})` });
+      label.style.cssText = "font-size: 0.9em; color: var(--text-normal);";
+    }
+
+    // ---- 2. 导出范围 ----
+    new Setting(contentEl)
+      .setName(t("export_range"))
+      .setDesc(t("export_range_hint"))
+      .addDropdown(drop => {
+        drop.addOption("all", t("export_range_all"))
+          .addOption("learning", t("export_range_learning"))
+          .addOption("mastered", t("export_range_mastered"))
+          .addOption("ignored", t("export_range_ignored"))
+          .setValue(this.range)
+          .onChange(val => { this.range = val; });
+        return drop;
+      });
+
+    // ---- 3. 导出格式 ----
+    new Setting(contentEl)
+      .setName(t("export_format"))
+      .addDropdown(drop => {
+        drop.addOption("markdown", t("export_format_markdown"))
+          .addOption("anki", t("export_format_anki"))
+          .setValue(this.format)
+          .onChange(val => {
+            this.format = val;
+            // 更新扩展名显示
+            const extSpan = contentEl.querySelector('.export-extension');
+            if (extSpan) {
+              extSpan.textContent = val === "markdown" ? ".md" : ".txt";
+            }
+            // 显示/隐藏 "转换为 HTML" 选项
+            const convertRow = contentEl.querySelector('.export-convert-row');
+            if (convertRow) {
+              convertRow.style.display = val === "anki" ? "flex" : "none";
+            }
+            // 显示/隐藏 "每行一个单词" 选项
+            const oneLineRow = contentEl.querySelector('.export-one-line-row');
+            if (oneLineRow) {
+              oneLineRow.style.display = val === "anki" ? "flex" : "none";
+            }
+          });
+        return drop;
+      });
+
+    // ---- 4. 导出选项 ----
+    new Setting(contentEl)
+      .setName(t("export_options"));
+
+    const optionsContainer = contentEl.createDiv({ cls: "export-options-container" });
+    optionsContainer.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px;";
+
+    // 包含音标
+    const phoneticRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    phoneticRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const phoneticCheck = phoneticRow.createEl("input", { type: "checkbox" });
+    phoneticCheck.checked = true;
+    phoneticCheck.addEventListener("change", () => {
+      this.options.includePhonetic = phoneticCheck.checked;
+    });
+    phoneticRow.createSpan({ text: t("export_include_phonetic") });
+
+    // 包含别名
+    const aliasesRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    aliasesRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const aliasesCheck = aliasesRow.createEl("input", { type: "checkbox" });
+    aliasesCheck.checked = true;
+    aliasesCheck.addEventListener("change", () => {
+      this.options.includeAliases = aliasesCheck.checked;
+    });
+    aliasesRow.createSpan({ text: t("export_include_aliases") });
+
+    // 包含释义
+    const defRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    defRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const defCheck = defRow.createEl("input", { type: "checkbox" });
+    defCheck.checked = true;
+    defCheck.addEventListener("change", () => {
+      this.options.includeDefinition = defCheck.checked;
+    });
+    defRow.createSpan({ text: t("export_include_definition") });
+
+    // 包含来源
+    const sourceRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    sourceRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const sourceCheck = sourceRow.createEl("input", { type: "checkbox" });
+    sourceCheck.checked = true;
+    sourceCheck.addEventListener("change", () => {
+      this.options.includeSource = sourceCheck.checked;
+    });
+    sourceRow.createSpan({ text: t("export_include_source") });
+
+    // 包含状态
+    const statusRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    statusRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const statusCheck = statusRow.createEl("input", { type: "checkbox" });
+    statusCheck.checked = true;
+    statusCheck.addEventListener("change", () => {
+      this.options.includeStatus = statusCheck.checked;
+    });
+    statusRow.createSpan({ text: t("export_include_status") });
+
+    // 转换为 HTML（仅 TXT）
+    const convertRow = optionsContainer.createDiv({ cls: "export-option-row export-convert-row" });
+    convertRow.style.cssText = "display: flex; flex-direction: column; gap: 4px; padding: 2px 0;";
+
+    // 复选框行
+    const convertCheckRow = convertRow.createDiv({ cls: "export-option-row" });
+    convertCheckRow.style.cssText = "display: flex; align-items: center; gap: 8px;";
+
+    const convertCheck = convertCheckRow.createEl("input", { type: "checkbox" });
+    convertCheck.checked = true;
+    convertCheck.addEventListener("change", () => {
+      this.options.convertToHtml = convertCheck.checked;
+    });
+    convertCheckRow.createSpan({ text: t("export_convert_html") });
+
+    // 提示文字紧跟在复选框下方
+    const convertHint = convertRow.createDiv({ cls: "export-option-hint" });
+    convertHint.style.cssText = "font-size: 0.8em; color: var(--text-muted); padding-left: 24px; line-height: 1.4;";
+    convertHint.textContent = t("export_convert_hint");
+
+    // ---- 每行一个单词（仅 TXT） ----
+    const oneLineRow = optionsContainer.createDiv({ cls: "export-option-row export-one-line-row" });
+    oneLineRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const oneLineCheck = oneLineRow.createEl("input", { type: "checkbox" });
+    oneLineCheck.checked = false;   // 默认不勾选
+    oneLineCheck.addEventListener("change", () => {
+      this.options.oneLinePerWord = oneLineCheck.checked;
+    });
+    oneLineRow.createSpan({ text: t("export_one_line_per_word") });
+
+    // 仅当导出格式为 Anki (TXT) 时显示 转换为 HTML
+    if (this.format === "anki") {
+      convertRow.style.display = "flex";
+    } else {
+      convertRow.style.display = "none";
+    }
+    // 仅当导出格式为 Anki (TXT) 时显示 每行一个单词
+    if (this.format === "anki") {
+      oneLineRow.style.display = "flex";
+    } else {
+      oneLineRow.style.display = "none";
+    }
+
+    // ---- 5. 保存位置 ----
+    const locationContainer = contentEl.createDiv({ cls: "export-location-container" });
+    locationContainer.style.cssText = "margin: 12px 0 8px 0;";
+
+    // ---- 第一行：文件夹选择 ----
+    const folderRow = locationContainer.createDiv({ cls: "export-folder-row" });
+    folderRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
+
+    const folderLabel = folderRow.createSpan({ text: t("export_save_location") + "：" });
+    folderLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
+
+    const folderBtn = folderRow.createEl("button", { text: t("export_select_folder") });
+    folderBtn.style.cssText = "flex-shrink: 0;";
+
+    const folderDisplay = folderRow.createSpan({ text: this._folderDisplay });
+    folderDisplay.style.cssText = "color: var(--text-muted); font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;";
+
+    folderBtn.addEventListener("click", () => {
+      new FolderSuggestModal(this.app, (folderPath) => {
+        this.folderPath = folderPath;
+        this._folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
+        folderDisplay.textContent = this._folderDisplay;
+      }).open();
+    });
+
+    // ---- 第二行：文件名输入 ----
+    const nameRow = locationContainer.createDiv({ cls: "export-name-row" });
+    nameRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
+
+    const nameLabel = nameRow.createSpan({ text: t("export_filename") + "：" });
+    nameLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
+
+    const nameInput = nameRow.createEl("input", { type: "text" });
+    nameInput.value = this.fileName;
+    nameInput.style.cssText = "flex: 1; min-width: 120px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);";
+
+    const extSpan = nameRow.createSpan({ cls: "export-extension", text: this.format === "markdown" ? ".md" : ".txt" });
+    extSpan.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-muted);";
+
+    nameInput.addEventListener("input", () => {
+    });
+
+    // 保存输入框引用
+    this.nameInput = nameInput;
+
+    // ---- 6. 底部按钮 ----
+    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+
+    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+    cancelBtn.addEventListener("click", () => this.close());
+
+    const exportBtn = buttonDiv.createEl("button", { text: t("export_button"), cls: "mod-cta" });
+    exportBtn.addEventListener("click", () => this.doExport());
+  }
+
+  // 执行导出
+  async doExport() {
+    // 1. 校验：至少选择一个单词本
+    if (this.selectedBooks.size === 0) {
+      new Notice(t("export_no_wordbook"));
+      return;
+    }
+
+    // 2. 读取所有选中的卡片
+    const allCards = [];
+    for (const bookPath of this.selectedBooks) {
+      const cards = await WordbookParser.parseFile(this.app, bookPath);
+      for (const card of cards) {
+        card.sourceFile = bookPath;
+        allCards.push(card);
+      }
+    }
+
+    if (allCards.length === 0) {
+      new Notice(t("export_no_word"));
+      return;
+    }
+
+    // 3. 按范围过滤
+    let filteredCards = allCards;
+    if (this.range !== "all") {
+      filteredCards = allCards.filter(card => {
+        const key = getStudyKey(card.word, card.sourceFile);
+        const isMastered = this.plugin.masteryStore.isMastered(key);
+        const isIgnored = this.plugin.masteryStore.isIgnored(key);
+
+        if (this.range === "learning") return !isMastered && !isIgnored;
+        if (this.range === "mastered") return isMastered;
+        if (this.range === "ignored") return isIgnored;
+        return true;
+      });
+    }
+
+    if (filteredCards.length === 0) {
+      new Notice(t("export_no_word"));
+      return;
+    }
+
+    // 4. 生成内容
+    const isMarkdown = this.format === "markdown";
+    const extension = isMarkdown ? "md" : "txt";
+
+    // 从输入框获取文件名
+    let fileName = this.nameInput ? this.nameInput.value.trim() : this.fileName;
+    if (!fileName) fileName = "wordbook_export";
+
+    let content;
+    if (isMarkdown) {
+      content = generateMarkdownContent(
+        filteredCards,
+        fileName,
+        this.options,
+        this.plugin
+      );
+    } else {
+      content = generateAnkiTsvContent(
+        filteredCards,
+        this.options,
+        this.plugin
+      );
+    }
+
+    // 5. 构建完整路径
+    const fullPath = normalizePath(
+      this.folderPath ? `${this.folderPath}/${fileName}.${extension}` : `${fileName}.${extension}`
+    );
+
+    // 6. 检查文件是否存在
+    const existing = this.app.vault.getAbstractFileByPath(fullPath);
+    if (existing) {
+      const confirmed = confirm(t("export_overwrite_confirm"));
+      if (!confirmed) return;
+      // 使用 modify 覆盖已存在文件
+      await this.app.vault.modify(existing, content);
+    } else {
+      // 7. 确保文件夹存在
+      if (this.folderPath) {
+        const dir = this.app.vault.getAbstractFileByPath(this.folderPath);
+        if (!dir) {
+          await this.app.vault.createFolder(this.folderPath);
+        }
+      }
+      // 8. 写入文件
+      await this.app.vault.create(fullPath, content);
+    }
+
+    new Notice(t("export_success", fullPath));
+    this.close();
   }
 }
 
@@ -4055,6 +4753,47 @@ class WordbookSettingTab extends PluginSettingTab {
         btn.setButtonText(t("import_button"))
           .setCta()
           .onClick(() => this.selectTxtFileForImport('ignored'));
+        return btn;
+      });
+
+    // ===== 导出区块 =====
+    container.createEl("h3", { text: t("export_title") });
+
+    // ===== 单词本导出 =====
+    new Setting(container)
+      .setName(t("export_name"))
+      .setDesc(t("export_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("export_button"))
+          .setCta()
+          .onClick(() => {
+            new ExportModal(this.app, this.plugin).open();
+          });
+        return btn;
+      });
+
+    // ===== 导出掌握/忽略 =====
+    new Setting(container)
+      .setName(t("export_mastered"))
+      .setDesc(t("export_mastered_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("export_export"))
+          .setCta()
+          .onClick(() => {
+            this.showExportWordsModal('mastered');
+          });
+        return btn;
+      });
+
+    new Setting(container)
+      .setName(t("export_ignored"))
+      .setDesc(t("export_ignored_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("export_export"))
+          .setCta()
+          .onClick(() => {
+            this.showExportWordsModal('ignored');
+          });
         return btn;
       });
 
@@ -5363,6 +6102,11 @@ class WordbookSettingTab extends PluginSettingTab {
     const label = t("import_ignored");
     new Notice(t("import_success", addedCount, label));
   }
+
+  // 弹出导出模态框（掌握/忽略）
+  showExportWordsModal(type) {
+    new ExportSimpleModal(this.app, this.plugin, type).open();
+  }
 }
 
 class FileSuggestionModal extends FuzzySuggestModal {
@@ -5390,6 +6134,136 @@ class FolderSuggestModal extends FuzzySuggestModal {
   }
   onChooseItem(item) {
     this.onChoose(item);
+  }
+}
+
+// ========== 导出模态框（掌握/忽略） ==========
+class ExportSimpleModal extends Modal {
+  constructor(app, plugin, type) {
+    super(app);
+    this.plugin = plugin;
+    this.type = type; // 'mastered' 或 'ignored'
+    this.selectedFolder = '';
+    this.folderDisplay = t("settings_new_wordbook_root");
+    this.fileNameInput = null;
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    this.titleEl.setText(this.type === 'mastered' ? t("export_mastered") : t("export_ignored"));
+
+    // 文件夹选择
+    const folderSetting = new Setting(contentEl)
+      .setName(t("export_save_location"))
+      .setDesc(`${t("settings_new_wordbook_selected")} ${this.folderDisplay}`)
+      .addButton(btn => {
+        btn.setButtonText(t("export_select_folder"))
+          .onClick(() => {
+            new FolderSuggestModal(this.app, (folderPath) => {
+              this.selectedFolder = folderPath;
+              this.folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
+              folderSetting.setDesc(`${t("settings_new_wordbook_selected")} ${this.folderDisplay}`);
+            }).open();
+          });
+      });
+
+    // 文件名输入
+    const nameSetting = new Setting(contentEl)
+      .setName(t("export_filename"))
+      .addText(text => {
+        const defaultName = this.type === 'mastered' ? t("export_mastered_file_name") : t("export_ignored_file_name");
+        text.setValue(defaultName);
+        text.inputEl.style.width = "100%";
+        this.fileNameInput = text;
+      });
+
+    // 按钮
+    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+    cancelBtn.addEventListener("click", () => this.close());
+
+    const exportBtn = buttonDiv.createEl("button", { text: t("export_export"), cls: "mod-cta" });
+    exportBtn.addEventListener("click", () => this.doExport());
+
+    // 回车触发导出
+    if (this.fileNameInput) {
+      this.fileNameInput.inputEl.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") this.doExport();
+      });
+      setTimeout(() => this.fileNameInput.inputEl.focus(), 50);
+    }
+  }
+
+  async doExport() {
+    const fileName = this.fileNameInput ? this.fileNameInput.getValue().trim() : '';
+    if (!fileName) {
+      new Notice(t("settings_new_wordbook_enter_name"));
+      return;
+    }
+    // 确保扩展名 .txt
+    let finalFileName = fileName;
+    if (!finalFileName.endsWith('.txt')) {
+      finalFileName += '.txt';
+    }
+    const fullPath = this.selectedFolder ? `${this.selectedFolder}/${finalFileName}` : finalFileName;
+
+    // 收集单词
+    const allCards = this.plugin.getAllCards();
+    const masteryStore = this.plugin.masteryStore;
+    const mode = this.plugin.settings.masteryMode;
+    const wordMap = new Map(); // key: 小写单词, value: 原始单词（保留首次遇到的大小写）
+
+    for (const card of allCards) {
+      let key;
+      if (mode === "global") {
+        key = card.word.toLowerCase();
+      } else {
+        key = `${card.sourceFile}::${card.word.toLowerCase()}`;
+      }
+      let isMatched = false;
+      if (this.type === 'mastered') {
+        isMatched = masteryStore.isMastered(key);
+      } else {
+        isMatched = masteryStore.isIgnored(key);
+      }
+      if (isMatched) {
+        const lower = card.word.toLowerCase();
+        if (!wordMap.has(lower)) {
+          wordMap.set(lower, card.word);
+        }
+      }
+    }
+
+    if (wordMap.size === 0) {
+      const label = this.type === 'mastered' ? t("export_mastered") : t("export_ignored");
+      new Notice(t("export_simple_no_words", label));
+      return;
+    }
+
+    const wordList = Array.from(wordMap.values());
+    wordList.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    const content = wordList.join('\n');
+
+    // 写入文件
+    const existing = this.app.vault.getAbstractFileByPath(fullPath);
+    if (existing) {
+      const confirmed = confirm(t("export_simple_file_exist"));
+      if (!confirmed) return;
+      await this.app.vault.modify(existing, content);
+    } else {
+      if (this.selectedFolder) {
+        const dir = this.app.vault.getAbstractFileByPath(this.selectedFolder);
+        if (!dir) {
+          await this.app.vault.createFolder(this.selectedFolder);
+        }
+      }
+      await this.app.vault.create(fullPath, content);
+    }
+
+    new Notice(t("export_simple_success", wordMap.size, fullPath));
+    this.close();
   }
 }
 

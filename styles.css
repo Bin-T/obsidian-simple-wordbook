@@ -918,6 +918,28 @@
 }
 
 
+/* ===== 模块十三：单词本导出模态窗 ===== */
+/* 选择单词本列表 */
+.export-book-list {
+  background: var(--background-secondary);
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin: 4px 0 12px 0;
+  border: 1px solid var(--background-modifier-border);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* 导出选项容器 */
+.export-options-container {
+  background: var(--background-secondary);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 4px 0 12px 0;
+  border: 1px solid var(--background-modifier-border);
+}
+
+
 /* ===== 移动端适配（触摸设备 + 小屏幕） ===== */
 @media (pointer: coarse), (max-width: 800px) {
 
@@ -955,6 +977,12 @@
     color: white;
     border-color: var(--interactive-accent);
     transition: none;
+  }
+
+  /* 描述强制换行 */
+  .wordbook-setting-files-container .setting-item .setting-item-description {
+    white-space: normal;
+    word-break: break-word;
   }
 
   /* ---- 文件管理列表项：换行布局 ---- */
@@ -1037,5 +1065,14 @@
   .wordbook-setting-ai-container .custom-prompt-item button {
     align-self: flex-start;
     margin-top: 2px;
+  }
+
+  /* ---- 单词本导出模态窗 ---- */
+  .export-modal {
+    min-width: auto;
+    max-width: 95vw;
+  }
+  .export-book-list {
+    min-height: 200px;
   }
 }
