@@ -64,6 +64,7 @@ const locale = {
     settings_new_wordbook_created: 'Wordbook "{0}" created and added.',
     settings_new_wordbook_failed: "Failed to create wordbook: {0}",
     settings_new_wordbook_selected: "Selected:",
+    file_not_found: "⚠️ File not found: {0}",
     rename_success: 'Wordbook path updated: "{0}"',
     relocate_tooltip: "Relocate",
     relocate_success: 'Wordbook relocated to "{0}"',
@@ -212,6 +213,12 @@ const locale = {
     settings_ai_api_url: "API URL",
     settings_ai_api_key: "API Key",
     settings_ai_model: "Model Name",
+    provider_openai: "OpenAI",
+    provider_deepseek: "DeepSeek",
+    provider_glm: "GLM (Zhipu)",
+    provider_tongyi: "Tongyi Qianwen",
+    provider_ollama: "Ollama (Local)",
+    provider_custom: "Custom",
     api_url_placeholder_custom: "Enter API URL",
     api_url_placeholder_preset: "Auto-filled",
     api_key_placeholder: "Enter API Key",
@@ -382,6 +389,7 @@ const locale = {
     settings_new_wordbook_created: '单词本 "{0}" 已创建并添加。',
     settings_new_wordbook_failed: "创建单词本失败：{0}",
     settings_new_wordbook_selected: "已选择：",
+    file_not_found: "⚠️ 文件未找到：{0}",
     rename_success: '单词本路径已更新为 "{0}"',
     relocate_tooltip: "重新定位",
     relocate_success: '单词本已重新定位到 "{0}"',
@@ -530,6 +538,12 @@ const locale = {
     settings_ai_api_url: "API 地址",
     settings_ai_api_key: "API 密钥",
     settings_ai_model: "模型名称",
+    provider_openai: "OpenAI",
+    provider_deepseek: "DeepSeek",
+    provider_glm: "智谱 GLM",
+    provider_tongyi: "通义千问",
+    provider_ollama: "Ollama (本地)",
+    provider_custom: "自定义",
     api_url_placeholder_custom: "请输入 API 地址",
     api_url_placeholder_preset: "自动填充",
     api_key_placeholder: "请输入 API Key",
@@ -3923,7 +3937,7 @@ class ExportModal extends Modal {
     };
     this.folderPath = "";
     this.fileName = "wordbook_export";
-    this._folderDisplay = "Root (Vault root)";
+    this._folderDisplay = t("settings_new_wordbook_root");
   }
 
   onOpen() {
@@ -4508,7 +4522,7 @@ class WordbookSettingTab extends PluginSettingTab {
       if (!fileExists) {
         const setting = new Setting(container)
           .setName(file.name)
-          .setDesc(`⚠️ File not found: ${file.path}`)
+          .setDesc(t("file_not_found", file.path))
           .addButton(btn => btn.setIcon("folder-search").setTooltip(t("relocate_tooltip")).onClick(async () => {
             // 调用重新定位方法
             await this.relocateWordbookFile(file, idx);
@@ -5211,12 +5225,12 @@ class WordbookSettingTab extends PluginSettingTab {
       .setDesc(t("settings_ai_provider_desc"))
       .addDropdown(drop => {
         const options = {
-          openai: "OpenAI",
-          deepseek: "DeepSeek",
-          glm: "智谱 GLM",
-          tongyi: "通义千问",
-          ollama: "Ollama (本地)",
-          custom: "自定义"
+          openai: t("provider_openai"),
+          deepseek: t("provider_deepseek"),
+          glm: t("provider_glm"),
+          tongyi: t("provider_tongyi"),
+          ollama: t("provider_ollama"),
+          custom: t("provider_custom")
         };
         for (const [key, label] of Object.entries(options)) {
           drop.addOption(key, label);
@@ -5798,7 +5812,7 @@ class WordbookSettingTab extends PluginSettingTab {
   async showNewWordbookModal() {
     const { app, plugin } = this;
     let selectedFolder = ''; // 空字符串表示根目录
-    let folderDisplay = 'Root (Vault root)';
+    let folderDisplay = t("settings_new_wordbook_root");
     let fileNameInput = null;
 
     const modal = new Modal(app);
@@ -6130,7 +6144,7 @@ class FolderSuggestModal extends FuzzySuggestModal {
     return ['', ...folders];
   }
   getItemText(item) {
-    return item === '' ? 'Root (Vault root)' : item;
+    return item === '' ? t("settings_new_wordbook_root") : item;
   }
   onChooseItem(item) {
     this.onChoose(item);
