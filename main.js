@@ -1350,7 +1350,7 @@ class Highlighter {
     this._intersectionObserver = null;
     this._observedLayers = new WeakSet();
     this._matchCache = new WeakMap();
-    this._globalScrollHandler = null;
+    this._setupTimer = null;
     this._currentEditorPath = null;   // ★ 缓存当前编辑器的文件路径
   }
 
@@ -1816,9 +1816,11 @@ class Highlighter {
     const rect = el.getBoundingClientRect();
     const windowHeight = window.innerHeight || document.documentElement.clientHeight;
     const windowWidth = window.innerWidth || document.documentElement.clientWidth;
-    const buffer = 200;
-    return rect.bottom >= -buffer && rect.top <= windowHeight + buffer &&
-           rect.right >= -buffer && rect.left <= windowWidth + buffer;
+    // 垂直方向缓冲 100% 视口高度，水平方向缓冲 50% 视口宽度
+    const bufferV = windowHeight * 1;
+    const bufferH = windowWidth * 0.5;
+    return rect.bottom >= -bufferV && rect.top <= windowHeight + bufferV &&
+      rect.right >= -bufferH && rect.left <= windowWidth + bufferH;
   }
 
   createAbsoluteHighlightSpan(layer, originalSpan, startOffset, endOffset, selectedCard, allCards) {
@@ -1887,15 +1889,15 @@ class Highlighter {
 
       // ★ 将视口坐标转换为布局坐标（除以缩放因子）
       const leftPx = (rect.left - layerRect.left) / scaleX + layer.scrollLeft;
-      const topPx = (rect.top - layerRect.top) / scaleY + layer.scrollTop + 4; // 微调偏移
+      const topPx = (rect.top - layerRect.top) / scaleY + layer.scrollTop + 1;// 高度偏移微调
       const widthPx = (rect.right - rect.left) / scaleX;
-      const heightPx = (rect.bottom - rect.top) / scaleY;
+      const heightPx = (rect.bottom - rect.top) / scaleY; 
 
       span.style.position = 'absolute';
       span.style.left = `${leftPx}px`;
       span.style.top = `${topPx}px`;
       span.style.width = `${widthPx}px`;
-      span.style.height = `${Math.max(0, heightPx - 6)}px`; // 高度微调
+      span.style.height = `${Math.max(0, heightPx * 0.9)}px`; // 高度微调
       span.style.boxSizing = 'border-box';
       span.style.padding = '0';
       span.style.margin = '0';
@@ -1950,23 +1952,30 @@ class Highlighter {
     const oldHighlights = layer.querySelectorAll('.simple-wordbook-pdf-highlight');
     oldHighlights.forEach(el => el.remove());
 
+    // 创建一个 DocumentFragment 作为所有新高亮的容器
+    const allHighlightsFragment = document.createDocumentFragment();
+
     // 获取视口尺寸用于过滤 span
     const viewportHeight = window.innerHeight;
     const viewportWidth = window.innerWidth;
 
     const spans = layer.querySelectorAll('span[role="presentation"]');
     for (const span of spans) {
-      // ★ 优化：快速跳过不在视口中的 span
+      // 获取当前 span 的位置信息
       const spanRect = span.getBoundingClientRect();
-      if (spanRect.bottom < -50 || spanRect.top > viewportHeight + 50 ||
-        spanRect.right < -50 || spanRect.left > viewportWidth + 50) {
+
+      // 垂直缓冲 50% 视口高度，水平缓冲 10% 视口宽度
+      const spanBufferV = viewportHeight * 0.5;
+      const spanBufferH = viewportWidth * 0.1;
+      if (spanRect.bottom < -spanBufferV || spanRect.top > viewportHeight + spanBufferV ||
+        spanRect.right < -spanBufferH || spanRect.left > viewportWidth + spanBufferH) {
         continue;
       }
 
       const text = span.textContent;
       if (!text || !text.trim()) continue;
 
-      // ★ 优化：使用缓存匹配结果（避免重复 Trie 查找）
+      // 使用缓存匹配结果（避免重复 Trie 查找）
       let matches = this._matchCache?.get(span);
       if (matches === undefined) {
         matches = this.wordTrie.findAllMatches(text);
@@ -1984,8 +1993,14 @@ class Highlighter {
         const fragment = this.createAbsoluteHighlightSpan(
           layer, span, match.from, match.to, selectedCard, cards
         );
-        if (fragment) layer.appendChild(fragment);
+        if (fragment) {
+          allHighlightsFragment.appendChild(fragment);
+        }
       }
+    }
+    // 所有高亮元素组装完毕后，一次性插入 DOM
+    if (allHighlightsFragment.hasChildNodes()) {
+      layer.appendChild(allHighlightsFragment);
     }
   }
 
@@ -2007,7 +2022,7 @@ class Highlighter {
         }
       }
     }, {
-      rootMargin: '150px', // 提前加载临近区域，减少滚动时的等待
+      rootMargin: '100%', // 提前加载临近区域，减少滚动时的等待
       threshold: 0.05      // 只要 5% 可见即触发
     });
 
@@ -2051,7 +2066,7 @@ class Highlighter {
       }
     }
 
-    // ★ 对于已经在视口中的层，立即高亮（避免等待滚动）
+    // 对于已经在视口中的层，立即高亮（避免等待滚动）
     for (const layer of textLayers) {
       if (layer.isConnected && this.isElementVisible(layer)) {
         this.highlightPDFLayer(layer);
@@ -2078,35 +2093,59 @@ class Highlighter {
     if (this.pdfObserver) return this.pdfObserver;
 
     const observer = new MutationObserver((mutations) => {
-      let needRefresh = false;
+      let newLayers = [];
       for (const mutation of mutations) {
         if (mutation.type === 'childList') {
           for (const node of mutation.addedNodes) {
             if (node.nodeType === Node.ELEMENT_NODE) {
-              if (node.classList && (node.classList.contains('textLayer') || node.querySelector('.textLayer'))) {
-                needRefresh = true;
-                break;
+              // 检查是否是新 textLayer 或包含 textLayer
+              let layer = null;
+              if (node.classList && node.classList.contains('textLayer')) {
+                layer = node;
+              } else {
+                layer = node.querySelector('.textLayer');
+              }
+              if (layer) {
+                newLayers.push(layer);
               }
             }
           }
         }
       }
-      if (needRefresh) {
-        setTimeout(() => {
-          this.applyToPDFs(0);
-          this._setupPDFScrollListeners();
-        }, 100);
+      if (newLayers.length > 0) {
+        // 立即处理新 layer
+        for (const layer of newLayers) {
+          // 加入 IntersectionObserver（如果已存在）
+          if (this._intersectionObserver && layer.isConnected) {
+            this._intersectionObserver.observe(layer);
+            if (!this._observedLayers) this._observedLayers = new WeakSet();
+            this._observedLayers.add(layer);
+          }
+          // 如果当前可见，立即高亮
+          if (this.isElementVisible(layer)) {
+            this.highlightPDFLayer(layer);
+          }
+        }
+        // 同时刷新所有已观察层（确保整体一致）
+        this.applyToPDFs(0);
       }
     });
 
     observer.observe(document.body, { childList: true, subtree: true });
     this.pdfObserver = observer;
 
-    setTimeout(() => this._setupPDFScrollListeners(), 200);
+    // 保存定时器 ID
+    this._setupTimer = setTimeout(() => this._setupPDFScrollListeners(), 200);
     return observer;
   }
 
   cleanupPDFListeners() {
+    // 清除延迟设置的定时器
+    if (this._setupTimer) {
+      clearTimeout(this._setupTimer);
+      this._setupTimer = null;
+    }
+
     // 清理滚动监听
     for (const container of this._pdfContainers) {
       if (container._swbScrollHandler) {
@@ -2131,12 +2170,6 @@ class Highlighter {
     if (this._intersectionObserver) {
       this._intersectionObserver.disconnect();
       this._intersectionObserver = null;
-    }
-
-    // 清理全局滚动监听
-    if (this._globalScrollHandler) {
-      document.removeEventListener('scroll', this._globalScrollHandler, { capture: true });
-      this._globalScrollHandler = null;
     }
 
     // 清空匹配缓存
@@ -6479,10 +6512,19 @@ class SimpleWordbookPlugin extends Plugin {
   }
   
   async onunload() {
+    // 1. 先断开所有监听，防止在清除过程中重新添加高亮
     if (this.highlighter) {
       this.highlighter.cleanupPDFListeners?.();
+      // 2. 然后清除所有高亮元素
+      await this.highlighter.clearAllHighlights();
     }
-    // ===== 注销所有动态提示词命令 =====
+
+    // 3. 销毁悬停预览（移除残留的提示框）
+    if (this.hoverPreview) {
+      this.hoverPreview.destroy();
+    }
+
+    // 4. 注销所有动态提示词命令
     for (const id of this.dynamicCommandIds) {
       this.removeCommand(id);
     }

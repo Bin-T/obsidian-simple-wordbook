@@ -1,9 +1,9 @@
 {
   "id": "simple-wordbook",
   "name": "Simple Wordbook",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "minAppVersion": "1.0.0",
-  "description": "Wordbook with highlighting, sidebar, mastery/ignore, and fuzzy definitions.",
+  "description": "Highlight words from custom JSON wordbooks across notes and PDFs. Sidebar tracks learning progress with mastery/ignore toggles. Supports local fuzzy search and AI-powered definitions.",
   "author": "Bryn",
   "isDesktopOnly": false
 }
