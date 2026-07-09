@@ -5073,6 +5073,19 @@ class WordbookSettingTab extends PluginSettingTab {
     // 初次渲染高亮预览
     updatePreview();
 
+    // ---- 跟随卡片颜色 ----
+    new Setting(container)
+      .setName(t("settings_follow_card"))
+      .setDesc(t("settings_follow_card_desc"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.followCardColor)
+        .onChange(async (val) => {
+          this.plugin.settings.followCardColor = val;
+          await this.plugin.saveSettings();
+          await this.plugin.highlighter.refresh();
+        })
+      );
+
     // ---- 下划线样式 ----
     new Setting(container)
       .setName(t("settings_style_underline_type"))
