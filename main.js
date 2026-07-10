@@ -1,5 +1,5 @@
-const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField } = require('obsidian');
-const { EditorView, Decoration, ViewPlugin } = require('@codemirror/view');
+const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField, SecretComponent } = require('obsidian');
+const { EditorView, Decoration } = require('@codemirror/view');
 const { StateField, RangeSetBuilder, StateEffect } = require('@codemirror/state');
 
 const VIEW_TYPE_SIDEBAR = "simple-wordbook-sidebar";
@@ -275,7 +275,7 @@ const locale = {
     lookup_clear_output: "Clear output",
     lookup_settings_title: "Lookup Panel",
     lookup_enter_mode: "Enter mode",
-    lookup_enter_mode_desc: "Choose what happens when pressing Enter in the search box",
+    lookup_enter_mode_desc: "Choose what happens when pressing Enter in the search box.\nShift+Enter defaults to AI lookup",
     lookup_local_mode: "Local search mode",
     lookup_local_mode_desc: "Choose the matching method for local search",
     lookup_max_results: "Max results",
@@ -316,6 +316,29 @@ const locale = {
     match_label_alias_fuzzy: "Alias Fuzzy",
     section_default_title: "Definition",
     section_content_prefix: "Content",
+
+    settings_api_key_mode: "API Key Storage Mode",
+    settings_api_key_mode_secret: "Official Keychain",
+    settings_api_key_mode_local: "Local Encrypted",
+    settings_api_key_verifying: "⏳ Verifying...",
+    settings_api_key_status_missing: "⚠️ Key not found in keychain, associated: {0}",
+    settings_api_key_status_corrupted: "⚠️ Current key data corrupted or unreadable, please re-enter the key",
+    settings_api_key_status_error: "⚠️ Verification failed",
+    settings_api_key_status_associated: "Associated: {0}",
+    settings_api_key_status_not_selected: "No key selected",
+    settings_api_key_status_encrypted: "Encrypted",
+    settings_api_key_status_not_set: "Not set",
+    settings_api_key_migrate_title: 'Switch to "{0}" mode',
+    settings_api_key_migrate_desc: "Valid key detected in current mode. Migrate to new mode?",
+    settings_api_key_migrate_skip: "Skip (switch only)",
+    settings_api_key_migrate_confirm: "Migrate Key",
+    settings_api_key_new_name: "Key Name",
+    settings_api_key_new_name_desc: "Identifier for this key in the keychain",
+    notice_api_migrated: "🔒 API Key automatically encrypted (Vault-specific)",
+    notice_api_switch_mode: 'Switched to "{0}" mode',
+    notice_api_saved_encrypted: "✅ API Key saved encrypted",
+    notice_api_migrate_fail: "Migration to keychain failed: {0}",
+    notice_secret_storage_unavailable: "⚠️ Official Keychain is not available in this Obsidian version. Switched to Local Encrypted mode.",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -600,7 +623,7 @@ const locale = {
     lookup_clear_output: "清空输出",
     lookup_settings_title: "查词面板",
     lookup_enter_mode: "回车模式",
-    lookup_enter_mode_desc: "选择在搜索框中按回车时的行为",
+    lookup_enter_mode_desc: "选择在搜索框中按回车时的行为。\nShift + Enter 默认使用 AI 查询",
     lookup_local_mode: "本地查询模式",
     lookup_local_mode_desc: "选择本地查询的匹配方式",
     lookup_max_results: "最大结果数",
@@ -641,6 +664,29 @@ const locale = {
     match_label_alias_fuzzy: "别名模糊",
     section_default_title: "释义",
     section_content_prefix: "内容",
+
+    settings_api_key_mode: "API 密钥 存储模式",
+    settings_api_key_mode_secret: "官方密钥链",
+    settings_api_key_mode_local: "本地加密",
+    settings_api_key_verifying: "⏳ 验证中...",
+    settings_api_key_status_missing: "⚠️ 钥匙串中未找到该密钥，已关联：{0}",
+    settings_api_key_status_corrupted: "⚠️ 当前密钥数据损坏或不可读，请重新输入密钥",
+    settings_api_key_status_error: "⚠️ 验证失败",
+    settings_api_key_status_associated: "已关联：{0}",
+    settings_api_key_status_not_selected: "未选择密钥",
+    settings_api_key_status_encrypted: "已加密存储",
+    settings_api_key_status_not_set: "未设置密钥",
+    settings_api_key_migrate_title: '切换至「{0}」模式',
+    settings_api_key_migrate_desc: "检测到当前模式已保存有效密钥。是否将密钥迁移到新模式？",
+    settings_api_key_migrate_skip: "跳过（仅切换模式）",
+    settings_api_key_migrate_confirm: "迁移密钥",
+    settings_api_key_new_name: "密钥名称",
+    settings_api_key_new_name_desc: "用于在官方密钥链中标识此密钥",
+    notice_api_migrated: "🔒 API Key 已自动加密存储（仅限本 Vault 使用）",
+    notice_api_switch_mode: '已切换至「{0}」模式',
+    notice_api_saved_encrypted: "✅ API Key 已加密保存",
+    notice_api_migrate_fail: "迁移到官方密钥链失败：{0}",
+    notice_secret_storage_unavailable: "⚠️ 当前 Obsidian 版本不支持官方密钥链，已切换到本地加密模式。",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -756,8 +802,11 @@ const DEFAULT_SETTINGS = {
   // ===== AI 查词设置 =====
   apiProvider: "openai",
   apiBaseUrl: "https://api.openai.com/v1/chat/completions",
-  apiKey: "",
-  apiModel: "gpt-3.5-turbo",
+  api: {
+    mode: "secret_storage",        // "secret_storage" | "local_encrypted"
+    secretName: "",                // 钥匙串引用名（仅 mode=secret_storage 时有效）
+    encryptedData: null,           // { ciphertext, salt } 或 null
+  },
   systemPrompts: [],          // [{ name: "词典助手", content: "You are a dictionary assistant..." }]
   defaultSystemPrompt: "",    // 默认提示词关联的系统提示词名称
   defaultPrompt: "用中文解释单词 {word}的释义。",
@@ -788,6 +837,130 @@ async function playPronunciation(word, ttsTemplate, variant) {
     const audio = new Audio(url);
     await audio.play();
   } catch (e) { console.warn("Playback failed", e); }
+}
+
+// ========== 加密工具函数（基于 Web Crypto API） ==========
+
+// 将 ArrayBuffer 转为 Base64 字符串
+function bufferToBase64(buffer) {
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+// 将 Base64 字符串转为 ArrayBuffer
+function base64ToBuffer(base64) {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return bytes.buffer;
+}
+
+// 派生加密密钥（PBKDF2，基于 Vault 路径 + Vault 名称 + salt）
+async function getVaultDerivedKey(app, salt) {
+  const vaultPath = app.vault.adapter.basePath || '';
+  const vaultName = app.vault.getName() || '';
+  const base = vaultPath + '::' + vaultName;
+  const enc = new TextEncoder();
+
+  // 将 Vault 路径组合作为密钥材料导入
+  const keyMaterial = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(base),
+    'PBKDF2',
+    false,
+    ['deriveBits']
+  );
+
+  // PBKDF2 派生，迭代 100000 次，输出 256 位
+  const derivedBits = await crypto.subtle.deriveBits(
+    {
+      name: 'PBKDF2',
+      salt: enc.encode(salt || ''),
+      iterations: 100000,
+      hash: 'SHA-256'
+    },
+    keyMaterial,
+    256
+  );
+
+  return derivedBits;
+}
+
+// 加密明文
+async function encryptApiKey(app, plaintext, salt) {
+  if (!plaintext) return '';
+  const keyData = await getVaultDerivedKey(app, salt);
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: 'AES-CBC' },
+    false,
+    ['encrypt', 'decrypt']
+  );
+  const iv = crypto.getRandomValues(new Uint8Array(16));
+  const enc = new TextEncoder();
+  const ciphertext = await crypto.subtle.encrypt(
+    { name: 'AES-CBC', iv: iv },
+    cryptoKey,
+    enc.encode(plaintext)
+  );
+  const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(ciphertext), iv.length);
+  return bufferToBase64(combined.buffer);
+}
+
+// 解密密文
+async function decryptApiKey(app, ciphertext, salt) {
+  if (!ciphertext) return '';
+  try {
+    const combined = new Uint8Array(base64ToBuffer(ciphertext));
+    if (combined.length < 16) return '';
+    const iv = combined.slice(0, 16);
+    const data = combined.slice(16);
+    const keyData = await getVaultDerivedKey(app, salt);
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      keyData,
+      { name: 'AES-CBC' },
+      false,
+      ['encrypt', 'decrypt']
+    );
+    const plaintext = await crypto.subtle.decrypt(
+      { name: 'AES-CBC', iv: iv },
+      cryptoKey,
+      data
+    );
+    return new TextDecoder().decode(plaintext);
+  } catch (e) {
+    return '';
+  }
+}
+
+// 生成随机盐值（16 字节，Base64）
+function generateSalt() {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  return bufferToBase64(salt.buffer);
+}
+
+// 清理密钥名称（仅保留小写字母、数字、破折号，最长64字符）
+function sanitizeSecretName(name) {
+  if (!name) return "";
+  // 转为小写，替换非法字符为破折号（连续多个破折号合并为一个）
+  let cleaned = name.toLowerCase().replace(/[^a-z0-9-]/g, '-');
+  // 合并连续破折号
+  cleaned = cleaned.replace(/-+/g, '-');
+  // 去掉首尾破折号
+  cleaned = cleaned.replace(/^-|-$/g, '');
+  // 截断到64字符
+  if (cleaned.length > 64) cleaned = cleaned.slice(0, 64);
+  return cleaned;
 }
 
 // ========== 编辑距离（Levenshtein Distance）用于模糊匹配 ==========
@@ -1344,8 +1517,6 @@ class Highlighter {
     this.REFRESH_EFFECT = StateEffect.define();
     this.CLEAR_EFFECT = StateEffect.define();
     this.debounceTimer = null;
-    this._pdfContainers = new Set();
-    this._pdfRefreshTimer = null;
     this._textLayerObserver = null;
     this._intersectionObserver = null;
     this._observedLayers = new WeakSet();
@@ -1513,9 +1684,8 @@ class Highlighter {
         if (card.aliases) card.aliases.forEach(a => a && this.wordTrie.addWord(a, card));
       }
     }
-    this._trieVersion = (this._trieVersion || 0) + 1;
 
-    // ★ 清空匹配缓存（词库变化后旧缓存无效）
+    // 清空匹配缓存（词库变化后旧缓存无效）
     if (this._matchCache) {
       this._matchCache = new WeakMap();
     }
@@ -2033,9 +2203,6 @@ class Highlighter {
         this._intersectionObserver.observe(layer);
       }
     }
-
-    // 标记已初始化
-    this._pdfContainers.add(document);
   }
 
   applyToPDFs(retry = 0) {
@@ -2146,27 +2313,13 @@ class Highlighter {
       this._setupTimer = null;
     }
 
-    // 清理滚动监听
-    for (const container of this._pdfContainers) {
-      if (container._swbScrollHandler) {
-        container.removeEventListener('scroll', container._swbScrollHandler);
-        delete container._swbScrollHandler;
-      }
-    }
-    this._pdfContainers.clear();
-
-    if (this._pdfRefreshTimer) {
-      cancelAnimationFrame(this._pdfRefreshTimer);
-      this._pdfRefreshTimer = null;
-    }
-
     // 清理文本层观察者
     if (this._textLayerObserver) {
       this._textLayerObserver.disconnect();
       this._textLayerObserver = null;
     }
 
-    // ★ 清理 IntersectionObserver
+    // 清理 IntersectionObserver
     if (this._intersectionObserver) {
       this._intersectionObserver.disconnect();
       this._intersectionObserver = null;
@@ -2633,7 +2786,7 @@ class HoverPreview {
 
 // ========== 侧边栏视图 ==========
 class SidebarView extends ItemView {
-  // ★ 新增：用于分批渲染的定时器句柄
+  // 用于分批渲染的定时器句柄
   _renderTimer = null;
   _refreshTimer = null;
 
@@ -2654,7 +2807,7 @@ class SidebarView extends ItemView {
     this.containerEl.addClass("simple-wordbook-sidebar");
     this.registerEvent(this.plugin.app.workspace.on("file-open", () => this.refresh()));
     this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.refresh()));
-    // ★ 新增：监听高亮刷新事件，仅 PDF 时刷新
+    // 监听高亮刷新事件，仅 PDF 时刷新
     this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:highlighter-updated", () => {
       const activeFile = this.plugin.app.workspace.getActiveFile();
       if (activeFile && activeFile.extension === "pdf") {
@@ -2952,7 +3105,7 @@ class SidebarView extends ItemView {
     return cardDiv;
   }
 
-  // ★ 新增：分批渲染调度器（每批10个）
+  // 分批渲染调度器（每批10个）
   _scheduleBatchRendering(words) {
     if (this._renderTimer) {
       clearTimeout(this._renderTimer);
@@ -2982,9 +3135,9 @@ class SidebarView extends ItemView {
     renderNextBatch();
   }
 
-  // ★ 新增：实际渲染单个卡片的释义和标签
+  // 实际渲染单个卡片的释义和标签
   async _renderCardContent(card) {
-    // ★ 防止重复渲染，如果已经渲染过则跳过
+    // 防止重复渲染，如果已经渲染过则跳过
     if (card._rendered) return;
     card._rendered = true;
 
@@ -4447,6 +4600,9 @@ class WordbookSettingTab extends PluginSettingTab {
     this.activeTabId = 'files'; // 默认文件管理
     this._skipCount = false;   // 控制是否跳过计数
     this._wordCountCache = {};      // 缓存 { [filePath]: count }
+
+    this._verificationResult = null; // { status, message } 初始验证 API Key 结果缓存
+    this._verificationCacheTime = 0;
   }
   display() {
     const { containerEl } = this;
@@ -5256,6 +5412,9 @@ class WordbookSettingTab extends PluginSettingTab {
 
     container.createEl("h3", { text: t("settings_api_config") });
 
+    // 使用插件启动时保存的检测结果(检测SecretStorage 是否可用)
+    const hasSecretStorage = plugin._hasSecretStorage === true;
+
     // 服务商映射
     const providerMap = {
       openai: { url: "https://api.openai.com/v1/chat/completions", model: "gpt-3.5-turbo" },
@@ -5266,6 +5425,7 @@ class WordbookSettingTab extends PluginSettingTab {
       custom: { url: "", model: "" }
     };
 
+    // ---- 服务提供商 ----
     new Setting(container)
       .setName(t("settings_ai_provider"))
       .setDesc(t("settings_ai_provider_desc"))
@@ -5301,6 +5461,7 @@ class WordbookSettingTab extends PluginSettingTab {
         return drop;
       });
 
+    // ---- API 地址 ----
     new Setting(container)
       .setName(t("settings_ai_api_url"))
       .addText(text => {
@@ -5313,19 +5474,294 @@ class WordbookSettingTab extends PluginSettingTab {
         return text;
       });
 
-    new Setting(container)
-      .setName(t("settings_ai_api_key"))
-      .addText(text => {
-        text.setValue(settings.apiKey || "");
-        text.inputEl.type = "password";
-        text.setPlaceholder(t("api_key_placeholder"));
-        text.onChange(async (val) => {
-          settings.apiKey = val;
-          await plugin.saveSettings();
-        });
-        return text;
+    // ====== API 密钥 存储模式 + 密钥控件 ======
+
+    // ---- 存储模式下拉框 ----
+    const modeSetting = new Setting(container)
+      .setName(t("settings_api_key_mode"))
+      .addDropdown(drop => {
+        if (!hasSecretStorage) {
+          // 环境不支持：只显示本地加密，禁用下拉框
+          drop.addOption("local_encrypted", t("settings_api_key_mode_local"));
+          drop.setValue("local_encrypted");
+          drop.selectEl.disabled = true;
+        } else {
+          // 环境支持：正常显示两个选项
+          drop.addOption("secret_storage", t("settings_api_key_mode_secret"))
+            .addOption("local_encrypted", t("settings_api_key_mode_local"))
+            .setValue(settings.api?.mode === "local_encrypted" ? "local_encrypted" : "secret_storage")
+            .onChange(async (val) => {
+              await this.switchMode(val, true);
+            });
+        }
+        return drop;
       });
 
+    // ---- API 密钥控件 ----
+    const keySetting = new Setting(container)
+      .setName(t("settings_ai_api_key"));
+
+    const controlContainer = document.createElement("div");
+    controlContainer.style.cssText = "display: flex; align-items: center; gap: 8px; flex-wrap: wrap; width: 100%;";
+    keySetting.controlEl.appendChild(controlContainer);
+
+    // ---- 本地加密：密码输入框 ----
+    let textInputContainer = document.createElement("div");
+    textInputContainer.style.cssText = "flex: 1; min-width: 150px; display: flex;";
+    controlContainer.appendChild(textInputContainer);
+
+    let textInput = document.createElement("input");
+    textInput.type = "password";
+    textInput.style.cssText = "width: 100%; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border);";
+
+    const api = settings.api || { mode: "secret_storage" };
+    if (api.mode === "local_encrypted" && api.encryptedData?.ciphertext) {
+      textInput.placeholder = "🔒 " + t("settings_api_key_status_encrypted");
+    } else if (api.mode === "local_encrypted") {
+      textInput.placeholder = t("api_key_placeholder");
+    } else {
+      textInput.placeholder = t("api_key_placeholder");
+    }
+    textInputContainer.appendChild(textInput);
+
+    // 本地加密：失焦保存
+    textInput.addEventListener("change", async () => {
+      const val = textInput.value.trim();
+      if (!val) return;
+
+      const salt = generateSalt();
+      const ciphertext = await encryptApiKey(plugin.app, val, salt);
+
+      if (!settings.api) settings.api = { mode: "local_encrypted", secretName: "", encryptedData: null };
+      settings.api.mode = "local_encrypted";
+      settings.api.encryptedData = { ciphertext, salt };
+      settings.api.secretName = "";
+
+      await plugin.saveSettings();
+      setTimeout(() => this.triggerVerification(true), 100); //本地加密输入框保存后触发验证
+      textInput.value = "";
+      textInput.placeholder = "🔒 " + t("settings_api_key_status_encrypted");
+      this.updateApiStatus();
+      new Notice(t("notice_api_saved_encrypted"));
+      this._skipCount = true;
+      this.display();
+    });
+
+    // ---- 官方密钥链：SecretComponent ----
+    let secretComponentContainer = document.createElement("div");
+    secretComponentContainer.style.cssText = "flex: 1; min-width: 150px; display: flex; align-items: center;";
+    controlContainer.appendChild(secretComponentContainer);
+
+    let secretComponent = null;
+
+    const refreshSecretComponent = () => {
+      if (secretComponentContainer) {
+        secretComponentContainer.empty();
+        secretComponent = new SecretComponent(plugin.app, secretComponentContainer);
+        const currentName = settings.api?.secretName || "";
+        secretComponent
+          .setValue(currentName)
+          .onChange(async (val) => {
+            if (!settings.api) settings.api = { mode: "secret_storage", secretName: "", encryptedData: null };
+            settings.api.secretName = val;
+            settings.api.mode = "secret_storage";
+            settings.api.encryptedData = null;
+            await plugin.saveSettings();
+            // 选择密钥后重新验证
+            setTimeout(() => this.triggerVerification(true), 100);
+          });
+      }
+    };
+
+    // ---- 状态标签 ----
+    let statusSpan = document.createElement("span");
+    statusSpan.style.cssText = "font-size: 0.8em; color: var(--text-muted); white-space: normal; flex-shrink: 0; max-width: 100%;";
+    controlContainer.appendChild(statusSpan);
+
+    // ---- 更新状态标签 ----
+    const updateApiStatus = () => {
+      const api = settings.api || { mode: "secret_storage" };
+
+      // 优先显示验证结果
+      if (this._verificationResult) {
+        const result = this._verificationResult;
+        statusSpan.textContent = result.message;
+        if (result.status === "valid") {
+          statusSpan.style.color = "var(--color-green)";
+        } else if (result.status === "verifying") {
+          statusSpan.style.color = "var(--text-muted)";
+        } else if (result.status === "empty") {
+          statusSpan.style.color = "var(--color-orange)";
+        } else {
+          statusSpan.style.color = "var(--color-red)";
+        }
+        return;
+      }
+
+      // 降级：无验证结果时显示基础状态
+      if (api.mode === "secret_storage") {
+        const name = api.secretName;
+        if (name) {
+          statusSpan.textContent = t("settings_api_key_status_associated", name);
+          statusSpan.style.color = "var(--color-green)";
+        } else {
+          statusSpan.textContent = t("settings_api_key_status_not_selected");
+          statusSpan.style.color = "var(--color-orange)";
+        }
+      } else if (api.mode === "local_encrypted") {
+        const hasKey = !!(api.encryptedData?.ciphertext);
+        if (hasKey) {
+          statusSpan.textContent = t("settings_api_key_status_encrypted");
+          statusSpan.style.color = "var(--color-green)";
+        } else {
+          statusSpan.textContent = t("settings_api_key_status_not_set");
+          statusSpan.style.color = "var(--color-orange)";
+        }
+      } else {
+        statusSpan.textContent = t("settings_api_key_status_not_set");
+        statusSpan.style.color = "var(--text-muted)";
+      }
+    };
+    updateApiStatus();
+
+    // ---- 更新可见性 ----
+    const updateVisibility = () => {
+      const api = settings.api || { mode: "secret_storage" };
+      // 如果环境不支持 SecretStorage，强制使用本地加密
+      if (!hasSecretStorage) {
+        textInputContainer.style.display = "flex";
+        secretComponentContainer.style.display = "none";
+        return;
+      }
+      if (api.mode === "secret_storage") {
+        textInputContainer.style.display = "none";
+        secretComponentContainer.style.display = "flex";
+        refreshSecretComponent();
+      } else {
+        textInputContainer.style.display = "flex";
+        secretComponentContainer.style.display = "none";
+      }
+    };
+    updateVisibility();
+
+    // ---- 保存 update 方法供切换调用 ----
+    this.updateApiStatus = updateApiStatus;
+
+    // ---- 模式切换函数 ----
+    this.switchMode = async (newMode, showConfirm = true) => {
+      // 如果环境不支持 SecretStorage，禁止切换到 secret_storage
+      if (newMode === "secret_storage" && !hasSecretStorage) {
+        new Notice(t("notice_secret_storage_unavailable"));
+        return;
+      }
+
+      const api = settings.api || { mode: "secret_storage" };
+      const oldMode = api.mode;
+      if (newMode === oldMode) return;
+
+      let currentPlaintext = "";
+      let hasKey = false;
+
+      // 从旧模式读取明文
+      if (oldMode === "secret_storage") {
+        const name = api.secretName;
+        if (name) {
+          try {
+            currentPlaintext = await plugin.app.secretStorage.getSecret(name) || "";
+            hasKey = !!currentPlaintext;
+          } catch (e) { }
+        }
+      } else if (oldMode === "local_encrypted") {
+        const encrypted = api.encryptedData;
+        if (encrypted?.ciphertext) {
+          currentPlaintext = await decryptApiKey(plugin.app, encrypted.ciphertext, encrypted.salt || "");
+          hasKey = !!currentPlaintext;
+        }
+      }
+
+      let shouldMigrate = false;
+      let customName = "";
+
+      if (hasKey && showConfirm) {
+        const confirmModal = new MigrationConfirmModal(plugin.app, newMode, async (migrate, name) => {
+          shouldMigrate = migrate;
+          customName = name || "";
+          await this.doSwitch(newMode, shouldMigrate, customName);
+        });
+        confirmModal.open();
+      } else {
+        await this.doSwitch(newMode, false, "");
+      }
+    };
+
+    this.doSwitch = async (newMode, migrate, customName) => {
+      const api = settings.api || { mode: "secret_storage" };
+      const oldMode = api.mode;
+      let plaintext = "";
+
+      // 从旧模式读取明文
+      if (oldMode === "secret_storage") {
+        const name = api.secretName;
+        if (name) {
+          try {
+            plaintext = await plugin.app.secretStorage.getSecret(name) || "";
+          } catch (e) { }
+        }
+      } else if (oldMode === "local_encrypted") {
+        const encrypted = api.encryptedData;
+        if (encrypted?.ciphertext) {
+          plaintext = await decryptApiKey(plugin.app, encrypted.ciphertext, encrypted.salt || "");
+        }
+      }
+
+      if (migrate && plaintext) {
+        if (newMode === "secret_storage") {
+          // 清理用户自定义名称，若为空则用默认
+          let keyName = customName ? sanitizeSecretName(customName) : "";
+          if (!keyName) keyName = "simple-wordbook-api-key";
+          try {
+            await plugin.app.secretStorage.setSecret(keyName, plaintext);
+            api.secretName = keyName;
+            api.encryptedData = null;
+          } catch (e) {
+            new Notice(t("notice_api_migrate_fail", e.message));
+            return;
+          }
+        } else {
+          const salt = generateSalt();
+          const ciphertext = await encryptApiKey(plugin.app, plaintext, salt);
+          api.encryptedData = { ciphertext, salt };
+        }
+      } else {
+        // 不迁移：仅切换模式
+        if (newMode === "secret_storage") {
+          if (!api.secretName) api.secretName = "";
+          api.encryptedData = null;
+        } else {
+          // 切换到 local_encrypted
+          api.encryptedData = null;
+          // 如果是从官方切换过来且旧密钥不可读，则清空 secretName
+          if (oldMode === "secret_storage" && !plaintext) {
+            api.secretName = "";
+          }
+          // 否则 secretName 保留不动
+        }
+      }
+
+      api.mode = newMode;
+      await plugin.saveSettings();
+
+      this._skipCount = true;
+      this.display();
+
+      // 切换完成后重新验证
+      setTimeout(() => this.triggerVerification(true), 200);
+
+      const modeLabel = newMode === "secret_storage" ? t("settings_api_key_mode_secret") : t("settings_api_key_mode_local");
+      new Notice(t("notice_api_switch_mode", modeLabel));
+    };
+
+    // ---- API 模型 ----
     new Setting(container)
       .setName(t("settings_ai_model"))
       .addText(text => {
@@ -5338,7 +5774,7 @@ class WordbookSettingTab extends PluginSettingTab {
         return text;
       });
 
-    // 测试连接
+    // ---- 测试连接 ----
     new Setting(container)
       .setName(t("settings_ai_test_connection"))
       .addButton(btn => {
@@ -5600,7 +6036,6 @@ class WordbookSettingTab extends PluginSettingTab {
         sel.value = current;
       });
     };
-    window._refreshAllSystemSelects = refreshAllSystemSelects;
 
     // ===== 默认提示词关联 =====
     container.createEl("h4", { text: t("settings_ai_default_prompt") });
@@ -5807,6 +6242,79 @@ class WordbookSettingTab extends PluginSettingTab {
       });
     };
     renderCustomPrompts();
+
+    // 启动时自动验证密钥可读性（延迟执行，确保 UI 已渲染）
+    setTimeout(() => {
+      this.triggerVerification(true);
+    }, 300);
+  }
+
+  // ===== 验证密钥是否可读（纯本地初始加载插件验证） =====
+  async verifyKeyReadable() {
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+    const api = settings.api || { mode: "secret_storage" };
+
+    // 验证中状态
+    this._verificationResult = { status: "verifying", message: t("settings_api_key_verifying") };
+    this.updateApiStatus();
+
+    try {
+      if (api.mode === "secret_storage") {
+        const name = api.secretName || "";
+        if (!name) {
+          this._verificationResult = { status: "empty", message: t("settings_api_key_status_not_selected") };
+          this.updateApiStatus();
+          return;
+        }
+        try {
+          const value = await plugin.app.secretStorage.getSecret(name);
+          if (value && value.length > 0) {
+            this._verificationResult = { status: "valid", message: t("settings_api_key_status_associated", name) + " ✅" };
+          } else {
+            this._verificationResult = { status: "missing", message: t("settings_api_key_status_missing", name) };
+            }
+        } catch (e) {
+          this._verificationResult = { status: "error", message: t("settings_api_key_status_error") };
+        }
+      } else if (api.mode === "local_encrypted") {
+        const encrypted = api.encryptedData;
+        if (!encrypted || !encrypted.ciphertext) {
+          this._verificationResult = { status: "empty", message: t("settings_api_key_status_not_set") };
+          this.updateApiStatus();
+          return;
+        }
+        try {
+          const plaintext = await decryptApiKey(plugin.app, encrypted.ciphertext, encrypted.salt || "");
+          if (plaintext && plaintext.length > 0) {
+            this._verificationResult = { status: "valid", message: t("settings_api_key_status_encrypted") + " ✅" };
+          } else {
+            this._verificationResult = { status: "corrupted", message: t("settings_api_key_status_corrupted") };
+          }
+        } catch (e) {
+          this._verificationResult = { status: "corrupted", message: t("settings_api_key_status_corrupted") };
+        }
+      } else {
+        this._verificationResult = { status: "empty", message: t("settings_api_key_status_not_set") };
+      }
+    } catch (e) {
+      this._verificationResult = { status: "error", message: t("settings_api_key_status_error") };
+    }
+
+    this._verificationCacheTime = Date.now();
+    this.updateApiStatus();
+  }
+
+  // ===== 触发验证（带防抖和缓存） =====
+  triggerVerification(force = false) {
+    // 如果 force=false 且 5 秒内有验证结果，不重复验证
+    if (!force && this._verificationResult &&
+      Date.now() - this._verificationCacheTime < 5000) {
+      this.updateApiStatus();
+      return;
+    }
+    // 异步执行验证，不阻塞 UI
+    this.verifyKeyReadable();
   }
 
   // 异步加载并显示包含的单词总数
@@ -6331,6 +6839,34 @@ class ExportSimpleModal extends Modal {
 class SimpleWordbookPlugin extends Plugin {
   async onload() {
     await this.loadSettings();
+
+    // 启动时检测 SecretStorage 可用性
+    const hasSecretStorage = typeof this.app.secretStorage?.getSecret === 'function';
+    this._hasSecretStorage = hasSecretStorage;  // 供 UI 使用
+
+    if (!hasSecretStorage && this.settings.api?.mode === "secret_storage") {
+      let plaintext = "";
+      const oldName = this.settings.api.secretName;
+      if (oldName) {
+        try {
+          plaintext = await this.app.secretStorage.getSecret(oldName) || "";
+        } catch (e) { }
+      }
+      this.settings.api.mode = "local_encrypted";
+      if (plaintext) {
+        const salt = generateSalt();
+        const ciphertext = await encryptApiKey(this.app, plaintext, salt);
+        this.settings.api.encryptedData = { ciphertext, salt };
+        this.settings.api.secretName = "";
+        new Notice(t("notice_api_migrated"));
+      } else {
+        this.settings.api.encryptedData = null;
+        this.settings.api.secretName = "";
+        new Notice(t("notice_secret_storage_unavailable"));
+      }
+      await this.saveSettings();
+    }
+
     this.dynamicCommandIds = []; // 存储动态注册的提示词命令 ID
     globalThis.__simpleWordbookPlugin = this;
     // ===== 默认路径设置为插件文件夹 =====
@@ -6544,11 +7080,34 @@ class SimpleWordbookPlugin extends Plugin {
     this.dynamicCommandIds = [];
   }
 
+  // ===== 获取 API Key（支持两种模式） =====
+  async getApiKeyPlaintext() {
+    const api = this.settings.api || { mode: "secret_storage" };
+
+    if (api.mode === "secret_storage") {
+      const name = api.secretName || "";
+      if (!name) return "";
+      try {
+        return await this.app.secretStorage.getSecret(name) || "";
+      } catch {
+        return "";
+      }
+    }
+
+    if (api.mode === "local_encrypted") {
+      const encrypted = api.encryptedData;
+      if (!encrypted || !encrypted.ciphertext) return "";
+      return await decryptApiKey(this.app, encrypted.ciphertext, encrypted.salt || "");
+    }
+
+    return "";
+  }
+
   // 调用 AI API
   async callAI(prompt, systemContent = null) {
     const settings = this.settings;
     const url = settings.apiBaseUrl;
-    const apiKey = settings.apiKey;
+    const apiKey = await this.getApiKeyPlaintext();
     const model = settings.apiModel;
 
     // 参数校验
@@ -6891,6 +7450,7 @@ class SimpleWordbookPlugin extends Plugin {
   async loadSettings() { 
     const rawData = await this.loadData();  // 先获取原始数据
     this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
+
     if (!this.settings.highlightStyles) this.settings.highlightStyles = { underlineType: "none", bold: false };
     if (this.settings.highlightStyles.underlineType === undefined) this.settings.highlightStyles.underlineType = "none";
     if (this.settings.highlightStyles.bold === undefined) this.settings.highlightStyles.bold = false;
@@ -6926,7 +7486,43 @@ class SimpleWordbookPlugin extends Plugin {
         }
       }
     }
+
+    // 迁移：旧明文 → 本地加密
+    const hasLegacyPlaintext =
+      rawData?.apiKey &&
+      typeof rawData.apiKey === 'string' &&
+      rawData.apiKey.length > 0;
+
+    const hasExistingEncrypted =
+      this.settings.api?.encryptedData?.ciphertext;
+
+    if (hasLegacyPlaintext && !hasExistingEncrypted) {
+      const plaintext = rawData.apiKey;
+      const salt = generateSalt();
+      const ciphertext = await encryptApiKey(this.app, plaintext, salt);
+
+      if (!this.settings.api) this.settings.api = { mode: "local_encrypted", secretName: "", encryptedData: null };
+      this.settings.api.mode = "local_encrypted";
+      this.settings.api.encryptedData = { ciphertext, salt };
+      this.settings.api.secretName = "";
+
+      delete this.settings.apiKey;
+      await this.saveSettings();
+      new Notice(t("notice_api_migrated"));
+    }
+
+    // 确保 api 结构存在
+    if (!this.settings.api) {
+      this.settings.api = { mode: "secret_storage", secretName: "", encryptedData: null };
+    }
+
+    // 如果 mode 非法，修正为默认
+    if (!this.settings.api.mode ||
+      (this.settings.api.mode !== "secret_storage" && this.settings.api.mode !== "local_encrypted")) {
+      this.settings.api.mode = "secret_storage";
+    }
   }
+
   async saveSettings() { await this.saveData(this.settings); }
 
   async focusWordInSidebar(cardData, preferredSource = null) {
@@ -6942,5 +7538,67 @@ class SimpleWordbookPlugin extends Plugin {
   }
 }
 
+// ========== 密钥迁移确认模态框 ==========
+class MigrationConfirmModal extends Modal {
+  constructor(app, targetMode, onConfirm) {
+    super(app);
+    this.targetMode = targetMode;
+    this.onConfirm = onConfirm;
+    this.keyName = "simple-wordbook_api_key";
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+
+    const modeLabel = this.targetMode === "secret_storage"
+      ? t("settings_api_key_mode_secret")
+      : t("settings_api_key_mode_local");
+    this.titleEl.setText(t("settings_api_key_migrate_title", modeLabel));
+
+    contentEl.createEl("p", { text: t("settings_api_key_migrate_desc") });
+
+    // 密钥名称输入框（仅在切换到 secret_storage 时显示）
+    if (this.targetMode === "secret_storage") {
+      new Setting(contentEl)
+        .setName(t("settings_api_key_new_name"))
+        .setDesc(t("settings_api_key_new_name_desc"))
+        .addText(text => {
+          text.setValue("simple-wordbook-api-key");
+          text.inputEl.style.width = "100%";
+          text.onChange(val => {
+            // 实时清理
+            const cleaned = sanitizeSecretName(val);
+            // 更新输入框显示清理后的值
+            if (val !== cleaned) {
+              text.setValue(cleaned);
+            }
+            this.keyName = cleaned || "simple-wordbook-api-key";
+          });
+        }); 
+    }
+
+    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+
+    const skipBtn = buttonDiv.createEl("button", { text: t("settings_api_key_migrate_skip") });
+    skipBtn.addEventListener("click", () => {
+      this.close();
+      this.onConfirm(false, "");
+    });
+
+    const migrateBtn = buttonDiv.createEl("button", {
+      text: t("settings_api_key_migrate_confirm"),
+      cls: "mod-cta"
+    });
+    migrateBtn.addEventListener("click", () => {
+      const name = this.keyName;
+      this.close();
+      this.onConfirm(true, name);
+    });
+  }
+}
+
 module.exports = SimpleWordbookPlugin;
+/* nosourcemap */
 /* nosourcemap */
