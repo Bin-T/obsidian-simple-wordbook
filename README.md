@@ -1,13 +1,9 @@
 # Simple Wordbook
 
-[简体中文](./README-ZH.md) | English
+[简体中文](README-ZH.md) | English
 
 > ✅ **Current Version**: v1.5.6 | Minimum Obsidian Compatibility: v1.0.0 (verified on v1.12.7)
-> 
 > 📦 **Plugin ID**: `simple-wordbook`
-> 
-> 📌 **Project Structure**: Pure JavaScript, no build tools, `main.js` is the source code
-> 
 > 💡 **Inspiration**: [obsidian-language-learner](https://link.wtturl.cn/?target=https%3A%2F%2Fgithub.com%2Fguopenghui%2Fobsidian-language-learner&scene=im&aid=497858&lang=zh) and [HiWords](https://link.wtturl.cn/?target=https%3A%2F%2Fgithub.com%2FCatMuse%2FHiWords&scene=im&aid=497858&lang=zh)
 
 ---
@@ -27,7 +23,7 @@ It automatically highlights words from your custom wordbooks in notes and provid
 - Support multiple `.json` format wordbook files, with free addition, removal, and enable/disable functionality.
 - Drag-and-drop sorting to adjust wordbook priority.
 - **Read-only mode** to prevent accidental modifications.
-- Support for word **phonetics**, **definitions**, **aliases**, and **color tags** (red/orange/yellow/green/blue/purple).
+- Support for word **phonetics**, **definitions**, **aliases**, and **color tags** (Red/Orange/Yellow/Green/Blue/Purple/Pink/Cyan).
 - Definitions support full Markdown format, including tables, lists, internal links, etc.
 
 ### 🎯 Document Highlighting
@@ -58,12 +54,35 @@ It automatically highlights words from your custom wordbooks in notes and provid
 - Support **custom prompts** (multiple prompt sets can be added and switched in the panel).
 - Query results can be directly saved as word cards with automatic phonetic extraction.
 - Three **Enter Modes**: Local Only / AI Only / Local Priority.
-- Two **Clear Buttons**: Clear input box / Clear output box.
+
+### 🖱️ Context Menu (Sidebar & Lookup Panel)
+
+- **Sidebar Card Context Menu**:
+	- **Edit**: Modify the word's definition, phonetic, aliases, etc. (only for non-read-only wordbooks).
+	- **Delete**: Remove the word from the wordbook (only for non-read-only wordbooks).
+	- **Export as Markdown**: Export the current word card as an independent `.md` file.
+- **Lookup Panel Card Context Menu**:
+	- Cards in local lookup results also support **Edit**, **Delete**, and **Export as Markdown**.
+### 📤 Export Word Cards
+
+- Right-click on a word card in the sidebar or lookup panel → **"Export as Markdown"**.
+- The exported `.md` file includes:
+	- Word (as a level-2 heading)
+	- Phonetic notation (always displayed, left blank if empty)
+	- Aliases
+	- Source wordbook filename
+	- Mastery status (Learning / Mastered / Ignored)
+	- All definition sections (multiple tab contents separated by `---`)
+- You can choose a save folder when exporting; the filename defaults to the word name and can be freely modified.
+- If the file already exists, it will ask whether to overwrite.
 
 ### 🤖 AI Configuration
 
 - Support multiple service providers: OpenAI, DeepSeek, Zhipu GLM, Tongyi Qianwen, Ollama (local).
 - Customizable API endpoint, API key, and model name.
+- **API Key supports two storage modes**:
+	- **Official Keychain**: Uses Obsidian's official keychain storage (more secure, supports per-vault isolation).
+	- **Local Encrypted**: Encrypted storage using a vault-derived key (compatible with older Obsidian versions).
 - Editable default prompt (supports `{word}` placeholder).
 - Custom prompt management (add/edit/delete).
 - **Shortcut Setting Button**: Next to the "Add Custom Prompt" button, click "Set Shortcut" to automatically navigate to Obsidian's shortcut settings page, filtered to show only this plugin's commands for quick hotkey binding.
@@ -186,7 +205,7 @@ json
 ]
 ```
 
-2. Open **Settings → Simple Wordbook → File Management**, click **"Add Wordbook File"**, and select your `.json` file.
+2. Open **Settings → Simple Wordbook → File Management**, click **"Add Wordbook"**, and select your `.json` file.
 3. The file will appear in the list, with options to enable/disable or set as read-only.
 
 ### 2. Sidebar Usage
@@ -232,6 +251,9 @@ Modify the setting in **Settings → General Settings → Lookup Panel → Maxim
 
 - Select text in the editor, right-click → **"Add Word/Phrase"** to quickly add words.
 - Select text, right-click → **"Lookup: xxx"** to open the lookup panel and query automatically (AI only).
+- **Sidebar/Lookup Panel cards**, right-click → **"Edit"** / **"Delete"** / **"Export as Markdown"**.
+	- "Edit" and "Delete" are only shown for cards from **non-read-only** wordbooks.
+	- "Export as Markdown" is **always available**, exporting a single word card as an independent `.md` file.
 
 ### 5. Hover Preview
 
@@ -244,6 +266,8 @@ Adjust settings in **Settings → General Settings → Highlighting & Preview**:
 
 - **Enable/Disable automatic highlighting.**
 - **Highlight Color**: Follow card color or custom.
+- **Markdown Highlight Opacity**: Control the opacity of highlight background in Markdown files (default: 30%).
+- **PDF Highlight Opacity**: Control the opacity of highlight background in PDF files (default: 70%).
 - **Underline Style**: None/Solid/Dashed/Dotted/Wavy/Double.
 - **Bold Text**
 - **Hover Preview**
@@ -280,13 +304,14 @@ Adjust settings in **Settings → General Settings → Highlighting & Preview**:
 
 表格
 
-|Configuration|Description|
-|---|---|
-|Service Provider|OpenAI, DeepSeek, Zhipu GLM, Tongyi Qianwen, Ollama, Custom|
-|API Endpoint/Key/Model|Auto-filled based on provider, can be manually modified|
-|Default Prompt|Use `{word}` as placeholder|
-|Custom Prompts|Add multiple prompt sets, switchable in lookup panel|
-|Test Connection|Verify if current configuration is valid|
+| Configuration          | Description                                                 |
+| ---------------------- | ----------------------------------------------------------- |
+| Service Provider       | OpenAI, DeepSeek, Zhipu GLM, Tongyi Qianwen, Ollama, Custom |
+| API Endpoint/Key/Model | Auto-filled based on provider, can be manually modified     |
+| API Key Storage Mode   | Official Keychain / Local Encrypted (vault-derived key)     |
+| Default Prompt         | Use `{word}` as placeholder                                 |
+| Custom Prompts         | Add multiple prompt sets, switchable in lookup panel        |
+| Test Connection        | Verify if current configuration is valid                    |
 
 ---
 
@@ -354,8 +379,8 @@ abandon hope  give up hope
 
 3. If a section does not start with `**Title**`, the plugin automatically assigns default names:
     
-    - First section (with or without title) → Default name: ** `Definition` **
-    - Subsequent sections → Default names: ** `Content 2` **, ** `Content 3` **, etc.
+    - First section (with or without title) → Default name:  `Definition`
+    - Subsequent sections → Default names: `Content 2` , `Content 3` , etc.
     
 
 **Q: How to quickly bind shortcuts for custom prompts?**
