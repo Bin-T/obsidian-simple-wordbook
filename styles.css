@@ -195,26 +195,20 @@
 /* 部件：卡片标签栏 */
 .word-card-tab-bar {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 4px;
   border-bottom: 1px solid var(--background-modifier-border);
   padding-bottom: 4px;
 }
 .word-card-tab {
-  cursor: pointer;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
-  font-size: 0.9em !important;
-  color: var(--text-muted);
+  font-size: 0.9em;
   transition: color 0.2s, font-weight 0.2s;
 }
 .word-card-tab:hover {
   background: var(--background-modifier-hover);
-}
-.word-card-tab.active {
-  color: var(--text-accent);
-  font-weight: bold;
 }
 
 /* 部件：卡片内容渲染区 */
@@ -256,14 +250,14 @@
   cursor: pointer;
 }
 
-/* 部件：背景高亮 */
-.simple-wordbook-highlight.hi-background {
-  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 30%, transparent);
-  border-radius: 5px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-}
+/* 部件：md 背景高亮 */
+  .simple-wordbook-highlight.hi-background {
+    background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) var(--highlight-opacity, 30%), transparent);
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  }
 .simple-wordbook-highlight.hi-background:hover {
-  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 50%, transparent);
+  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 40%, transparent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   transform: scale(1.02);
 }
@@ -312,16 +306,16 @@
 /* 部件：PDF 高亮图层 */
 .simple-wordbook-pdf-highlight {
   pointer-events: auto;
-  cursor: pointer;
 }
 .simple-wordbook-pdf-highlight.hi-background {
-  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 70%, transparent) !important;
-  border-radius: 4px !important;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
+  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) var(--highlight-opacity, 70%), transparent);
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 .simple-wordbook-pdf-highlight.hi-background:hover {
-  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 100%, transparent) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+  background-color: color-mix(in srgb, var(--word-highlight-color, var(--interactive-accent)) 100%, transparent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
 }
 
 
@@ -418,26 +412,20 @@
 .simple-wordbook-tooltip .tooltip-tab-bar {
   flex-shrink: 0;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   margin-bottom: 6px;
   border-bottom: 1px solid var(--background-modifier-border);
   padding-bottom: 4px;
   flex-wrap: wrap;
 }
 .simple-wordbook-tooltip .tooltip-tab {
-  font-size: 0.8em !important;
-  cursor: pointer;
-  padding: 2px 8px;
+  font-size: 0.8em;
+  padding: 2px 6px;
   border-radius: 4px;
-  color: var(--text-muted);
   transition: color 0.2s, font-weight 0.2s;
 }
 .simple-wordbook-tooltip .tooltip-tab:hover {
   background: var(--background-modifier-hover);
-}
-.simple-wordbook-tooltip .tooltip-tab.active {
-  color: var(--text-accent);
-  font-weight: bold;
 }
 
 /* 部件：弹窗内容区 */
@@ -481,7 +469,7 @@
 }
 .simple-wordbook-tooltip .tooltip-from-label,
 .simple-wordbook-tooltip .tooltip-source {
-  font-size: 0.75em !important;
+  font-size: 0.75em;
   line-height: 1.0;
   color: var(--text-muted);
 }
@@ -885,6 +873,14 @@
   color: inherit;
 }
 
+/* 部件：单词班拖拽手柄 */
+.wordbook-setting-files-container .setting-item .svg-icon.lucide-grip-vertical {
+  display: inline-flex;
+/*  margin-right: 4px;*/
+  align-items: center;
+  color: var(--text-muted);
+}
+
 /* AI 配置提示词名框 */
 .wordbook-setting-ai-container .custom-prompt-item input[type="text"] {
   flex: 0 0 120px;          /* 不伸缩，固定宽度 */
@@ -1025,8 +1021,9 @@
     flex-shrink: 0;
   }
 
-  .wordbook-setting-files-container .setting-item .drag-handle {
-    display: none !important;
+  /* 移动端隐藏拖拽手柄图标 */
+  .wordbook-setting-files-container .setting-item .svg-icon.lucide-grip-vertical {
+    display: none;
   }
 
   /* ---- 自定义提示词：垂直堆叠 ---- */

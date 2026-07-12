@@ -141,6 +141,9 @@ const locale = {
     export_mastered_file_name: "mastered_words.txt",
     export_ignored_file_name: "ignored_words.txt",
     export_export: "Export",
+    export_single_card: "Export as Markdown",
+    export_enter_filename: "Please enter a file name.",
+    export_failed: "Export failed, please check console for errors.",
 
     settings_highlight_preview: "Highlight & Preview",
     settings_enable_highlight: "Enable auto highlight",
@@ -150,7 +153,11 @@ const locale = {
     color_custom_picker_tooltip: "Custom: Click to pick color",
     settings_follow_card: "Follow card color",
     settings_follow_card_desc: "When ON, background highlight follows card color.",
-    settings_underline_color: "Underline color (optional)",
+    settings_md_opacity: "Markdown Highlight Opacity",
+    settings_md_opacity_desc: "Control the opacity of highlight background in Markdown files (default: 30%)",
+    settings_pdf_opacity: "PDF Highlight Opacity",
+    settings_pdf_opacity_desc: "Control the opacity of highlight background in PDF files (default: 70%)",
+    settings_underline_color: "Underline color",
     settings_underline_color_desc: "If set, underlines use this color (overrides highlight color).",
     underline_color_default: "Default (follow highlight color)",
     settings_enable_hover: "Enable hover preview",
@@ -489,6 +496,9 @@ const locale = {
     export_mastered_file_name: "掌握单词.txt",
     export_ignored_file_name: "忽略单词.txt",
     export_export: "导出",
+    export_single_card: "导出为 Markdown",
+    export_enter_filename: "请输入文件名。",
+    export_failed: "导出失败，请查看控制台错误。",
 
     settings_highlight_preview: "高亮与预览",
     settings_enable_highlight: "启用自动高亮",
@@ -498,7 +508,11 @@ const locale = {
     color_custom_picker_tooltip: "自定义：点击选择颜色",
     settings_follow_card: "跟随卡片颜色",
     settings_follow_card_desc: "开启后，背景高亮跟随侧边栏卡片颜色。",
-    settings_underline_color: "下划线颜色（可选）",
+    settings_md_opacity: "Markdown 高亮透明度",
+    settings_md_opacity_desc: "控制 Markdown 文件中高亮背景的不透明度（默认值：30%）",
+    settings_pdf_opacity: "PDF 高亮透明度",
+    settings_pdf_opacity_desc: "控制 PDF 文件中高亮背景的不透明度（默认值：70%）",
+    settings_underline_color: "下划线颜色",
     settings_underline_color_desc: "若设置，下划线将使用此颜色（覆盖高亮颜色）。",
     underline_color_default: "默认（跟随高亮颜色）",
     settings_enable_hover: "启用悬停预览",
@@ -783,6 +797,8 @@ const DEFAULT_SETTINGS = {
   enableMastery: true,
   highlightColor: "",
   customHighlightColor: "",
+  mdHighlightOpacity: 30,   // Markdown 高亮透明度，0-100，默认 30%
+  pdfHighlightOpacity: 70,  // PDF 高亮透明度，0-100，默认 70%
   underlineColor: "",
   followCardColor: true,
   highlightStyles: {
@@ -1842,6 +1858,7 @@ class Highlighter {
         const underlineColor = this.getUnderlineColor(selectedCard.color);
         span.style.setProperty('--word-highlight-color', mainColor);
         span.style.setProperty('--word-underline-color', underlineColor);
+        span.style.setProperty('--highlight-opacity', this.plugin.settings.mdHighlightOpacity + '%');
         span.textContent = text.substring(match.from, match.to);
         frag.appendChild(span);
         lastIdx = match.to;
@@ -1942,7 +1959,7 @@ class Highlighter {
             'data-source': selectedCard.sourceFile,
             'data-cards': JSON.stringify(cardsData),
             'data-current-source': selectedCard.sourceFile,
-            'style': `--word-highlight-color: ${mainColor}; --word-underline-color: ${underlineColor};`
+            'style': `--word-highlight-color: ${mainColor}; --word-underline-color: ${underlineColor}; --highlight-opacity: ${this.plugin.settings.mdHighlightOpacity}%;`
           }
         }));
       }
@@ -2056,8 +2073,9 @@ class Highlighter {
       span.setAttribute('data-current-source', selectedCard.sourceFile);
       span.style.setProperty('--word-highlight-color', mainColor);
       span.style.setProperty('--word-underline-color', this.getUnderlineColor(selectedCard.color));
+      span.style.setProperty('--highlight-opacity', this.plugin.settings.pdfHighlightOpacity + '%');
 
-      // ★ 将视口坐标转换为布局坐标（除以缩放因子）
+      // 将视口坐标转换为布局坐标（除以缩放因子）
       const leftPx = (rect.left - layerRect.left) / scaleX + layer.scrollLeft;
       const topPx = (rect.top - layerRect.top) / scaleY + layer.scrollTop + 1;// 高度偏移微调
       const widthPx = (rect.right - rect.left) / scaleX;
@@ -2074,21 +2092,8 @@ class Highlighter {
       span.style.lineHeight = '1';
       span.style.pointerEvents = 'auto';
       span.style.cursor = 'pointer';
-      span.style.borderRadius = '2px';
       span.style.zIndex = '10';
       
-      // ---- 获取实际颜色值（如果 mainColor 是 CSS 变量，解析为具体颜色） ----
-      let actualColor = mainColor;
-      if (typeof actualColor === 'string' && actualColor.startsWith('var(')) {
-        const varName = actualColor.slice(4, -1).trim();
-        const computed = getComputedStyle(document.documentElement).getPropertyValue(varName);
-        if (computed) actualColor = computed;
-      }
-      // 设置背景色（不透明）
-      span.style.backgroundColor = actualColor;
-      // 通过 opacity 控制透明度（0.5 即 50%）
-      span.style.opacity = '1';   // 可改为 0.8（80%）或 0（完全透明）
-
       fragment.appendChild(span);
     }
     return fragment;
@@ -2634,11 +2639,6 @@ class HoverPreview {
     let tabBar = null;
     if (hasMultipleSections) {
       tabBar = tooltip.createDiv({ cls: "tooltip-tab-bar" });
-      tabBar.style.display = "flex";
-      tabBar.style.gap = "8px";
-      tabBar.style.marginBottom = "6px";
-      tabBar.style.borderBottom = "1px solid var(--background-modifier-border)";
-      tabBar.style.paddingBottom = "4px";
     }
 
     const contentDiv = tooltip.createDiv({ cls: "tooltip-content" });
@@ -2670,9 +2670,6 @@ class HoverPreview {
         const tab = tabBar.createDiv({ cls: "tooltip-tab" });
         tab.textContent = section.title;
         tab.style.cursor = "pointer";
-        tab.style.padding = "2px 8px";
-        tab.style.borderRadius = "4px";
-        tab.style.fontSize = "0.85em";
         tab.style.color = idx === 0 ? "var(--text-accent)" : "var(--text-muted)";
         if (idx === 0) tab.style.fontWeight = "bold";
         tab.addEventListener("click", async () => {
@@ -2692,14 +2689,8 @@ class HoverPreview {
     }
 
     const footerDiv = tooltip.createDiv({ cls: "tooltip-footer" });
-    footerDiv.style.display = "flex";
-    footerDiv.style.alignItems = "center";
-    footerDiv.style.justifyContent = "flex-end";
-    footerDiv.style.gap = "4px";
 
     const fromLabel = footerDiv.createSpan({ cls: "tooltip-from-label", text: "from" });
-    fromLabel.style.color = "var(--text-muted)";
-    fromLabel.style.fontSize = "0.75em";
 
     if (allCards.length > 1) {
       tooltip.classList.add('has-source-select');
@@ -3030,7 +3021,16 @@ class SidebarView extends ItemView {
   // ★ 优化4：createWordCard只建骨架，挂载元数据
   createWordCard(wordObj, container) {
     const cardDiv = container.createDiv({ cls: "word-card" });
-    const colorMap = { red: "var(--color-red)", orange: "var(--color-orange)", yellow: "var(--color-yellow)", green: "var(--color-green)", blue: "var(--color-blue)", purple: "var(--color-purple)" };
+    const colorMap = {
+      red: "var(--color-red)",
+      orange: "var(--color-orange)",
+      yellow: "var(--color-yellow)",
+      green: "var(--color-green)",
+      blue: "var(--color-blue)",
+      purple: "var(--color-purple)",
+      pink: "var(--color-pink)",
+      cyan: "var(--color-cyan)"
+    };
     cardDiv.style.setProperty("--card-color", colorMap[wordObj.color] || "var(--interactive-accent)");
 
     const actionsDiv = cardDiv.createDiv({ cls: "card-actions" });
@@ -3074,17 +3074,13 @@ class SidebarView extends ItemView {
     let tabBar = null;
     if (hasMultipleSections) {
       tabBar = defDiv.createDiv({ cls: "word-card-tab-bar" });
-      tabBar.style.display = "flex";
-      tabBar.style.gap = "6px";
-      tabBar.style.marginBottom = "4px";
-      tabBar.style.flexWrap = "wrap";
     }
 
     // 内容容器先占位
     const contentContainer = defDiv.createDiv({ cls: "word-card-content" });
     contentContainer.setText(t("notice_loading_definition"));
 
-    // ★ 挂载元数据供后续 _renderCardContent 使用
+    // 挂载元数据供后续 _renderCardContent 使用
     cardDiv._wordData = wordObj;
     cardDiv._sections = sections;
     cardDiv._tabBar = tabBar;
@@ -3173,9 +3169,6 @@ class SidebarView extends ItemView {
         const tab = tabBar.createDiv({ cls: "word-card-tab" });
         tab.textContent = section.title;
         tab.style.cursor = "pointer";
-        tab.style.padding = "2px 6px";
-        tab.style.borderRadius = "3px";
-        tab.style.fontSize = "0.8em";
         tab.style.color = idx === 0 ? "var(--text-accent)" : "var(--text-muted)";
         if (idx === 0) tab.style.fontWeight = "bold";
         tab.addEventListener("click", async (e) => {
@@ -3385,7 +3378,16 @@ class LookupView extends ItemView {
   // === 本地查询相关方法 ===
   createLocalCard(card, container) {
     const cardDiv = container.createDiv({ cls: "word-card" });
-    const colorMap = { red: "var(--color-red)", orange: "var(--color-orange)", yellow: "var(--color-yellow)", green: "var(--color-green)", blue: "var(--color-blue)", purple: "var(--color-purple)" };
+    const colorMap = {
+      red: "var(--color-red)",
+      orange: "var(--color-orange)",
+      yellow: "var(--color-yellow)",
+      green: "var(--color-green)",
+      blue: "var(--color-blue)",
+      purple: "var(--color-purple)",
+      pink: "var(--color-pink)",
+      cyan: "var(--color-cyan)"
+    };
     cardDiv.style.setProperty("--card-color", colorMap[card.color] || "var(--interactive-accent)");
 
     // 操作按钮（掌握/忽略）
@@ -3459,10 +3461,6 @@ class LookupView extends ItemView {
     let tabBar = null;
     if (hasMultipleSections) {
       tabBar = defDiv.createDiv({ cls: "word-card-tab-bar" });
-      tabBar.style.display = "flex";
-      tabBar.style.gap = "6px";
-      tabBar.style.marginBottom = "4px";
-      tabBar.style.flexWrap = "wrap";
     }
 
     const contentContainer = defDiv.createDiv({ cls: "word-card-content" });
@@ -3486,6 +3484,12 @@ class LookupView extends ItemView {
 
     // 渲染释义内容
     this._renderLocalCardContent(cardDiv);
+
+    // 添加右键菜单
+    cardDiv.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
+    });
 
     return cardDiv;
   }
@@ -3521,9 +3525,6 @@ class LookupView extends ItemView {
         const tab = tabBar.createDiv({ cls: "word-card-tab" });
         tab.textContent = section.title;
         tab.style.cursor = "pointer";
-        tab.style.padding = "2px 6px";
-        tab.style.borderRadius = "3px";
-        tab.style.fontSize = "0.8em";
         tab.style.color = idx === 0 ? "var(--text-accent)" : "var(--text-muted)";
         if (idx === 0) tab.style.fontWeight = "bold";
         tab.addEventListener("click", async (e) => {
@@ -3976,7 +3977,7 @@ function splitDefinitionForExport(definition) {
   return sections;
 }
 
-// 生成 Anki TSV 导出内容（动态列结构）
+// 生成 Anki TSV 导出内容（释义内容动态列结构）
 function generateAnkiTsvContent(cards, options, plugin) {
   if (cards.length === 0) return '';
 
@@ -4010,14 +4011,14 @@ function generateAnkiTsvContent(cards, options, plugin) {
     // 单词（始终包含）
     rawFields.push(card.word);
 
-    // 仅当选项开启时包含音标
+    // 仅当选项开启时包含音标（音标为空，填空字符串占位）
     if (options.includePhonetic) {
       rawFields.push(card.phonetic || '');
     }
 
-    // 仅当选项开启时包含别名
-    if (options.includeAliases && card.aliases && card.aliases.length > 0) {
-      rawFields.push(card.aliases.join('、'));
+    // 仅当选项开启时包含别名（别名为空，填空字符串占位）
+    if (options.includeAliases) {
+      rawFields.push((card.aliases && card.aliases.length > 0) ? card.aliases.join('、') : '');
     }
 
     // 仅当包含释义时才添加章节字段
@@ -4060,401 +4061,7 @@ function generateAnkiTsvContent(cards, options, plugin) {
   return lines.join('\n');
 }
 
-class WordContextMenu {
-  constructor(plugin, wordObj) { this.plugin = plugin; this.wordObj = wordObj; }
-  showAtMouseEvent(e) {
-    const menu = new (require('obsidian').Menu)();
-    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
-    const isReadonly = fileSetting ? fileSetting.readonly : false;
-    let hasItems = false;
-    if (!isReadonly) {
-      menu.addItem(item => item.setTitle(t("edit")).setIcon("pencil").onClick(() => this.editWord()));
-      menu.addItem(item => item.setTitle(t("delete")).setIcon("trash").onClick(() => this.deleteWord()));
-      hasItems = true;
-    }
-    if (hasItems) {
-      menu.showAtMouseEvent(e);
-    }
-  }
-  async editWord() {
-    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
-    if (fileSetting && fileSetting.readonly) {
-      new Notice(t("notice_readonly_cannot_edit"));
-      return;
-    }
-    new WordModal(this.plugin.app, this.plugin, this.wordObj).open();
-  }
-  async deleteWord() {
-    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
-    if (fileSetting && fileSetting.readonly) {
-      new Notice(t("notice_readonly_cannot_delete"));
-      return;
-    }
-    const confirmed = await new Promise((resolve) => { const modal = new ConfirmModal(this.plugin.app, () => resolve(true), () => resolve(false)); modal.open(); });
-    if (!confirmed) return;
-    const success = await WordbookParser.deleteCard(this.plugin.app, this.wordObj.sourceFile, this.wordObj.word);
-    if (success) {
-      new Notice(t("word_deleted", this.wordObj.word));
-      await this.plugin.reloadAllCards();
-      await this.plugin.highlighter.refresh();
-      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-    } else new Notice(t("delete_failed"));
-  }
-}
-
-// ========== 单词本导出模态窗 ==========
-class ExportModal extends Modal {
-  constructor(app, plugin) {
-    super(app);
-    this.plugin = plugin;
-
-    // 初始化状态
-    this.selectedBooks = new Set();
-    this.range = "all";
-    this.format = "markdown";
-    this.options = {
-      includePhonetic: true,
-      includeAliases: true,
-      includeDefinition: true,
-      includeSource: true,
-      includeStatus: true,
-      convertToHtml: true,
-      oneLinePerWord: false
-    };
-    this.folderPath = "";
-    this.fileName = "wordbook_export";
-    this._folderDisplay = t("settings_new_wordbook_root");
-  }
-
-  onOpen() {
-    const { contentEl } = this;
-    contentEl.empty();
-    contentEl.addClass("export-modal");
-    this.titleEl.setText(t("export_modal_title"));
-
-    // ---- 1. 选择单词本 ----
-    new Setting(contentEl)
-      .setName(t("export_select_wordbooks"))
-      .setDesc(t("export_select_hint"));
-
-    const bookList = contentEl.createDiv({ cls: "export-book-list" });
-    bookList.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px; max-height: 200px; overflow-y: auto;";
-
-    const enabledBooks = this.plugin.settings.wordbookFiles.filter(f => f.enabled);
-
-    for (const book of enabledBooks) {
-      const item = bookList.createDiv({ cls: "export-book-item" });
-      item.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-
-      const checkbox = item.createEl("input", { type: "checkbox" });
-      checkbox.value = book.path;
-      checkbox.checked = false;
-      checkbox.addEventListener("change", () => {
-        if (checkbox.checked) {
-          this.selectedBooks.add(book.path);
-        } else {
-          this.selectedBooks.delete(book.path);
-        }
-      });
-
-      const label = item.createSpan({ text: `${book.name} (${book.path})` });
-      label.style.cssText = "font-size: 0.9em; color: var(--text-normal);";
-    }
-
-    // ---- 2. 导出范围 ----
-    new Setting(contentEl)
-      .setName(t("export_range"))
-      .setDesc(t("export_range_hint"))
-      .addDropdown(drop => {
-        drop.addOption("all", t("export_range_all"))
-          .addOption("learning", t("export_range_learning"))
-          .addOption("mastered", t("export_range_mastered"))
-          .addOption("ignored", t("export_range_ignored"))
-          .setValue(this.range)
-          .onChange(val => { this.range = val; });
-        return drop;
-      });
-
-    // ---- 3. 导出格式 ----
-    new Setting(contentEl)
-      .setName(t("export_format"))
-      .addDropdown(drop => {
-        drop.addOption("markdown", t("export_format_markdown"))
-          .addOption("anki", t("export_format_anki"))
-          .setValue(this.format)
-          .onChange(val => {
-            this.format = val;
-            // 更新扩展名显示
-            const extSpan = contentEl.querySelector('.export-extension');
-            if (extSpan) {
-              extSpan.textContent = val === "markdown" ? ".md" : ".txt";
-            }
-            // 显示/隐藏 "转换为 HTML" 选项
-            const convertRow = contentEl.querySelector('.export-convert-row');
-            if (convertRow) {
-              convertRow.style.display = val === "anki" ? "flex" : "none";
-            }
-            // 显示/隐藏 "每行一个单词" 选项
-            const oneLineRow = contentEl.querySelector('.export-one-line-row');
-            if (oneLineRow) {
-              oneLineRow.style.display = val === "anki" ? "flex" : "none";
-            }
-          });
-        return drop;
-      });
-
-    // ---- 4. 导出选项 ----
-    new Setting(contentEl)
-      .setName(t("export_options"));
-
-    const optionsContainer = contentEl.createDiv({ cls: "export-options-container" });
-    optionsContainer.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px;";
-
-    // 包含音标
-    const phoneticRow = optionsContainer.createDiv({ cls: "export-option-row" });
-    phoneticRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const phoneticCheck = phoneticRow.createEl("input", { type: "checkbox" });
-    phoneticCheck.checked = true;
-    phoneticCheck.addEventListener("change", () => {
-      this.options.includePhonetic = phoneticCheck.checked;
-    });
-    phoneticRow.createSpan({ text: t("export_include_phonetic") });
-
-    // 包含别名
-    const aliasesRow = optionsContainer.createDiv({ cls: "export-option-row" });
-    aliasesRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const aliasesCheck = aliasesRow.createEl("input", { type: "checkbox" });
-    aliasesCheck.checked = true;
-    aliasesCheck.addEventListener("change", () => {
-      this.options.includeAliases = aliasesCheck.checked;
-    });
-    aliasesRow.createSpan({ text: t("export_include_aliases") });
-
-    // 包含释义
-    const defRow = optionsContainer.createDiv({ cls: "export-option-row" });
-    defRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const defCheck = defRow.createEl("input", { type: "checkbox" });
-    defCheck.checked = true;
-    defCheck.addEventListener("change", () => {
-      this.options.includeDefinition = defCheck.checked;
-    });
-    defRow.createSpan({ text: t("export_include_definition") });
-
-    // 包含来源
-    const sourceRow = optionsContainer.createDiv({ cls: "export-option-row" });
-    sourceRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const sourceCheck = sourceRow.createEl("input", { type: "checkbox" });
-    sourceCheck.checked = true;
-    sourceCheck.addEventListener("change", () => {
-      this.options.includeSource = sourceCheck.checked;
-    });
-    sourceRow.createSpan({ text: t("export_include_source") });
-
-    // 包含状态
-    const statusRow = optionsContainer.createDiv({ cls: "export-option-row" });
-    statusRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const statusCheck = statusRow.createEl("input", { type: "checkbox" });
-    statusCheck.checked = true;
-    statusCheck.addEventListener("change", () => {
-      this.options.includeStatus = statusCheck.checked;
-    });
-    statusRow.createSpan({ text: t("export_include_status") });
-
-    // 转换为 HTML（仅 TXT）
-    const convertRow = optionsContainer.createDiv({ cls: "export-option-row export-convert-row" });
-    convertRow.style.cssText = "display: flex; flex-direction: column; gap: 4px; padding: 2px 0;";
-
-    // 复选框行
-    const convertCheckRow = convertRow.createDiv({ cls: "export-option-row" });
-    convertCheckRow.style.cssText = "display: flex; align-items: center; gap: 8px;";
-
-    const convertCheck = convertCheckRow.createEl("input", { type: "checkbox" });
-    convertCheck.checked = true;
-    convertCheck.addEventListener("change", () => {
-      this.options.convertToHtml = convertCheck.checked;
-    });
-    convertCheckRow.createSpan({ text: t("export_convert_html") });
-
-    // 提示文字紧跟在复选框下方
-    const convertHint = convertRow.createDiv({ cls: "export-option-hint" });
-    convertHint.style.cssText = "font-size: 0.8em; color: var(--text-muted); padding-left: 24px; line-height: 1.4;";
-    convertHint.textContent = t("export_convert_hint");
-
-    // ---- 每行一个单词（仅 TXT） ----
-    const oneLineRow = optionsContainer.createDiv({ cls: "export-option-row export-one-line-row" });
-    oneLineRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
-    const oneLineCheck = oneLineRow.createEl("input", { type: "checkbox" });
-    oneLineCheck.checked = false;   // 默认不勾选
-    oneLineCheck.addEventListener("change", () => {
-      this.options.oneLinePerWord = oneLineCheck.checked;
-    });
-    oneLineRow.createSpan({ text: t("export_one_line_per_word") });
-
-    // 仅当导出格式为 Anki (TXT) 时显示 转换为 HTML
-    if (this.format === "anki") {
-      convertRow.style.display = "flex";
-    } else {
-      convertRow.style.display = "none";
-    }
-    // 仅当导出格式为 Anki (TXT) 时显示 每行一个单词
-    if (this.format === "anki") {
-      oneLineRow.style.display = "flex";
-    } else {
-      oneLineRow.style.display = "none";
-    }
-
-    // ---- 5. 保存位置 ----
-    const locationContainer = contentEl.createDiv({ cls: "export-location-container" });
-    locationContainer.style.cssText = "margin: 12px 0 8px 0;";
-
-    // ---- 第一行：文件夹选择 ----
-    const folderRow = locationContainer.createDiv({ cls: "export-folder-row" });
-    folderRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
-
-    const folderLabel = folderRow.createSpan({ text: t("export_save_location") + "：" });
-    folderLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
-
-    const folderBtn = folderRow.createEl("button", { text: t("export_select_folder") });
-    folderBtn.style.cssText = "flex-shrink: 0;";
-
-    const folderDisplay = folderRow.createSpan({ text: this._folderDisplay });
-    folderDisplay.style.cssText = "color: var(--text-muted); font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;";
-
-    folderBtn.addEventListener("click", () => {
-      new FolderSuggestModal(this.app, (folderPath) => {
-        this.folderPath = folderPath;
-        this._folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
-        folderDisplay.textContent = this._folderDisplay;
-      }).open();
-    });
-
-    // ---- 第二行：文件名输入 ----
-    const nameRow = locationContainer.createDiv({ cls: "export-name-row" });
-    nameRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
-
-    const nameLabel = nameRow.createSpan({ text: t("export_filename") + "：" });
-    nameLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
-
-    const nameInput = nameRow.createEl("input", { type: "text" });
-    nameInput.value = this.fileName;
-    nameInput.style.cssText = "flex: 1; min-width: 120px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);";
-
-    const extSpan = nameRow.createSpan({ cls: "export-extension", text: this.format === "markdown" ? ".md" : ".txt" });
-    extSpan.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-muted);";
-
-    nameInput.addEventListener("input", () => {
-    });
-
-    // 保存输入框引用
-    this.nameInput = nameInput;
-
-    // ---- 6. 底部按钮 ----
-    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
-    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
-
-    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
-    cancelBtn.addEventListener("click", () => this.close());
-
-    const exportBtn = buttonDiv.createEl("button", { text: t("export_button"), cls: "mod-cta" });
-    exportBtn.addEventListener("click", () => this.doExport());
-  }
-
-  // 执行导出
-  async doExport() {
-    // 1. 校验：至少选择一个单词本
-    if (this.selectedBooks.size === 0) {
-      new Notice(t("export_no_wordbook"));
-      return;
-    }
-
-    // 2. 读取所有选中的卡片
-    const allCards = [];
-    for (const bookPath of this.selectedBooks) {
-      const cards = await WordbookParser.parseFile(this.app, bookPath);
-      for (const card of cards) {
-        card.sourceFile = bookPath;
-        allCards.push(card);
-      }
-    }
-
-    if (allCards.length === 0) {
-      new Notice(t("export_no_word"));
-      return;
-    }
-
-    // 3. 按范围过滤
-    let filteredCards = allCards;
-    if (this.range !== "all") {
-      filteredCards = allCards.filter(card => {
-        const key = getStudyKey(card.word, card.sourceFile);
-        const isMastered = this.plugin.masteryStore.isMastered(key);
-        const isIgnored = this.plugin.masteryStore.isIgnored(key);
-
-        if (this.range === "learning") return !isMastered && !isIgnored;
-        if (this.range === "mastered") return isMastered;
-        if (this.range === "ignored") return isIgnored;
-        return true;
-      });
-    }
-
-    if (filteredCards.length === 0) {
-      new Notice(t("export_no_word"));
-      return;
-    }
-
-    // 4. 生成内容
-    const isMarkdown = this.format === "markdown";
-    const extension = isMarkdown ? "md" : "txt";
-
-    // 从输入框获取文件名
-    let fileName = this.nameInput ? this.nameInput.value.trim() : this.fileName;
-    if (!fileName) fileName = "wordbook_export";
-
-    let content;
-    if (isMarkdown) {
-      content = generateMarkdownContent(
-        filteredCards,
-        fileName,
-        this.options,
-        this.plugin
-      );
-    } else {
-      content = generateAnkiTsvContent(
-        filteredCards,
-        this.options,
-        this.plugin
-      );
-    }
-
-    // 5. 构建完整路径
-    const fullPath = normalizePath(
-      this.folderPath ? `${this.folderPath}/${fileName}.${extension}` : `${fileName}.${extension}`
-    );
-
-    // 6. 检查文件是否存在
-    const existing = this.app.vault.getAbstractFileByPath(fullPath);
-    if (existing) {
-      const confirmed = confirm(t("export_overwrite_confirm"));
-      if (!confirmed) return;
-      // 使用 modify 覆盖已存在文件
-      await this.app.vault.modify(existing, content);
-    } else {
-      // 7. 确保文件夹存在
-      if (this.folderPath) {
-        const dir = this.app.vault.getAbstractFileByPath(this.folderPath);
-        if (!dir) {
-          await this.app.vault.createFolder(this.folderPath);
-        }
-      }
-      // 8. 写入文件
-      await this.app.vault.create(fullPath, content);
-    }
-
-    new Notice(t("export_success", fullPath));
-    this.close();
-  }
-}
-
+// ========== 添加/编辑单词的模态框 ==========
 class WordModal extends Modal {
   constructor(app, plugin, existingCard = null, sentence = "") {
     super(app);
@@ -4524,7 +4131,9 @@ class WordModal extends Modal {
       { value: "yellow", label: t("color_yellow"), color: "var(--color-yellow)" },
       { value: "green", label: t("color_green"), color: "var(--color-green)" },
       { value: "blue", label: t("color_blue"), color: "var(--color-blue)" },
-      { value: "purple", label: t("color_purple"), color: "var(--color-purple)" }
+      { value: "purple", label: t("color_purple"), color: "var(--color-purple)" },
+        { value: "pink", label: t("color_pink"), color: "var(--color-pink)" },
+      { value: "cyan", label: t("color_cyan"), color: "var(--color-cyan)" } 
     ];
     let colorPreview = null;
     colorSetting.addDropdown(drop => {
@@ -4540,7 +4149,16 @@ class WordModal extends Modal {
     });
     colorPreview = document.createElement("span");
     colorPreview.className = "wordbook-color-preview";
-    const colorMap = { red: "var(--color-red)", orange: "var(--color-orange)", yellow: "var(--color-yellow)", green: "var(--color-green)", blue: "var(--color-blue)", purple: "var(--color-purple)" };
+    const colorMap = {
+      red: "var(--color-red)",
+      orange: "var(--color-orange)",
+      yellow: "var(--color-yellow)",
+      green: "var(--color-green)",
+      blue: "var(--color-blue)",
+      purple: "var(--color-purple)",
+      pink: "var(--color-pink)",
+      cyan: "var(--color-cyan)"
+    };
     colorPreview.style.backgroundColor = colorMap[this.color] || "var(--interactive-accent)";
     colorSetting.controlEl.appendChild(colorPreview);
 
@@ -4807,8 +4425,6 @@ class WordbookSettingTab extends PluginSettingTab {
       const dragInfoEl = settingEl.querySelector('.setting-item-info');
       if (dragInfoEl) {
         const handle = document.createElement('span');
-        handle.className = 'drag-handle';   // ★ 拖拽手柄类名
-        handle.style.cssText = "margin-right:8px; display:inline-flex; align-items:center; color:var(--text-muted);";
         setIcon(handle, 'grip-vertical');
         dragInfoEl.parentNode.insertBefore(handle, dragInfoEl);
       }
@@ -5228,6 +4844,40 @@ class WordbookSettingTab extends PluginSettingTab {
 
     // 初次渲染高亮预览
     updatePreview();
+
+    // ---- Markdown 透明度 ----
+    new Setting(container)
+      .setName(t("settings_md_opacity"))
+      .setDesc(t("settings_md_opacity_desc"))
+      .addSlider(slider => {
+        slider.setValue(this.plugin.settings.mdHighlightOpacity)
+          .setDynamicTooltip()
+          .setLimits(0, 100, 5)
+          .onChange(async (value) => {
+            this.plugin.settings.mdHighlightOpacity = value;
+            await this.plugin.saveSettings();
+            // 刷新所有高亮（MD + PDF 都会重建）
+            this.plugin.highlighter.refresh();
+          });
+        return slider;
+      });
+
+    // ---- PDF 透明度 ----
+    new Setting(container)
+      .setName(t("settings_pdf_opacity"))
+      .setDesc(t("settings_pdf_opacity_desc"))
+      .addSlider(slider => {
+        slider.setValue(this.plugin.settings.pdfHighlightOpacity)
+          .setDynamicTooltip()
+          .setLimits(0, 100, 5)
+          .onChange(async (value) => {
+            this.plugin.settings.pdfHighlightOpacity = value;
+            await this.plugin.saveSettings();
+            // 仅刷新 PDF 高亮（避免重建 Trie，性能更好）
+            this.plugin.highlighter.applyToPDFs(0);
+          });
+        return slider;
+      });
 
     // ---- 跟随卡片颜色 ----
     new Setting(container)
@@ -6677,6 +6327,7 @@ class WordbookSettingTab extends PluginSettingTab {
   }
 }
 
+// ========== 文件选择模态窗 ==========
 class FileSuggestionModal extends FuzzySuggestModal {
   constructor(app, files, onChoose) { super(app); this.files = files; this.onChoose = onChoose; }
   getItems() { return this.files; }
@@ -6684,6 +6335,7 @@ class FileSuggestionModal extends FuzzySuggestModal {
   onChooseItem(item) { this.onChoose(item); }
 }
 
+// ========== 文件夹选择模态窗（新建单词本时调用） ==========
 class FolderSuggestModal extends FuzzySuggestModal {
   constructor(app, onChoose) {
     super(app);
@@ -6702,6 +6354,492 @@ class FolderSuggestModal extends FuzzySuggestModal {
   }
   onChooseItem(item) {
     this.onChoose(item);
+  }
+}
+
+// ========== 单词本导出模态窗 ==========
+class ExportModal extends Modal {
+  constructor(app, plugin) {
+    super(app);
+    this.plugin = plugin;
+
+    // 初始化状态
+    this.selectedBooks = new Set();
+    this.range = "all";
+    this.format = "markdown";
+    this.options = {
+      includePhonetic: true,
+      includeAliases: true,
+      includeDefinition: true,
+      includeSource: true,
+      includeStatus: true,
+      convertToHtml: true,
+      oneLinePerWord: false
+    };
+    this.folderPath = "";
+    this.fileName = "wordbook_export";
+    this._folderDisplay = t("settings_new_wordbook_root");
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    contentEl.addClass("export-modal");
+    this.titleEl.setText(t("export_modal_title"));
+
+    // ---- 1. 选择单词本 ----
+    new Setting(contentEl)
+      .setName(t("export_select_wordbooks"))
+      .setDesc(t("export_select_hint"));
+
+    const bookList = contentEl.createDiv({ cls: "export-book-list" });
+    bookList.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px; max-height: 200px; overflow-y: auto;";
+
+    const enabledBooks = this.plugin.settings.wordbookFiles.filter(f => f.enabled);
+
+    for (const book of enabledBooks) {
+      const item = bookList.createDiv({ cls: "export-book-item" });
+      item.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+
+      const checkbox = item.createEl("input", { type: "checkbox" });
+      checkbox.value = book.path;
+      checkbox.checked = false;
+      checkbox.addEventListener("change", () => {
+        if (checkbox.checked) {
+          this.selectedBooks.add(book.path);
+        } else {
+          this.selectedBooks.delete(book.path);
+        }
+      });
+
+      const label = item.createSpan({ text: `${book.name} (${book.path})` });
+      label.style.cssText = "font-size: 0.9em; color: var(--text-normal);";
+    }
+
+    // ---- 2. 导出范围 ----
+    new Setting(contentEl)
+      .setName(t("export_range"))
+      .setDesc(t("export_range_hint"))
+      .addDropdown(drop => {
+        drop.addOption("all", t("export_range_all"))
+          .addOption("learning", t("export_range_learning"))
+          .addOption("mastered", t("export_range_mastered"))
+          .addOption("ignored", t("export_range_ignored"))
+          .setValue(this.range)
+          .onChange(val => { this.range = val; });
+        return drop;
+      });
+
+    // ---- 3. 导出格式 ----
+    new Setting(contentEl)
+      .setName(t("export_format"))
+      .addDropdown(drop => {
+        drop.addOption("markdown", t("export_format_markdown"))
+          .addOption("anki", t("export_format_anki"))
+          .setValue(this.format)
+          .onChange(val => {
+            this.format = val;
+            // 更新扩展名显示
+            const extSpan = contentEl.querySelector('.export-extension');
+            if (extSpan) {
+              extSpan.textContent = val === "markdown" ? ".md" : ".txt";
+            }
+            // 显示/隐藏 "转换为 HTML" 选项
+            const convertRow = contentEl.querySelector('.export-convert-row');
+            if (convertRow) {
+              convertRow.style.display = val === "anki" ? "flex" : "none";
+            }
+            // 显示/隐藏 "每行一个单词" 选项
+            const oneLineRow = contentEl.querySelector('.export-one-line-row');
+            if (oneLineRow) {
+              oneLineRow.style.display = val === "anki" ? "flex" : "none";
+            }
+          });
+        return drop;
+      });
+
+    // ---- 4. 导出选项 ----
+    new Setting(contentEl)
+      .setName(t("export_options"));
+
+    const optionsContainer = contentEl.createDiv({ cls: "export-options-container" });
+    optionsContainer.style.cssText = "margin: 4px 0 12px 0; padding: 8px 12px; border: 1px solid var(--background-modifier-border); border-radius: 6px;";
+
+    // 包含音标
+    const phoneticRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    phoneticRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const phoneticCheck = phoneticRow.createEl("input", { type: "checkbox" });
+    phoneticCheck.checked = true;
+    phoneticCheck.addEventListener("change", () => {
+      this.options.includePhonetic = phoneticCheck.checked;
+    });
+    phoneticRow.createSpan({ text: t("export_include_phonetic") });
+
+    // 包含别名
+    const aliasesRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    aliasesRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const aliasesCheck = aliasesRow.createEl("input", { type: "checkbox" });
+    aliasesCheck.checked = true;
+    aliasesCheck.addEventListener("change", () => {
+      this.options.includeAliases = aliasesCheck.checked;
+    });
+    aliasesRow.createSpan({ text: t("export_include_aliases") });
+
+    // 包含释义
+    const defRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    defRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const defCheck = defRow.createEl("input", { type: "checkbox" });
+    defCheck.checked = true;
+    defCheck.addEventListener("change", () => {
+      this.options.includeDefinition = defCheck.checked;
+    });
+    defRow.createSpan({ text: t("export_include_definition") });
+
+    // 包含来源
+    const sourceRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    sourceRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const sourceCheck = sourceRow.createEl("input", { type: "checkbox" });
+    sourceCheck.checked = true;
+    sourceCheck.addEventListener("change", () => {
+      this.options.includeSource = sourceCheck.checked;
+    });
+    sourceRow.createSpan({ text: t("export_include_source") });
+
+    // 包含状态
+    const statusRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    statusRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const statusCheck = statusRow.createEl("input", { type: "checkbox" });
+    statusCheck.checked = true;
+    statusCheck.addEventListener("change", () => {
+      this.options.includeStatus = statusCheck.checked;
+    });
+    statusRow.createSpan({ text: t("export_include_status") });
+
+    // 转换为 HTML（仅 TXT）
+    const convertRow = optionsContainer.createDiv({ cls: "export-option-row export-convert-row" });
+    convertRow.style.cssText = "display: flex; flex-direction: column; gap: 4px; padding: 2px 0;";
+
+    // 复选框行
+    const convertCheckRow = convertRow.createDiv({ cls: "export-option-row" });
+    convertCheckRow.style.cssText = "display: flex; align-items: center; gap: 8px;";
+
+    const convertCheck = convertCheckRow.createEl("input", { type: "checkbox" });
+    convertCheck.checked = true;
+    convertCheck.addEventListener("change", () => {
+      this.options.convertToHtml = convertCheck.checked;
+    });
+    convertCheckRow.createSpan({ text: t("export_convert_html") });
+
+    // 提示文字紧跟在复选框下方
+    const convertHint = convertRow.createDiv({ cls: "export-option-hint" });
+    convertHint.style.cssText = "font-size: 0.8em; color: var(--text-muted); padding-left: 24px; line-height: 1.4;";
+    convertHint.textContent = t("export_convert_hint");
+
+    // ---- 每行一个单词（仅 TXT） ----
+    const oneLineRow = optionsContainer.createDiv({ cls: "export-option-row export-one-line-row" });
+    oneLineRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const oneLineCheck = oneLineRow.createEl("input", { type: "checkbox" });
+    oneLineCheck.checked = false;   // 默认不勾选
+    oneLineCheck.addEventListener("change", () => {
+      this.options.oneLinePerWord = oneLineCheck.checked;
+    });
+    oneLineRow.createSpan({ text: t("export_one_line_per_word") });
+
+    // 仅当导出格式为 Anki (TXT) 时显示 转换为 HTML
+    if (this.format === "anki") {
+      convertRow.style.display = "flex";
+    } else {
+      convertRow.style.display = "none";
+    }
+    // 仅当导出格式为 Anki (TXT) 时显示 每行一个单词
+    if (this.format === "anki") {
+      oneLineRow.style.display = "flex";
+    } else {
+      oneLineRow.style.display = "none";
+    }
+
+    // ---- 5. 保存位置 ----
+    const locationContainer = contentEl.createDiv({ cls: "export-location-container" });
+    locationContainer.style.cssText = "margin: 12px 0 8px 0;";
+
+    // ---- 第一行：文件夹选择 ----
+    const folderRow = locationContainer.createDiv({ cls: "export-folder-row" });
+    folderRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
+
+    const folderLabel = folderRow.createSpan({ text: t("export_save_location") + "：" });
+    folderLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
+
+    const folderBtn = folderRow.createEl("button", { text: t("export_select_folder") });
+    folderBtn.style.cssText = "flex-shrink: 0;";
+
+    const folderDisplay = folderRow.createSpan({ text: this._folderDisplay });
+    folderDisplay.style.cssText = "color: var(--text-muted); font-size: 0.85em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1;";
+
+    folderBtn.addEventListener("click", () => {
+      new FolderSuggestModal(this.app, (folderPath) => {
+        this.folderPath = folderPath;
+        this._folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
+        folderDisplay.textContent = this._folderDisplay;
+      }).open();
+    });
+
+    // ---- 第二行：文件名输入 ----
+    const nameRow = locationContainer.createDiv({ cls: "export-name-row" });
+    nameRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
+
+    const nameLabel = nameRow.createSpan({ text: t("export_filename") + "：" });
+    nameLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
+
+    const nameInput = nameRow.createEl("input", { type: "text" });
+    nameInput.value = this.fileName;
+    nameInput.style.cssText = "flex: 1; min-width: 120px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);";
+
+    const extSpan = nameRow.createSpan({ cls: "export-extension", text: this.format === "markdown" ? ".md" : ".txt" });
+    extSpan.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-muted);";
+
+    nameInput.addEventListener("input", () => {
+    });
+
+    // 保存输入框引用
+    this.nameInput = nameInput;
+
+    // ---- 6. 底部按钮 ----
+    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+
+    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+    cancelBtn.addEventListener("click", () => this.close());
+
+    const exportBtn = buttonDiv.createEl("button", { text: t("export_button"), cls: "mod-cta" });
+    exportBtn.addEventListener("click", () => this.doExport());
+  }
+
+  // 执行导出
+  async doExport() {
+    // 1. 校验：至少选择一个单词本
+    if (this.selectedBooks.size === 0) {
+      new Notice(t("export_no_wordbook"));
+      return;
+    }
+
+    // 2. 读取所有选中的卡片
+    const allCards = [];
+    for (const bookPath of this.selectedBooks) {
+      const cards = await WordbookParser.parseFile(this.app, bookPath);
+      for (const card of cards) {
+        card.sourceFile = bookPath;
+        allCards.push(card);
+      }
+    }
+
+    if (allCards.length === 0) {
+      new Notice(t("export_no_word"));
+      return;
+    }
+
+    // 3. 按范围过滤
+    let filteredCards = allCards;
+    if (this.range !== "all") {
+      filteredCards = allCards.filter(card => {
+        const key = getStudyKey(card.word, card.sourceFile);
+        const isMastered = this.plugin.masteryStore.isMastered(key);
+        const isIgnored = this.plugin.masteryStore.isIgnored(key);
+
+        if (this.range === "learning") return !isMastered && !isIgnored;
+        if (this.range === "mastered") return isMastered;
+        if (this.range === "ignored") return isIgnored;
+        return true;
+      });
+    }
+
+    if (filteredCards.length === 0) {
+      new Notice(t("export_no_word"));
+      return;
+    }
+
+    // 4. 生成内容
+    const isMarkdown = this.format === "markdown";
+    const extension = isMarkdown ? "md" : "txt";
+
+    // 从输入框获取文件名
+    let fileName = this.nameInput ? this.nameInput.value.trim() : this.fileName;
+    if (!fileName) fileName = "wordbook_export";
+
+    let content;
+    if (isMarkdown) {
+      content = generateMarkdownContent(
+        filteredCards,
+        fileName,
+        this.options,
+        this.plugin
+      );
+    } else {
+      content = generateAnkiTsvContent(
+        filteredCards,
+        this.options,
+        this.plugin
+      );
+    }
+
+    // 5. 构建完整路径
+    const fullPath = normalizePath(
+      this.folderPath ? `${this.folderPath}/${fileName}.${extension}` : `${fileName}.${extension}`
+    );
+
+    // 6. 检查文件是否存在
+    const existing = this.app.vault.getAbstractFileByPath(fullPath);
+    if (existing) {
+      const confirmed = confirm(t("export_overwrite_confirm"));
+      if (!confirmed) return;
+      // 使用 modify 覆盖已存在文件
+      await this.app.vault.modify(existing, content);
+    } else {
+      // 7. 确保文件夹存在
+      if (this.folderPath) {
+        const dir = this.app.vault.getAbstractFileByPath(this.folderPath);
+        if (!dir) {
+          await this.app.vault.createFolder(this.folderPath);
+        }
+      }
+      // 8. 写入文件
+      await this.app.vault.create(fullPath, content);
+    }
+
+    new Notice(t("export_success", fullPath));
+    this.close();
+  }
+}
+
+// ========== 单词卡片导出模态框 ==========
+class ExportSingleWordModal extends Modal {
+  constructor(app, plugin, wordObj) {
+    super(app);
+    this.plugin = plugin;
+    this.wordObj = wordObj;
+    this.selectedFolder = '';
+    this.folderDisplay = t("settings_new_wordbook_root");
+    this.fileName = this.sanitizeFileName(wordObj.word) + '.md';
+  }
+
+  // 清理非法文件名字符（替换为下划线）
+  sanitizeFileName(name) {
+    return name.replace(/[\\/:*?"<>|]/g, '_').trim() || 'untitled';
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    this.titleEl.setText(t("export_single_card"));
+
+    // ---- 文件夹选择 ----
+    const folderSetting = new Setting(contentEl)
+      .setName(t("export_save_location"))
+      .setDesc(`${t("settings_new_wordbook_selected")} ${this.folderDisplay}`)
+      .addButton(btn => {
+        btn.setButtonText(t("export_select_folder"))
+          .onClick(() => {
+            new FolderSuggestModal(this.app, (folderPath) => {
+              this.selectedFolder = folderPath;
+              this.folderDisplay = folderPath === '' ? t("settings_new_wordbook_root") : folderPath;
+              folderSetting.setDesc(`${t("settings_new_wordbook_selected")} ${this.folderDisplay}`);
+            }).open();
+          });
+      });
+
+    // ---- 文件名输入 ----
+    const nameSetting = new Setting(contentEl)
+      .setName(t("export_filename"))
+      .addText(text => {
+        text.setValue(this.fileName);
+        text.inputEl.style.width = "100%";
+        text.onChange(val => {
+          this.fileName = val; // 用户可自由修改
+        });
+        // 自动选中文件名主体部分（方便直接修改单词名，保留扩展名）
+        setTimeout(() => {
+          const input = text.inputEl;
+          const dotIndex = input.value.lastIndexOf('.');
+          if (dotIndex > 0) input.setSelectionRange(0, dotIndex);
+        }, 50);
+        return text;
+      });
+
+    // ---- 底部按钮 ----
+    const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
+    buttonDiv.style.cssText = "display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;";
+
+    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+    cancelBtn.addEventListener("click", () => this.close());
+
+    const exportBtn = buttonDiv.createEl("button", { text: t("export_button"), cls: "mod-cta" });
+    exportBtn.addEventListener("click", () => this.doExport());
+  }
+
+  async doExport() {
+    let fileName = this.fileName.trim();
+    if (!fileName) {
+      new Notice(t("export_enter_filename"));
+      return;
+    }
+    // 确保以 .md 结尾
+    if (!fileName.endsWith('.md')) {
+      fileName += '.md';
+    }
+
+    const fullPath = normalizePath(
+      this.selectedFolder ? `${this.selectedFolder}/${fileName}` : fileName
+    );
+
+    // ---- 生成 Markdown 内容（复用现有函数） ----
+    const card = this.wordObj;
+    const lines = [`## ${card.word}`, ''];
+
+    // 音标
+    lines.push(`**${t("export_phonetic_label")}**：${card.phonetic || ''}`, '');
+    // 别名
+    if (card.aliases && card.aliases.length > 0) {
+      lines.push(`**${t("export_aliases_label")}**：${card.aliases.join('、')}`, '');
+    }
+    // 来源
+    const source = card.sourceFile?.split('/').pop() || '';
+    lines.push(`**${t("export_source_label")}**：${source}`, '');
+    // 状态（复用全局函数）
+    const status = getStatusLabel(card, this.plugin);
+    lines.push(`**${t("export_status_label")}**：${status}`, '');
+
+    // 定义章节（复用全局函数）
+    const sections = parseSectionsForExport(card.definition || '');
+    for (const section of sections) {
+      lines.push(`**${section.title}**`);
+      lines.push('');
+      lines.push(section.content);
+      lines.push('');
+    }
+
+    const content = lines.join('\n') + '\n'; // 末尾换行
+
+    // ---- 写入文件 ----
+    const existing = this.app.vault.getAbstractFileByPath(fullPath);
+    try {
+      if (existing) {
+        const confirmed = confirm(t("export_overwrite_confirm"));
+        if (!confirmed) return;
+        await this.app.vault.modify(existing, content);
+      } else {
+        // 确保文件夹存在
+        if (this.selectedFolder) {
+          const dir = this.app.vault.getAbstractFileByPath(this.selectedFolder);
+          if (!dir) await this.app.vault.createFolder(this.selectedFolder);
+        }
+        await this.app.vault.create(fullPath, content);
+      }
+      new Notice(t("export_success", fullPath));
+
+      this.close();
+    } catch (e) {
+      console.error("导出失败:", e);
+      new Notice(t("export_failed"));
+    }
   }
 }
 
@@ -6832,6 +6970,64 @@ class ExportSimpleModal extends Modal {
 
     new Notice(t("export_simple_success", wordMap.size, fullPath));
     this.close();
+  }
+}
+
+// 单词卡片右键菜单
+class WordContextMenu {
+  constructor(plugin, wordObj) { this.plugin = plugin; this.wordObj = wordObj; }
+
+  showAtMouseEvent(e) {
+    const menu = new (require('obsidian').Menu)();
+    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
+    const isReadonly = fileSetting ? fileSetting.readonly : false;
+
+    // 编辑和删除仅在非只读时显示
+    if (!isReadonly) {
+      menu.addItem(item => item.setTitle(t("edit")).setIcon("pencil").onClick(() => this.editWord()));
+      menu.addItem(item => item.setTitle(t("delete")).setIcon("trash").onClick(() => this.deleteWord()));
+    }
+
+    // 始终显示“导出为 Markdown”（不依赖只读状态）
+    menu.addItem(item =>
+      item.setTitle(t("export_single_card"))
+        .setIcon("file-down")
+        .onClick(() => this.exportWord())
+    );
+
+    if (menu.items.length > 0) {
+      menu.showAtMouseEvent(e);
+    }
+  }
+
+  // 导出单卡片的方法
+  async exportWord() {
+    new ExportSingleWordModal(this.plugin.app, this.plugin, this.wordObj).open();
+  }
+
+  async editWord() {
+    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
+    if (fileSetting && fileSetting.readonly) {
+      new Notice(t("notice_readonly_cannot_edit"));
+      return;
+    }
+    new WordModal(this.plugin.app, this.plugin, this.wordObj).open();
+  }
+  async deleteWord() {
+    const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === this.wordObj.sourceFile);
+    if (fileSetting && fileSetting.readonly) {
+      new Notice(t("notice_readonly_cannot_delete"));
+      return;
+    }
+    const confirmed = await new Promise((resolve) => { const modal = new ConfirmModal(this.plugin.app, () => resolve(true), () => resolve(false)); modal.open(); });
+    if (!confirmed) return;
+    const success = await WordbookParser.deleteCard(this.plugin.app, this.wordObj.sourceFile, this.wordObj.word);
+    if (success) {
+      new Notice(t("word_deleted", this.wordObj.word));
+      await this.plugin.reloadAllCards();
+      await this.plugin.highlighter.refresh();
+      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    } else new Notice(t("delete_failed"));
   }
 }
 
