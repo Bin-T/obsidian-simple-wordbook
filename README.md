@@ -2,8 +2,13 @@
 
 [简体中文](README-ZH.md) | English
 
-> ✅ **Current Version**: v1.5.6 | Minimum Obsidian Compatibility: v1.0.0 (verified on v1.12.7)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bin-T/obsidian-simple-wordbook)
+![Obsidian Compatibility](https://img.shields.io/badge/Obsidian-%3E%3D1.0.0-blue)
+![GitHub Downloads](https://img.shields.io/github/downloads/Bin-T/obsidian-simple-wordbook/total)
+![GitHub License](https://img.shields.io/github/license/Bin-T/obsidian-simple-wordbook)
+
 > 📦 **Plugin ID**: `simple-wordbook`
+> 
 > 💡 **Inspiration**: [obsidian-language-learner](https://link.wtturl.cn/?target=https%3A%2F%2Fgithub.com%2Fguopenghui%2Fobsidian-language-learner&scene=im&aid=497858&lang=zh) and [HiWords](https://link.wtturl.cn/?target=https%3A%2F%2Fgithub.com%2FCatMuse%2FHiWords&scene=im&aid=497858&lang=zh)
 
 ---
