@@ -2904,7 +2904,7 @@ class SidebarView extends ItemView {
     this.currentFileWords = matchedCards;
   }
 
-  // ★ 优化1：PDF提取改用轮询，去掉固定500ms延迟
+  // ★ 优化1：PDF提取改用轮询
   async extractPDFTextFromDOM() {
     const maxWait = 500;
     const start = Date.now();
@@ -2949,12 +2949,54 @@ class SidebarView extends ItemView {
     const searchDiv = container.createDiv({ cls: "sidebar-search" });
     const searchInput = searchDiv.createEl("input", { type: "text", placeholder: t("search_placeholder") });
     searchInput.value = this.searchQuery;
+
+    // ----- 搜索输入事件 -----
     searchInput.addEventListener("input", (e) => {
-      this.searchQuery = e.target.value.toLowerCase();
-      this.filterWords();
-      this.updateCardVisibility();
-      // ★ 搜索后渲染新匹配的卡片
-      this._scheduleBatchRendering(this.filteredWords);
+      const query = e.target.value.toLowerCase();
+      this.searchQuery = query;
+
+      if (query) {
+        // 按优先级查找匹配的卡片所在的标签页
+        let targetTab = null;
+        const tabOrder = ['learning', 'mastered', 'ignored'];
+
+        for (const tab of tabOrder) {
+          let cardsInTab;
+          if (tab === 'learning') {
+            cardsInTab = this.currentFileWords.filter(w => !w.mastered && !w.ignored);
+          } else if (tab === 'mastered') {
+            cardsInTab = this.currentFileWords.filter(w => w.mastered);
+          } else {
+            cardsInTab = this.currentFileWords.filter(w => w.ignored);
+          }
+
+          const hasMatch = cardsInTab.some(w =>
+            w.word.toLowerCase().includes(query) ||
+            (w.aliases && w.aliases.some(a => a.toLowerCase().includes(query)))
+          );
+
+          if (hasMatch) {
+            targetTab = tab;
+            break;
+          }
+        }
+
+        if (targetTab && targetTab !== this.activeTab) {
+          // 切换到匹配的标签页（内部会触发过滤和渲染）
+          this.switchTab(targetTab);
+          return; // switchTab 已处理所有更新
+        }
+
+        // 没有匹配的卡片，或目标标签页就是当前标签页 → 正常过滤
+        this.filterWords();
+        this.updateCardVisibility();
+        this._scheduleBatchRendering(this.filteredWords);
+      } else {
+        // 搜索词为空 → 显示当前标签页的所有卡片
+        this.filterWords();
+        this.updateCardVisibility();
+        this._scheduleBatchRendering(this.filteredWords);
+      }
     });
 
     const tabBar = container.createDiv({ cls: "sidebar-tabs" });
@@ -3154,9 +3196,9 @@ class SidebarView extends ItemView {
           content = `${phoneticHtml}\n\n${content}`;
         }
         const processed = processLineBreaks(content);
-        // ★ 等待渲染完成
+        // 等待渲染完成
         await MarkdownRenderer.render(this.plugin.app, processed, contentContainer, wordObj.sourceFile, this.plugin);
-        // ★ 修复内部链接
+        // 修复内部链接
         fixInternalLinks(contentContainer, this.plugin.app, wordObj.sourceFile);
       } else {
         contentContainer.setText(t("no_definition"));
@@ -3188,6 +3230,13 @@ class SidebarView extends ItemView {
   }
 
   async focusWord(wordObj, preferredSource = null) {
+    // 0. 先清除搜索框内容（让所有卡片可见）
+    const searchInput = this.containerEl?.querySelector('.sidebar-search input');
+    if (searchInput) {
+      searchInput.value = "";
+    }
+    this.searchQuery = "";
+
     // 1. 优先使用缓存数据，避免不必要的刷新
     let targetCard = this.currentFileWords.find(w =>
       w.word.toLowerCase() === wordObj.word.toLowerCase() &&
@@ -7796,5 +7845,3 @@ class MigrationConfirmModal extends Modal {
 }
 
 module.exports = SimpleWordbookPlugin;
-/* nosourcemap */
-/* nosourcemap */
