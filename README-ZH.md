@@ -2,8 +2,13 @@
 
 简体中文 | [English](./README.md)
 
-> ✅ **当前版本**：v1.6.1 | 最低兼容 Obsidian v1.0.0（在 v1.12.7 上验证通过）  
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bin-T/obsidian-simple-wordbook)
+![Obsidian Compatibility](https://img.shields.io/badge/Obsidian-%3E%3D1.0.0-blue)
+![GitHub Downloads](https://img.shields.io/github/downloads/Bin-T/obsidian-simple-wordbook/total)
+![GitHub License](https://img.shields.io/github/license/Bin-T/obsidian-simple-wordbook)
+
 > 📦 **插件 ID**：`simple-wordbook`  
+> 
 > 💡 **灵感来源**：[obsidian-language-learner](https://github.com/guopenghui/obsidian-language-learner) 和 [HiWords](https://github.com/CatMuse/HiWords)
 
 ---
