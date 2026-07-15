@@ -114,10 +114,12 @@ const locale = {
     export_include_definition: "Include Definition",
     export_include_source: "Include Source",
     export_include_status: "Include Status",
+    export_include_lang: "Include Pronunciation Language (lang) field",
     export_phonetic_label: "Phonetic",
     export_aliases_label: "Aliases",
     export_source_label: "Source",
     export_status_label: "Status",
+    export_lang_label: "Language",
     export_convert_html: "Convert to HTML (TXT only, recommended)",
     export_convert_hint: "Convert Markdown bold and line breaks to Anki-compatible HTML tags (<b> and <br>)",
     export_one_line_per_word: "One word per line (no quotes, convert line breaks to spaces)",
@@ -172,10 +174,6 @@ const locale = {
     settings_style_wavy: "Wavy underline",
     settings_style_double: "Double underline",
     settings_style_bold: "Bold",
-    settings_pronunciation: "Pronunciation",
-    settings_tts_template: "TTS URL template",
-    settings_tts_desc: "Use {{word}}, {{type}}, {{accent}}",
-    settings_variant: "Pronunciation variant",
     notice_no_json: "No JSON files found. Create a .json wordbook file first.",
     notice_file_already_added: "File already added",
     notice_deleted: "Deleted {0}",
@@ -196,23 +194,77 @@ const locale = {
     settings_scope_mode_include: "Include only these paths",
     settings_scope_mode_exclude: "Exclude these paths",
     settings_scope_paths: "Path List",
-    settings_scope_paths_desc: "One path per line. Markdown files must include the '.md' extension.",
+    settings_scope_paths_desc: "One path per line. Markdown files must include the '.md' extension. Use '*' to match all files in the vault root (not subfolders).",
     scope_paths_placeholder: "Folder/note.md\nFolder",
     settings_tab_files: "Files Management",
     settings_tab_general: "General Settings",
     command_open_settings: "Open Settings",
-    lookup_view_title: "Lookup",
-    lookup_input_placeholder: "Enter word or phrase...",
-    lookup_empty_word: "Please enter a word or phrase to look up",
-    lookup_search_button: "🔍",
-    lookup_prompt_label: "Prompt:",
-    lookup_default_prompt_option: "Default",
-    lookup_loading: "Searching...",
-    lookup_error_prefix: "Error: ",
-    lookup_save_button: "Save Word",
-    lookup_no_content: "No content to save",
-    lookup_no_writable_book: "No writable wordbook file available",
-    lookup_save_success: "Word saved",
+
+    settings_tab_tts: "Pronunciation",
+    tts_pronunciation_general: "General Pronunciation Settings",
+    tts_default_lang_label: "Default Pronunciation Language",
+    tts_default_lang_desc: "Used when the word has no 'lang' field",
+    language_current_detail: "Current Language Details",
+    language_display_name: "Display Name",
+    language_standard_code: "Standard Code",
+    language_code_desc: "Select from built-in languages, or manually enter a BCP 47 standard code.",
+    preset_google: "Google",
+    preset_baidu: "Baidu",
+    preset_system: "System",
+    preset_custom: "Custom",
+    language_preset_codes: "Custom Codes for Presets",
+    language_reset_default: "Reset to default",
+    language_add: "Add Language",
+    language_deleted: "Language deleted",
+    language_updated: "Language updated",
+    language_added: "Language added",
+    language_delete_confirm_with_count: "This language is used by {0} words, are you sure to delete?",
+    language_fill_required: "Please fill in all required fields",
+    language_code_exists: "Standard code already exists",
+    language_edit_title: "Add/Edit Language",
+    tts_network_tts_title: "Network TTS",
+    settings_tts_template: "TTS URL template",
+    tts_template_desc: "Use {{word}}, {{type}}, {{accent}}, {{lang}}, {{rate}} placeholders",
+    settings_variant: "Pronunciation variant",
+    tts_preset_label: "TTS Preset",
+    tts_preset_desc: "Quick switch between built-in TTS services, auto-fills the template below",
+    tts_preset_custom: "Custom",
+    tts_preset_youdao: "Youdao (English only)",
+    tts_preset_baidu: "Baidu (Multi-language)",
+    tts_preset_google: "Google (Multi-language)",
+    tts_variant_desc: "US/UK pronunciation, only effective for templates using {{type}} (e.g., Youdao)",
+    tts_speech_rate_label: "Speech Rate",
+    tts_speech_rate_desc: "Adjust speaking speed",
+    tts_speech_rate_reset: "Reset to Default",
+    tts_speech_rate_reset_tooltip: "Restore default values for the current preset",
+    tts_speech_rate_min: "Min",
+    tts_speech_rate_max: "Max",
+    tts_speech_rate_current: "Current rate: {0}",
+    tts_test_label: "Pronunciation Test",
+    tts_test_desc: "Enter a word to test the current network TTS configuration",
+    tts_test_play: "Play",
+    word_lang_label: "Pronunciation Language (lang)",
+    word_lang_desc: "Select the language for this word. Default follows global language setting.",
+    notice_tts_playback_failed: "TTS playback failed, please check your network or switch to another preset.",
+    tts_system_tts_title: "System TTS",
+    tts_system_tts_enable: "Enable System TTS",
+    tts_system_tts_desc: "Use the browser/OS built-in speech synthesis engine, completely offline, multi-language support. When enabled, \"system TTS\" will be used first; if unavailable, it will automatically fall back to \"Network TTS\".",
+    tts_system_voice_label: "Voice",
+    tts_system_voice_loading: "Loading system voices...",
+    tts_system_voice_no_voices: "No voices available",
+    tts_system_voice_default: "Default",
+    tts_system_voice_desc: "With 'Default', the system will match the voice based on the word's 'lang' field; if not set, it falls back to the 'Default Pronunciation Language'. If still no match, a notification will be shown indicating the missing voice pack. Choosing a specific voice will force it to be used for all words.",
+    tts_system_voice_test: "Test",
+    tts_system_test_text: "Hello, this is a test voice.",
+    tts_system_rate_label: "Speech Rate",
+    tts_system_rate_desc: "Adjust the speaking speed. Default 1.0, range 0.5–2.0.",
+    tts_system_pitch_label: "Pitch",
+    tts_system_pitch_desc: "Adjust the pitch. Default 1.0, range 0.5–2.0.",
+    tts_system_hint: "📢 Uses the operating system's built-in voice engine, fully offline. If pronunciation is abnormal, please check your system's voice settings.",
+    tts_system_fallback_notice: "No {lang} voice available. Please switch back to online TTS or change system voice.",
+    tts_system_auto_switched: "Automatically switched to {voice} to support the current language.",
+    tts_system_no_voice_for_lang: "No system voice available for {lang}. Please install the language pack or disable System TTS.",
+
     settings_tab_ai: "AI Config",
     settings_api_config: "API Configuration",
     settings_ai_provider: "Service Provider",
@@ -271,6 +323,19 @@ const locale = {
     api_error_parse: "Invalid data format returned by API, please check API URL",
     api_error_unexpected: "Unexpected API response format, please check your API configuration",
     api_error_config: "Please configure API URL and API Key first",
+
+    lookup_view_title: "Lookup",
+    lookup_input_placeholder: "Enter word or phrase...",
+    lookup_empty_word: "Please enter a word or phrase to look up",
+    lookup_search_button: "🔍",
+    lookup_prompt_label: "Prompt:",
+    lookup_default_prompt_option: "Default",
+    lookup_loading: "Searching...",
+    lookup_error_prefix: "Error: ",
+    lookup_save_button: "Save Word",
+    lookup_no_content: "No content to save",
+    lookup_no_writable_book: "No writable wordbook file available",
+    lookup_save_success: "Word saved",
     settings_enter_mode_local_only: "Local only",
     settings_enter_mode_ai_only: "AI only",
     settings_enter_mode_local_first: "Local first (then AI if not found)",
@@ -292,6 +357,7 @@ const locale = {
     lookup_mode_prefix: "Prefix",
     lookup_mode_contains: "Contains",
     lookup_mode_fuzzy: "Fuzzy (allow spelling errors)",
+
     notice_open_editor: "Please open an editor and select a word",
     notice_select_word: "Please select a word or phrase",
     notice_word_not_found: 'Word "{0}" not found',
@@ -469,10 +535,12 @@ const locale = {
     export_include_definition: "包含释义",
     export_include_source: "包含来源",
     export_include_status: "包含状态",
+    export_include_lang: "包含发音语言（lang）字段",
     export_phonetic_label: "音标",
     export_aliases_label: "别名",
     export_source_label: "来源",
     export_status_label: "状态",
+    export_lang_label: "语言",
     export_convert_html: "转换为 HTML（仅 TXT 格式，推荐勾选）",
     export_convert_hint: "将 Markdown 粗体（**）和换行转为 Anki 可识别的 HTML 标签（<b> 和 <br>），导入时请勾选“允许使用 HTML”。",
     export_one_line_per_word: "每行一个单词（无引号，换行转空格）",
@@ -527,10 +595,6 @@ const locale = {
     settings_style_wavy: "波浪下划线",
     settings_style_double: "双下划线",
     settings_style_bold: "粗体",
-    settings_pronunciation: "发音设置",
-    settings_tts_template: "TTS 地址模板",
-    settings_tts_desc: "可使用 {{word}}, {{type}}, {{accent}} 占位符",
-    settings_variant: "发音偏好",
     notice_no_json: "未找到 JSON 文件。请先创建一个 .json 单词本文件。",
     notice_file_already_added: "文件已添加过",
     notice_deleted: "已删除 {0}",
@@ -551,23 +615,77 @@ const locale = {
     settings_scope_mode_include: "仅包含以下路径",
     settings_scope_mode_exclude: "仅排除以下路径",
     settings_scope_paths: "路径列表",
-    settings_scope_paths_desc: "每行一个路径。Markdown 文件必须包含 '.md' 后缀。",
+    settings_scope_paths_desc: "每行一个路径。Markdown 文件必须包含 '.md' 后缀。输入 '*' 可匹配仓库根目录下的所有文件（不含子文件夹）。",
     scope_paths_placeholder: "文件夹/笔记.md\n文件夹",
     settings_tab_files: "文件管理",
     settings_tab_general: "常规设置",
     command_open_settings: "打开设置",
-    lookup_view_title: "查词面板",
-    lookup_input_placeholder: "输入单词或短语...",
-    lookup_empty_word: "请输入要查询的单词/短语",
-    lookup_search_button: "🔍",
-    lookup_prompt_label: "提示词：",
-    lookup_default_prompt_option: "默认",
-    lookup_loading: "正在查询...",
-    lookup_error_prefix: "错误：",
-    lookup_save_button: "保存单词",
-    lookup_no_content: "没有可保存的内容",
-    lookup_no_writable_book: "没有可写的单词本文件",
-    lookup_save_success: "单词已保存",
+
+    settings_tab_tts: "发音设置",
+    tts_pronunciation_general: "通用发音设置",
+    tts_default_lang_label: "默认发音语言",
+    tts_default_lang_desc: "当单词未设置「lang」字段时，使用此语言发音",
+    language_current_detail: "当前语言详情",
+    language_display_name: "显示名称",
+    language_standard_code: "标准代码",
+    language_code_desc: "可从下拉选择内置语言，或手动输入 BCP 47 标准代码。",
+    preset_google: "Google",
+    preset_baidu: "百度",
+    preset_system: "系统",
+    preset_custom: "自定义",
+    language_preset_codes: "各预设自定义代码",
+    language_reset_default: "重置为默认值",
+    language_add: "新增语言",
+    language_deleted: "语言已删除",
+    language_updated: "语言已更新",
+    language_added: "语言已添加",
+    language_delete_confirm_with_count: "该语言被 {0} 个单词使用，确定删除吗？",
+    language_fill_required: "请填写完整信息",
+    language_code_exists: "标准代码已存在",
+    language_edit_title: "新增/编辑语言",
+    tts_network_tts_title: "网络 TTS",
+    settings_tts_template: "TTS 地址模板",
+    tts_template_desc: "可使用 {{word}}, {{type}}, {{accent}}, {{lang}}, {{rate}} 占位符",
+    settings_variant: "发音偏好",
+    tts_preset_label: "TTS 预设模板",
+    tts_preset_desc: "快速切换内置 TTS 服务，选择后自动填充下方模板",
+    tts_preset_custom: "自定义",
+    tts_preset_youdao: "有道（仅英语）",
+    tts_preset_baidu: "百度（多语言）",
+    tts_preset_google: "Google（多语言）",
+    tts_variant_desc: "美式/英式发音，仅对使用 {{type}} 的模板生效（如有道）",
+    tts_speech_rate_label: "语速",
+    tts_speech_rate_desc: "调整发音速度",
+    tts_speech_rate_reset: "恢复默认",
+    tts_speech_rate_reset_tooltip: "恢复当前预设的默认值",
+    tts_speech_rate_min: "最小值",
+    tts_speech_rate_max: "最大值",
+    tts_speech_rate_current: "当前语速: {0}",
+    tts_test_label: "发音测试",
+    tts_test_desc: "输入单词测试当前网络 TTS 配置",
+    tts_test_play: "播放",
+    word_lang_label: "发音语言 (lang)",
+    word_lang_desc: "选择单词的语言，默认跟随全局语言设置。",
+    notice_tts_playback_failed: "TTS 播放失败，请检查网络或切换其他预设。",
+    tts_system_tts_title: "系统 TTS",
+    tts_system_tts_enable: "启用 系统 TTS",
+    tts_system_tts_desc: "使用浏览器/操作系统的本地语音合成引擎，完全离线，支持多语言。启用后优先使用“系统 TTS”，若系统语音不可用，将自动回退到“网络 TTS”。",
+    tts_system_voice_label: "语音选择",
+    tts_system_voice_loading: "正在加载系统语音...",
+    tts_system_voice_no_voices: "无可用语音",
+    tts_system_voice_default: "默认",
+    tts_system_voice_desc: "“默认”会根据单词的「lang」字段自动匹配语音；若未设置该字段，则使用“默认发音语言”。若仍无匹配，将提示缺少语音包。选择具体语音后，则固定使用该语音，不再自动切换。",
+    tts_system_voice_test: "试听",
+    tts_system_test_text: "你好，这是测试语音。",
+    tts_system_rate_label: "语速",
+    tts_system_rate_desc: "调整发音速度。默认 1.0，范围 0.5~2.0。",
+    tts_system_pitch_label: "音高",
+    tts_system_pitch_desc: "调整音高。默认 1.0，范围 0.5~2.0。",
+    tts_system_hint: "📢 使用操作系统内置语音引擎，完全离线。若发音异常，请检查系统语音设置。",
+    tts_system_fallback_notice: "当前系统无 {lang} 语音，请切换回网络 TTS 或更换系统语音。",
+    tts_system_auto_switched: "已自动切换到 {voice} 以支持当前语言。",
+    tts_system_no_voice_for_lang: "当前系统缺少 {lang} 语音包，请安装语音包或关闭“系统 TTS”。",
+
     settings_tab_ai: "AI 配置",
     settings_api_config: "API 配置",
     settings_ai_provider: "服务提供商",
@@ -626,6 +744,19 @@ const locale = {
     api_error_parse: "API 返回的数据格式无效，请检查 API 地址是否正确",
     api_error_unexpected: "API 返回了意外格式，请检查 API 配置是否正确",
     api_error_config: "请先配置 API 地址和密钥",
+
+    lookup_view_title: "查词面板",
+    lookup_input_placeholder: "输入单词或短语...",
+    lookup_empty_word: "请输入要查询的单词/短语",
+    lookup_search_button: "🔍",
+    lookup_prompt_label: "提示词：",
+    lookup_default_prompt_option: "默认",
+    lookup_loading: "正在查询...",
+    lookup_error_prefix: "错误：",
+    lookup_save_button: "保存单词",
+    lookup_no_content: "没有可保存的内容",
+    lookup_no_writable_book: "没有可写的单词本文件",
+    lookup_save_success: "单词已保存",
     settings_enter_mode_local_only: "仅本地",
     settings_enter_mode_ai_only: "仅 AI",
     settings_enter_mode_local_first: "本地优先（未找到再调用 AI）",
@@ -647,6 +778,7 @@ const locale = {
     lookup_mode_prefix: "前缀匹配",
     lookup_mode_contains: "包含匹配",
     lookup_mode_fuzzy: "模糊匹配（允许拼写错误）",
+
     notice_open_editor: "请先打开一个编辑器并选中单词",
     notice_select_word: "请选中一个单词或短语",
     notice_word_not_found: '未找到单词 "{0}"',
@@ -785,6 +917,105 @@ function getSystemPromptContent(key, settings) {
   }
 }
 
+// ========== 内置语言映射表 ==========
+const BUILTIN_LANGUAGES = [
+  {
+    id: "en",
+    displayName: "English (US)",
+    standardCode: "en",
+    presetCodes: { google: "en", baidu: "en", system: "en-US", custom: "en" }
+  },
+  {
+    id: "en-GB",
+    displayName: "English (UK)",
+    standardCode: "en-GB",
+    presetCodes: { google: "en-GB", baidu: "en", system: "en-GB", custom: "en-GB" }
+  },
+  {
+    id: "zh",
+    displayName: "中文",
+    standardCode: "zh",
+    presetCodes: { google: "zh", baidu: "zh", system: "zh-CN", custom: "zh" }
+  },
+  {
+    id: "ja",
+    displayName: "日本語",
+    standardCode: "ja",
+    presetCodes: { google: "ja", baidu: "jp", system: "ja-JP", custom: "ja" }
+  },
+  {
+    id: "ko",
+    displayName: "한국어",
+    standardCode: "ko",
+    presetCodes: { google: "ko", baidu: "kor", system: "ko-KR", custom: "ko" }
+  },
+  {
+    id: "fr",
+    displayName: "Français",
+    standardCode: "fr",
+    presetCodes: { google: "fr", baidu: "fra", system: "fr-FR", custom: "fr" }
+  },
+  {
+    id: "de",
+    displayName: "Deutsch",
+    standardCode: "de",
+    presetCodes: { google: "de", baidu: "de", system: "de-DE", custom: "de" }
+  },
+  {
+    id: "es",
+    displayName: "Español",
+    standardCode: "es",
+    presetCodes: { google: "es", baidu: "spa", system: "es-ES", custom: "es" }
+  },
+  {
+    id: "it",
+    displayName: "Italiano",
+    standardCode: "it",
+    presetCodes: { google: "it", baidu: "it", system: "it-IT", custom: "it" }
+  },
+  {
+    id: "ru",
+    displayName: "Русский",
+    standardCode: "ru",
+    presetCodes: { google: "ru", baidu: "ru", system: "ru-RU", custom: "ru" }
+  },
+  {
+    id: "ar",
+    displayName: "العربية",
+    standardCode: "ar",
+    presetCodes: { google: "ar", baidu: "ara", system: "ar-SA", custom: "ar" }
+  },
+  {
+    id: "pt",
+    displayName: "Português",
+    standardCode: "pt",
+    presetCodes: { google: "pt", baidu: "pt", system: "pt-PT", custom: "pt" }
+  },
+  {
+    id: "nl",
+    displayName: "Nederlands",
+    standardCode: "nl",
+    presetCodes: { google: "nl", baidu: "nl", system: "nl-NL", custom: "nl" }
+  },
+  {
+    id: "pl",
+    displayName: "Polski",
+    standardCode: "pl",
+    presetCodes: { google: "pl", baidu: "pl", system: "pl-PL", custom: "pl" }
+  },
+  {
+    id: "tr",
+    displayName: "Türkçe",
+    standardCode: "tr",
+    presetCodes: { google: "tr", baidu: "tr", system: "tr-TR", custom: "tr" }
+  },
+  {
+    id: "vi",
+    displayName: "Tiếng Việt",
+    standardCode: "vi",
+    presetCodes: { google: "vi", baidu: "vi", system: "vi-VN", custom: "vi" }
+  }
+];
 
 const DEFAULT_SETTINGS = {
   wordbookFiles: [],
@@ -809,11 +1040,27 @@ const DEFAULT_SETTINGS = {
   enableSidebarScopeFilter: false,
   scopeMode: "include",
   scopePaths: [],
-  ttsUrlTemplate: "https://dict.youdao.com/dictvoice?audio={{word}}&type=2",
-  pronunciationVariant: "us",
   enterMode: "local_only",  // 可选 "local_only", "ai_only", "local_first"
   localSearchMode: "smart",    // "smart", "exact", "prefix", "contains", "fuzzy"
   maxLocalResults: 10,         // 默认改为10
+
+  languages: BUILTIN_LANGUAGES,
+  defaultLanguage: "en",      // 默认发音语言（卡片无 lang 时回退）
+  ttsPreset: "youdao",        // 当前选中的预设：'custom' | 'youdao' | 'baidu' | 'google'
+  ttsUrlTemplate: "https://dict.youdao.com/dictvoice?audio={{word}}&type=2",
+  pronunciationVariant: "us",
+  speechRatePresets: {
+    youdao: { min: 1, max: 5, value: 3 },
+    baidu: { min: 1, max: 5, value: 3 },
+    google: { min: 0.24, max: 1.5, value: 0.8 },
+    custom: { min: 0.5, max: 2.0, value: 1.0 }
+  },
+  enableSystemTTS: false,
+  systemTTSVoiceName: "",
+  systemTTSSpeechRate: 1.0,
+  systemTTSPitch: 1.0,
+
+  lastUsedCardColor: "",
 
   // ===== AI 查词设置 =====
   apiProvider: "openai",
@@ -823,6 +1070,7 @@ const DEFAULT_SETTINGS = {
     secretName: "",                // 钥匙串引用名（仅 mode=secret_storage 时有效）
     encryptedData: null,           // { ciphertext, salt } 或 null
   },
+  apiModel: "gpt-3.5-turbo",
   systemPrompts: [],          // [{ name: "词典助手", content: "You are a dictionary assistant..." }]
   defaultSystemPrompt: "",    // 默认提示词关联的系统提示词名称
   defaultPrompt: "用中文解释单词 {word}的释义。",
@@ -842,17 +1090,188 @@ function getStudyKey(word, bookPath) {
   return `${bookPath}::${normalized}`;
 }
 
-async function playPronunciation(word, ttsTemplate, variant) {
+async function playPronunciation(word, ttsTemplate, variant, lang = '') {
+  const plugin = globalThis.__simpleWordbookPlugin;
+
+  // 获取当前预设和语言列表，计算实际语言代码
+  const preset = plugin?.settings?.ttsPreset || 'custom';
+  const languages = plugin?.settings?.languages || [];
+  const defaultCode = plugin?.settings?.defaultLanguage || 'en';
+  const targetCode = lang || defaultCode;
+  let langEntry = languages.find(l => l.standardCode === targetCode);
+  if (!langEntry) {
+    langEntry = { standardCode: targetCode, presetCodes: {} };
+  }
+  let effectiveLang;
+  if (preset === 'google') {
+    effectiveLang = langEntry.presetCodes?.google || langEntry.standardCode;
+  } else if (preset === 'baidu') {
+    effectiveLang = langEntry.presetCodes?.baidu || langEntry.standardCode;
+  } else if (preset === 'system') {
+    effectiveLang = langEntry.presetCodes?.system || langEntry.standardCode;
+  } else {
+    effectiveLang = langEntry.presetCodes?.custom || langEntry.standardCode;
+  }
+
+  // ========== 系统 TTS 分支 ==========
+  if (plugin && plugin.settings.enableSystemTTS) {
+    // 安全检测：speechSynthesis 是否可用
+    if (typeof window.speechSynthesis !== 'undefined' && window.speechSynthesis) {
+      try {
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.lang = effectiveLang;
+
+        // 语速
+        const rate = plugin.settings.systemTTSSpeechRate ?? 1.0;
+        utterance.rate = Math.min(Math.max(rate, 0.5), 2.0);
+
+        // 音高
+        const pitch = plugin.settings.systemTTSPitch ?? 1.0;
+        utterance.pitch = Math.min(Math.max(pitch, 0.5), 2.0);
+
+        // 语音选择（若已存储名称）
+        const voiceName = plugin.settings.systemTTSVoiceName || "";
+        if (voiceName && voiceName !== "default") {
+          let voices = window.speechSynthesis.getVoices();
+          if (!voices || voices.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            voices = window.speechSynthesis.getVoices();
+          }
+          const matchedVoice = voices.find(v => v.name === voiceName || v.voiceURI === voiceName);
+          if (matchedVoice) {
+            utterance.voice = matchedVoice;
+          } else {
+            // 若未匹配，尝试按语言自动回退
+            const fallback = voices.find(v => v.lang.startsWith(effectiveLang.split('-')[0]));
+            if (fallback) {
+              utterance.voice = fallback;
+              new Notice(t("tts_system_auto_switched", fallback.name));
+            } else {
+              // 无匹配语音，提示但继续使用默认语音
+              new Notice(t("tts_system_fallback_notice", effectiveLang));
+            }
+          }
+        } else {
+          // 未选择具体语音，尝试按语言自动匹配
+          let voices = window.speechSynthesis.getVoices();
+          if (!voices || voices.length === 0) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+            voices = window.speechSynthesis.getVoices();
+          }
+          const fallback = voices.find(v => v.lang.startsWith(effectiveLang.split('-')[0]));
+          if (fallback) {
+            utterance.voice = fallback;
+            window.speechSynthesis.speak(utterance);
+            return; // 匹配成功 → 发音后返回
+          } else {
+            // 匹配失败 → 弹出提示，不播放任何声音，不回退到网络 TTS
+            const langDisplay = languages.find(l => l.standardCode === effectiveLang)?.displayName || effectiveLang;
+            new Notice(t("tts_system_no_voice_for_lang", langDisplay));
+            return; // 直接返回，不执行 speak，也不执行网络 TTS
+          }
+        }
+
+        window.speechSynthesis.speak(utterance);
+        return; // 成功发音后返回
+      } catch (e) {
+        // 系统 TTS 出错（如权限、语音引擎未就绪），记录日志并继续执行网络 TTS
+        console.warn('System TTS failed, falling back to network TTS:', e);
+        // 不 return，继续执行网络 TTS
+      }
+    } else {
+      console.warn('System TTS not available, falling back to network TTS');
+      // 不 return，继续执行网络 TTS
+    }
+  }
+
+  // ========== 网络 TTS 分支（仅在系统 TTS 未启用时执行） ==========
+
+  // ---------- 构建 URL ----------
   let url = ttsTemplate.replace(/{{word}}/g, encodeURIComponent(word));
+
   if (url.includes("{{type}}")) {
     const type = variant === "uk" ? "1" : "2";
     url = url.replace(/{{type}}/g, type);
   }
-  if (url.includes("{{accent}}")) url = url.replace(/{{accent}}/g, variant);
-  try {
-    const audio = new Audio(url);
-    await audio.play();
-  } catch (e) { console.warn("Playback failed", e); }
+  if (url.includes("{{accent}}")) {
+    url = url.replace(/{{accent}}/g, variant);
+  }
+  if (url.includes("{{lang}}")) {
+    url = url.replace(/{{lang}}/g, encodeURIComponent(effectiveLang));
+  }
+
+  // ---------- {{rate}} 占位符替换 ----------
+  if (url.includes('{{rate}}')) {
+    const preset = plugin?.settings?.ttsPreset || 'custom';
+    const rateConfig = plugin?.settings?.speechRatePresets?.[preset];
+    let rate = rateConfig?.value ?? 1.0;
+
+    // 基于配置的 min/max 做边界限制
+    const min = rateConfig?.min ?? 0.5;
+    const max = rateConfig?.max ?? 2.0;
+    rate = Math.min(Math.max(rate, min), max);
+
+    // 百度需要取整
+    if (preset === 'baidu') {
+      rate = Math.round(rate);
+      // 取整后可能超出 min/max，再钳位一次
+      rate = Math.min(Math.max(rate, min), max);
+    }
+
+    // Google 保留两位小数
+    if (preset === 'google') {
+      rate = Math.round(rate * 100) / 100;
+    }
+
+    url = url.replace(/{{rate}}/g, String(rate));
+  }
+
+  // ---------- 判断是否为 Google TTS ----------
+  const isGoogle = url.includes('translate.google.com');
+
+  if (isGoogle) {
+    // ---------- Google TTS: 使用 fetch + AbortController（主动超时提示） ----------
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+      new Notice(t("notice_tts_playback_failed"));
+    }, 5000);
+
+    try {
+      const response = await fetch(url, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const arrayBuffer = await response.arrayBuffer();
+      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
+      const blobUrl = URL.createObjectURL(blob);
+
+      const audio = new Audio(blobUrl);
+      await audio.play();
+      URL.revokeObjectURL(blobUrl);
+
+    } catch (e) {
+      clearTimeout(timeoutId);
+      if (e.name === 'AbortError') {
+        console.warn('TTS request aborted due to timeout');
+        return;
+      }
+      console.warn('TTS playback failed:', e);
+      new Notice(t("notice_tts_playback_failed"));
+    }
+  } else {
+    // ---------- 其他 TTS (有道、百度、自定义): 使用原有 Audio 方式 ----------
+    try {
+      const audio = new Audio(url);
+      await audio.play();
+    } catch (e) {
+      console.warn("TTS playback failed:", e);
+      new Notice(t("notice_tts_playback_failed"));
+    }
+  }
 }
 
 // ========== 加密工具函数（基于 Web Crypto API） ==========
@@ -1197,6 +1616,7 @@ class WordbookParser {
       phonetic: card.phonetic || "",
       definition: card.definition || "",
       color: card.color || "",
+      lang: card.lang || "",
       sourceFile: card.sourceFile || defaultSource
     };
   }
@@ -1218,8 +1638,9 @@ class WordbookParser {
         definition: def,
         color: card.color || "",
         sourceFile: filePath,
-        sections: sections.length > 0 ? sections : [{ title: "释义", content: def }],
-        phonetic: card.phonetic || ""
+        sections: sections.length > 0 ? sections : [{ title: t("section_default_title"), content: def }],
+        phonetic: card.phonetic || "",
+        lang: card.lang || ""
       };
     });
   }
@@ -1624,6 +2045,16 @@ class Highlighter {
     const { enableHighlightScopeFilter, scopeMode, scopePaths } = this.plugin.settings;
     if (!enableHighlightScopeFilter || !scopePaths || scopePaths.length === 0) return true;
     const normalizedPath = normalizePath(filePath).toLowerCase();
+
+    // 根目录通配符 *
+    const hasRootWildcard = scopePaths.includes('*');
+    if (hasRootWildcard) {
+      const isRootFile = !normalizedPath.includes('/');
+      if (isRootFile) {
+        return scopeMode === "include";
+      }
+    }
+
     const matches = scopePaths.some(p => {
       let normalizedP = normalizePath(p).toLowerCase();
       if (!normalizedP.endsWith('/')) {
@@ -1850,7 +2281,8 @@ class Highlighter {
           definition: c.definition,
           sourceFile: c.sourceFile,
           color: c.color,
-          phonetic: c.phonetic
+          phonetic: c.phonetic,
+          lang: c.lang || ""
         }));
         span.setAttribute('data-cards', JSON.stringify(cardsData));
         span.setAttribute('data-current-source', selectedCard.sourceFile);
@@ -1949,7 +2381,8 @@ class Highlighter {
           definition: c.definition,
           sourceFile: c.sourceFile,
           color: c.color,
-          phonetic: c.phonetic
+          phonetic: c.phonetic,
+          lang: c.lang || ""
         }));
         builder.add(from, to, Decoration.mark({
           class: this.getHighlightClasses(),
@@ -2357,9 +2790,8 @@ class HoverPreview {
     this.plugin.registerDomEvent(document, "mouseout", this.onMouseOut.bind(this), true);
   }
 
-  /**
- * 根据当前固定的 top 值，动态设置弹窗最大高度
- */
+
+// ---------- 根据当前固定的 top 值，动态设置弹窗最大高度 ----------
   _applyMaxHeight(tooltip) {
     if (this._fixedTop === null) return;
     const cssMax = 400; // 与 CSS 中的 max-height 保持一致
@@ -2368,9 +2800,8 @@ class HoverPreview {
     tooltip.style.maxHeight = dynamicMax + 'px';
   }
 
-  /**
-   * 重新定位弹窗（仅修正水平位置，并刷新最大高度）
-   */
+
+  // ---------- 重新定位弹窗（仅修正水平位置，并刷新最大高度） ----------
   repositionTooltip() {
     if (!this.activeTooltip || !this.currentTarget || this._fixedTop === null) return;
     const tooltip = this.activeTooltip;
@@ -2583,7 +3014,12 @@ class HoverPreview {
     const wordSpan = titleDiv.createSpan({ cls: "word", text: word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
-      playPronunciation(word, this.plugin.settings.ttsUrlTemplate, this.plugin.settings.pronunciationVariant);
+      playPronunciation(
+        word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        currentCard.lang
+      );
     });
 
     const buttonGroup = titleDiv.createDiv({ cls: "tooltip-title-buttons" });
@@ -2904,7 +3340,7 @@ class SidebarView extends ItemView {
     this.currentFileWords = matchedCards;
   }
 
-  // ★ 优化1：PDF提取改用轮询
+  // PDF提取改用轮询
   async extractPDFTextFromDOM() {
     const maxWait = 500;
     const start = Date.now();
@@ -3019,7 +3455,7 @@ class SidebarView extends ItemView {
 
     this.listContainer = container.createDiv({ cls: "word-list" });
 
-    // ★ 优化2：第一轮只建DOM骨架，不渲染Markdown
+    // 第一轮只建DOM骨架，不渲染Markdown
     for (const word of this.currentFileWords) {
       const card = this.createWordCard(word, this.listContainer);
       this.cardCache.set(word.studyKey, card);
@@ -3027,7 +3463,7 @@ class SidebarView extends ItemView {
     this.updateCardVisibility();
     this.updateTabCounts = updateTabCounts;
 
-    // ★ 优化3：第二轮分批异步渲染释义（首批10个立即显示）
+    // 第二轮分批异步渲染释义（首批10个立即显示）
     this._scheduleBatchRendering(this.filteredWords);
   }
 
@@ -3060,7 +3496,7 @@ class SidebarView extends ItemView {
     }
   }
 
-  // ★ 优化4：createWordCard只建骨架，挂载元数据
+  // createWordCard只建骨架，挂载元数据
   createWordCard(wordObj, container) {
     const cardDiv = container.createDiv({ cls: "word-card" });
     const colorMap = {
@@ -3105,7 +3541,12 @@ class SidebarView extends ItemView {
     const wordSpan = wordLine.createSpan({ cls: "word", text: wordObj.word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
-      playPronunciation(wordObj.word, this.plugin.settings.ttsUrlTemplate, this.plugin.settings.pronunciationVariant);
+      playPronunciation(
+        wordObj.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        wordObj.lang
+      );
     });
 
     const defDiv = cardDiv.createDiv({ cls: "definition" });
@@ -3473,7 +3914,12 @@ class LookupView extends ItemView {
     const wordSpan = wordLine.createSpan({ cls: "word", text: card.word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
-      playPronunciation(card.word, this.plugin.settings.ttsUrlTemplate, this.plugin.settings.pronunciationVariant);
+      playPronunciation(
+        card.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        card.lang
+      );
     });
 
     // ★★★ 显示匹配程度标签 ★★★
@@ -3867,7 +4313,6 @@ class LookupView extends ItemView {
       phonetic: phonetic,
       aliases: [],
       color: "",
-      sourceFile: writable.path
     };
     const modal = new WordModal(this.plugin.app, this.plugin, card);
     modal.open();
@@ -3890,9 +4335,9 @@ class ConfirmModal extends Modal {
 
 // ========== 导出辅助函数 ==========
 
-// 导出专用的章节解析
+// ---------- 导出专用的章节解析 ----------
 function parseSectionsForExport(definition) {
-  if (!definition || !definition.trim()) return [{ title: "释义", content: "" }];
+  if (!definition || !definition.trim()) return [{ title: t("section_default_title"), content: "" }];
 
   const parts = definition.split(/\n---\s*\n/);
   const sections = [];
@@ -3921,7 +4366,7 @@ function parseSectionsForExport(definition) {
   return sections;
 }
 
-// 将 Markdown 转换为 HTML（用于 Anki 导出）
+// ---------- 将 Markdown 转换为 HTML（用于 Anki 导出） ----------
 function markdownToHtml(text) {
   if (!text) return '';
   // 粗体：**content** → <b>content</b>
@@ -3931,13 +4376,13 @@ function markdownToHtml(text) {
   return html;
 }
 
-// TSV 字段转义：双引号包裹，内部双引号转义为 ""
+// ---------- TSV 字段转义：双引号包裹，内部双引号转义为 "" ----------
 function escapeField(str) {
   if (str == null) return '""';
   return `"${String(str).replace(/"/g, '""')}"`;
 }
 
-// 获取卡片的显示状态（Markdown）
+// ---------- 获取卡片的显示状态（Markdown） ----------
 function getStatusLabel(card, plugin) {
   const key = getStudyKey(card.word, card.sourceFile);
   if (plugin.masteryStore.isIgnored(key)) return t("export_status_ignored");
@@ -3945,7 +4390,7 @@ function getStatusLabel(card, plugin) {
   return t("export_status_learning");
 }
 
-// 获取卡片的英文状态（用于 Anki TSV）
+// ---------- 获取卡片的英文状态（用于 Anki TSV） ----------
 function getStatusEn(card, plugin) {
   const key = getStudyKey(card.word, card.sourceFile);
   if (plugin.masteryStore.isIgnored(key)) return "Ignored";
@@ -3953,7 +4398,7 @@ function getStatusEn(card, plugin) {
   return "Learning";
 }
 
-// 生成 Markdown 导出内容
+// ---------- 生成 Markdown 导出内容 ----------
 function generateMarkdownContent(cards, fileName, options, plugin) {
   const lines = [`# ${fileName}`, ''];
 
@@ -3961,21 +4406,26 @@ function generateMarkdownContent(cards, fileName, options, plugin) {
     lines.push(`## ${card.word}`, '');
 
     if (options.includePhonetic) {
-      lines.push(`**${t("export_phonetic_label")}**：${card.phonetic || ''}`, '');
+      lines.push(`**${t("export_phonetic_label")}**: ${card.phonetic || ''}`, '');
     }
 
     if (options.includeAliases && card.aliases && card.aliases.length > 0) {
-      lines.push(`**${t("export_aliases_label")}**：${card.aliases.join('、')}`, '');
+      lines.push(`**${t("export_aliases_label")}**: ${card.aliases.join(', ')}`, '');
     }
 
     if (options.includeSource) {
       const source = card.sourceFile?.split('/').pop() || '';
-      lines.push(`**${t("export_source_label")}**：${source}`, '');
+      lines.push(`**${t("export_source_label")}**: ${source}`, '');
     }
 
     if (options.includeStatus) {
       const status = getStatusLabel(card, plugin);
-      lines.push(`**${t("export_status_label")}**：${status}`, '');
+      lines.push(`**${t("export_status_label")}**: ${status}`, '');
+    }
+
+    // 导出 lang 字段（仅当有值时才输出）
+    if (options.includeLang && card.lang) {
+      lines.push(`**${t("export_lang_label")}**: ${card.lang}`, '');
     }
 
     // 解析并输出定义章节
@@ -3995,7 +4445,7 @@ function generateMarkdownContent(cards, fileName, options, plugin) {
   return lines.join('\n');
 }
 
-// 拆分定义为所有章节，保留原始内容，返回所有章节数组，供 Anki 动态列导出使用
+// ---------- 拆分定义为所有章节，保留原始内容，返回所有章节数组，供 Anki 动态列导出使用 ----------
 function splitDefinitionForExport(definition) {
   if (!definition) return [];
 
@@ -4026,7 +4476,7 @@ function splitDefinitionForExport(definition) {
   return sections;
 }
 
-// 生成 Anki TSV 导出内容（释义内容动态列结构）
+// ---------- 生成 Anki TSV 导出内容（释义内容动态列结构） ----------
 function generateAnkiTsvContent(cards, options, plugin) {
   if (cards.length === 0) return '';
 
@@ -4067,7 +4517,7 @@ function generateAnkiTsvContent(cards, options, plugin) {
 
     // 仅当选项开启时包含别名（别名为空，填空字符串占位）
     if (options.includeAliases) {
-      rawFields.push((card.aliases && card.aliases.length > 0) ? card.aliases.join('、') : '');
+      rawFields.push((card.aliases && card.aliases.length > 0) ? card.aliases.join(', ') : '');
     }
 
     // 仅当包含释义时才添加章节字段
@@ -4088,6 +4538,11 @@ function generateAnkiTsvContent(cards, options, plugin) {
     // 仅当选项开启时包含状态
     if (options.includeStatus) {
       rawFields.push(getStatusEn(card, plugin));
+    }
+
+    // 仅当选项开启时包含 lang 字符（无值则填空字符串）
+    if (options.includeLang) {
+      rawFields.push(card.lang || '');
     }
 
     // 根据 oneLinePerWord 选项决定最终字段字符串
@@ -4123,6 +4578,7 @@ class WordModal extends Modal {
     this.color = existingCard?.color || "";
     this.selectedFile = existingCard?.sourceFile || "";
     this.phonetic = existingCard?.phonetic || "";
+    this.lang = existingCard?.lang || "";
   }
 
   onOpen() {
@@ -4159,6 +4615,21 @@ class WordModal extends Modal {
       text.inputEl.placeholder = "e.g. takes, took, taken, taking";
     });
 
+    new Setting(contentEl).setName(t("word_lang_label"))
+      .setDesc(t("word_lang_desc"))
+      .addDropdown(drop => {
+        const languages = this.plugin.settings.languages || [];
+        drop.addOption('', t("color_default"));
+        for (const lang of languages) {
+          drop.addOption(lang.standardCode, lang.displayName);
+        }
+        drop.setValue(this.lang || "");
+        drop.onChange(val => {
+          this.lang = val;
+        });
+        return drop;
+      });
+
     const files = this.plugin.settings.wordbookFiles.filter(f => f.enabled && !f.readonly);
     if (!this.selectedFile && files.length > 0) this.selectedFile = files[0].path;
     new Setting(contentEl).setName(t("wordbook_label")).addDropdown(drop => {
@@ -4172,6 +4643,13 @@ class WordModal extends Modal {
       drop.onChange(val => this.selectedFile = val);
     });
 
+    // 读取记忆卡片下拉颜色
+    const isEdit = this.existingCard && this.existingCard.sourceFile;
+    if (!isEdit && this.plugin.settings.lastUsedCardColor) {
+      this.color = this.plugin.settings.lastUsedCardColor;
+    }
+
+    // 卡片颜色下拉
     const colorSetting = new Setting(contentEl).setName(t("card_color_label"));
     const colors = [
       { value: "", label: t("color_default"), color: "var(--interactive-accent)" },
@@ -4240,12 +4718,18 @@ class WordModal extends Modal {
       definition: this.definition || "",
       color: this.color || "",
       sourceFile: this.selectedFile,
-      phonetic: this.phonetic || ""
+      phonetic: this.phonetic || "",
+      lang: this.lang || "" 
     };
     try {
       await WordbookParser.saveCard(this.app, this.selectedFile, card, !this.existingCard);
       const action = this.existingCard ? t("word_updated") : t("word_added");
       new Notice(t("word_saved", action));
+
+      // 记忆卡片下拉颜色保存
+      this.plugin.settings.lastUsedCardColor = this.color;
+      await this.plugin.saveSettings();
+
       setTimeout(async () => {
         await this.plugin.reloadAllCards();
         await this.plugin.highlighter.refresh();
@@ -4280,35 +4764,46 @@ class WordbookSettingTab extends PluginSettingTab {
 
     // 创建标签栏
     const tabBar = containerEl.createDiv({ cls: "wordbook-setting-tab-bar" });
+
     const tabFiles = tabBar.createDiv({ cls: "wordbook-setting-tab" });
     setIcon(tabFiles, "folder");
     tabFiles.createSpan({ text: t("settings_tab_files") });
+
     const tabGeneral = tabBar.createDiv({ cls: "wordbook-setting-tab" });
     setIcon(tabGeneral, "sliders-horizontal");
     tabGeneral.createSpan({ text: t("settings_tab_general") });
+
+    const tabTts = tabBar.createDiv({ cls: "wordbook-setting-tab" });
+    setIcon(tabTts, "volume-2");
+    tabTts.createSpan({ text: t("settings_tab_tts") });
+
     const tabAI = tabBar.createDiv({ cls: "wordbook-setting-tab" });
     setIcon(tabAI, "bot");
     tabAI.createSpan({ text: t("settings_tab_ai") });
 
-    // 创建三个内容容器
+    // 创建四个内容容器
     const filesContainer = containerEl.createDiv({ cls: "wordbook-setting-files-container" });
     const generalContainer = containerEl.createDiv({ cls: "wordbook-setting-general-container" });
     generalContainer.style.display = "none";
+    const ttsContainer = containerEl.createDiv({ cls: "wordbook-setting-tts-container" });
+    ttsContainer.style.display = "none";
     const aiContainer = containerEl.createDiv({ cls: "wordbook-setting-ai-container" });
     aiContainer.style.display = "none";
 
     // 填充内容
     this.buildFilesTab(filesContainer);
     this.buildGeneralTab(generalContainer);
+    this.buildTtsTab(ttsContainer);
     this.buildAITab(aiContainer);
 
     // 切换逻辑
     const activateTab = (tabId) => {
       // 移除所有active类
-      [tabFiles, tabGeneral, tabAI].forEach(el => el.classList.remove('active'));
+      [tabFiles, tabGeneral, tabTts, tabAI].forEach(el => el.classList.remove('active'));
       // 隐藏所有容器
       filesContainer.style.display = "none";
       generalContainer.style.display = "none";
+      ttsContainer.style.display = "none";
       aiContainer.style.display = "none";
 
       // 根据tabId显示对应的标签和容器
@@ -4318,6 +4813,9 @@ class WordbookSettingTab extends PluginSettingTab {
       } else if (tabId === 'general') {
         tabGeneral.classList.add('active');
         generalContainer.style.display = "block";
+      } else if (tabId === 'tts') {
+        tabTts.classList.add('active');
+        ttsContainer.style.display = "block";
       } else if (tabId === 'ai') {
         tabAI.classList.add('active');
         aiContainer.style.display = "block";
@@ -4328,6 +4826,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // 绑定点击事件
     tabFiles.addEventListener("click", () => activateTab('files'));
     tabGeneral.addEventListener("click", () => activateTab('general'));
+    tabTts.addEventListener("click", () => activateTab('tts'));
     tabAI.addEventListener("click", () => activateTab('ai'));
 
     // 根据保存的状态激活
@@ -5035,17 +5534,6 @@ class WordbookSettingTab extends PluginSettingTab {
       textarea.inputEl.placeholder = t("scope_paths_placeholder");
     });
 
-    // ===== 发音设置 =====
-    container.createEl("h3", { text: t("settings_pronunciation") });
-    new Setting(container).setName(t("settings_tts_template")).setDesc(t("settings_tts_desc")).addText(text => text.setValue(this.plugin.settings.ttsUrlTemplate).onChange(async (val) => {
-      this.plugin.settings.ttsUrlTemplate = val;
-      await this.plugin.saveSettings();
-    }));
-    new Setting(container).setName(t("settings_variant")).addDropdown(drop => drop.addOption("us", "US").addOption("uk", "UK").setValue(this.plugin.settings.pronunciationVariant).onChange(async (val) => {
-      this.plugin.settings.pronunciationVariant = val;
-      await this.plugin.saveSettings();
-    }));
-
     // ===== 查词面板设置 =====
     container.createEl("h3", { text: t("lookup_settings_title") });
 
@@ -5103,6 +5591,630 @@ class WordbookSettingTab extends PluginSettingTab {
         });
         return text;
       });
+  }
+
+  buildTtsTab(container) {
+    const plugin = this.plugin;
+    const settings = plugin.settings;
+
+    // ===== 通用发音设置 =====
+    container.createEl("h3", { text: t("tts_pronunciation_general") });
+
+    // ===== 默认发音语言 =====
+    const langContainer = container.createDiv({ cls: 'default-lang-container' });
+    langContainer.style.cssText = 'margin-top: 4px;';
+
+    // ===== 当前语言详情框 =====
+    const detailContainer = container.createDiv({ cls: 'language-detail-container' });
+    detailContainer.style.cssText = 'margin-top: 8px; margin-bottom: 8px;';
+
+    const detailBox = detailContainer.createDiv({ cls: 'language-detail-box' });
+    detailBox.style.cssText = 'border: 1px solid var(--background-modifier-border); border-radius: 4px; padding: 12px; background: var(--background-secondary);';
+
+    // 标题行
+    const headerRow = detailBox.createDiv({ cls: 'language-detail-header' });
+    headerRow.style.cssText = 'display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;';
+    const titleEl = headerRow.createSpan({ text: t('language_current_detail') });
+    titleEl.style.cssText = 'font-weight: bold; font-size: 0.9em;';
+
+    const btnGroup = headerRow.createDiv({ cls: 'language-detail-buttons' });
+    btnGroup.style.cssText = 'display: flex; gap: 4px;';
+
+    const editBtn = btnGroup.createEl('button', { cls: 'clickable-icon' });
+    setIcon(editBtn, 'pencil');
+    editBtn.style.cssText = 'padding: 0 4px;';
+    editBtn.setAttribute('aria-label', t('edit'));
+
+    const deleteBtn = btnGroup.createEl('button', { cls: 'clickable-icon' });
+    setIcon(deleteBtn, 'trash');
+    deleteBtn.style.cssText = 'padding: 0 4px;';
+    deleteBtn.setAttribute('aria-label', t('delete'));
+
+    // 内容行
+    const contentRow = detailBox.createDiv({ cls: 'language-detail-content' });
+    contentRow.style.cssText = 'font-size: 0.85em; line-height: 1.6;';
+
+    // 定义更新函数
+    const updateLanguageDetail = () => {
+      const defaultCode = settings.defaultLanguage || 'en';
+      const lang = settings.languages.find(l => l.standardCode === defaultCode) || settings.languages.find(l => l.standardCode === 'en');
+      if (!lang) return;
+      contentRow.empty();
+      contentRow.createDiv({ text: `${t('language_display_name')}: ${lang.displayName}` });
+      contentRow.createDiv({ text: `${t('language_standard_code')}: ${lang.standardCode}` });
+      const presetText = `${t('preset_google')}: ${lang.presetCodes.google || lang.standardCode}  ·  ${t('preset_baidu')}: ${lang.presetCodes.baidu || lang.standardCode}  ·  ${t('preset_system')}: ${lang.presetCodes.system || lang.standardCode}  ·  ${t('preset_custom')}: ${lang.presetCodes.custom || lang.standardCode}`;
+      contentRow.createDiv({ text: presetText });
+    };
+
+    // 编辑按钮
+    editBtn.addEventListener('click', () => {
+      const defaultCode = settings.defaultLanguage || 'en';
+      const lang = settings.languages.find(l => l.standardCode === defaultCode) || settings.languages.find(l => l.standardCode === 'en');
+      if (lang) {
+        new LanguageModal(plugin.app, plugin, lang, () => {
+          updateLanguageDetail();
+          this.display();
+        }).open();
+      }
+    });
+
+    // 删除按钮
+    deleteBtn.addEventListener('click', async () => {
+      const defaultCode = settings.defaultLanguage || 'en';
+      const lang = settings.languages.find(l => l.standardCode === defaultCode) || settings.languages.find(l => l.standardCode === 'en');
+      if (!lang) return;
+      const allCards = plugin.getAllCards();
+      const count = allCards.filter(c => c.lang === lang.standardCode).length;
+      const confirmMsg = count > 0 ? t('language_delete_confirm_with_count', count) : t('delete_confirm');
+      const confirmed = await new Promise((resolve) => {
+        const modal = new ConfirmModal(plugin.app, () => resolve(true), () => resolve(false));
+        modal.open();
+      });
+      if (!confirmed) return;
+      const idx = settings.languages.findIndex(l => l.standardCode === lang.standardCode);
+      if (idx !== -1) {
+        settings.languages.splice(idx, 1);
+        await plugin.saveSettings();
+        if (settings.defaultLanguage === lang.standardCode) {
+          settings.defaultLanguage = 'en';
+          await plugin.saveSettings();
+        }
+        updateLanguageDetail();
+        new Notice(t('language_deleted'));
+        this.display();
+      }
+    });
+
+    // 下拉选择默认发音语言
+    new Setting(langContainer)
+      .setName(t("tts_default_lang_label"))
+      .setDesc(t("tts_default_lang_desc"))
+      .addDropdown(drop => {
+        // 从语言列表动态生成下拉选项
+        const languages = settings.languages || [];
+        for (const lang of languages) {
+          drop.addOption(lang.standardCode, lang.displayName);
+        }
+        drop.setValue(settings.defaultLanguage || 'en');
+        drop.onChange(async (val) => {
+          settings.defaultLanguage = val;
+          await plugin.saveSettings();
+          // 刷新当前语言详情框
+          updateLanguageDetail();
+        });
+        return drop;
+      });
+
+    // 新增语言按钮
+    const addButtonContainer = container.createDiv({ cls: 'language-add-button' });
+    addButtonContainer.style.cssText = 'margin-top: 8px; margin-bottom: 20px;';
+    const addBtn = addButtonContainer.createEl('button', { text: t('language_add') });
+    addBtn.addEventListener('click', () => {
+      new LanguageModal(plugin.app, plugin, null, () => {
+        updateLanguageDetail();
+        this.display();
+      }).open();
+    });
+
+    // 初次填充详情框
+    updateLanguageDetail();
+
+    // ===== 发音设置标题 =====
+    container.createEl("h3", { text: t("tts_network_tts_title") });
+
+    // ===== 预设模板下拉 =====
+    const presetSetting = new Setting(container)
+      .setName(t("tts_preset_label"))
+      .setDesc(t("tts_preset_desc")) 
+      .addDropdown(drop => {
+        drop.addOption('youdao', t("tts_preset_youdao"));
+        drop.addOption('baidu', t("tts_preset_baidu"));
+        drop.addOption('google', t("tts_preset_google"));
+        drop.addOption('custom', t("tts_preset_custom"));
+
+        // 读取保存的预设
+        const currentPreset = settings.ttsPreset || 'custom';
+        drop.setValue(currentPreset);
+
+        drop.onChange(async (val) => {
+          settings.ttsPreset = val;
+
+          // 根据预设填充模板
+          let url = settings.ttsUrlTemplate;
+          if (val === 'youdao') {
+            url = 'https://dict.youdao.com/dictvoice?audio={{word}}&type={{type}}';
+          } else if (val === 'baidu') {
+            url = 'https://fanyi.baidu.com/gettts?lan={{lang}}&text={{word}}&spd={{rate}}&source=web';
+          } else if (val === 'google') {
+            url = 'https://translate.google.com/translate_tts?ie=UTF-8&q={{word}}&tl={{lang}}&client=tw-ob&ttsspeed={{rate}}';
+          } else {
+            // 自定义：保留当前值
+            url = settings.ttsUrlTemplate;
+          }
+
+          // 更新模板输入框
+          if (this.ttsTemplateInput) {
+            this.ttsTemplateInput.setValue(url);
+          }
+          settings.ttsUrlTemplate = url;
+          await plugin.saveSettings();
+
+          // 加载对应预设的语速配置
+          if (this.loadRateConfig) {
+            this.loadRateConfig();
+          }
+
+          // 切换预设后更新控件的显隐
+          this.toggleTtsControls(val);
+        });
+
+        return drop;
+      });
+
+    // ===== TTS URL 模板输入框 =====
+    const templateSetting = new Setting(container)
+      .setName(t("settings_tts_template"))
+      .setDesc(t("tts_template_desc"))
+      .addText(text => {
+        text.setValue(settings.ttsUrlTemplate);
+        text.onChange(async (val) => {
+          settings.ttsUrlTemplate = val;
+          // 用户手动修改模板时，自动切换预设为 'custom'
+          if (settings.ttsPreset !== 'custom') {
+            settings.ttsPreset = 'custom';
+            // 同步更新预设下拉的显示值
+            const presetDropdown = container.querySelector('.dropdown');
+            if (presetDropdown) presetDropdown.value = 'custom';
+            // 切换预设时重新调整显隐
+            this.toggleTtsControls('custom');
+          }
+          await plugin.saveSettings();
+        });
+        // 保存输入框引用，供预设填充使用
+        this.ttsTemplateInput = text;
+        return text;
+      });
+
+    // ===== 发音偏好（US/UK），仅当预设为“有道”或“自定义”时显示 =====
+    const variantContainer = container.createDiv({ cls: 'pronunciation-variant-container' });
+    variantContainer.style.cssText = 'margin-top: 4px;';
+
+    new Setting(variantContainer)
+      .setName(t("settings_variant"))
+      .setDesc(t("tts_variant_desc"))
+      .addDropdown(drop => {
+        drop.addOption('us', 'US')
+          .addOption('uk', 'UK')
+          .setValue(settings.pronunciationVariant || 'us')
+          .onChange(async (val) => {
+            settings.pronunciationVariant = val;
+            await plugin.saveSettings();
+          });
+        return drop;
+      });
+
+    // ===== 语速控制 =====
+    const rateContainer = container.createDiv({ cls: 'speech-rate-container' });
+    rateContainer.style.cssText = 'margin-top: 8px;';
+
+    const rateSetting = new Setting(rateContainer)
+      .setName(t("tts_speech_rate_label"))
+      .setDesc(t("tts_speech_rate_desc"))
+      .addButton(btn => {
+        btn.setButtonText(t("tts_speech_rate_reset"))
+          .setTooltip(t("tts_speech_rate_reset_tooltip"))
+          .onClick(() => {
+            const preset = settings.ttsPreset || 'custom';
+            const defaultConfig = DEFAULT_SETTINGS.speechRatePresets?.[preset];
+            if (defaultConfig) {
+              // 更新 UI
+              minInput.value = String(defaultConfig.min);
+              maxInput.value = String(defaultConfig.max);
+              slider.min = String(defaultConfig.min);
+              slider.max = String(defaultConfig.max);
+              slider.value = String(defaultConfig.value);
+              valueDisplay.textContent = t("tts_speech_rate_current", defaultConfig.value);
+
+              // 更新 settings
+              if (!settings.speechRatePresets) settings.speechRatePresets = {};
+              settings.speechRatePresets[preset] = { ...defaultConfig };
+              plugin.saveSettings();
+            }
+          });
+        return btn;
+      });
+
+    // ---- 调速控件 ----
+    // 最小/最大值输入行
+    const rangeRow = rateContainer.createDiv({ cls: 'speech-rate-range-row' });
+    rangeRow.style.cssText = 'display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;';
+
+    // 最小值
+    const minLabel = rangeRow.createSpan({ text: t("tts_speech_rate_min") });
+    minLabel.style.cssText = 'font-size: 0.85em; color: var(--text-muted);';
+    const minInput = rangeRow.createEl('input', { type: 'number' });
+    minInput.style.cssText = 'width: 70px; padding: 4px 6px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);';
+    minInput.step = '0.1';
+
+    // 滑动条
+    const slider = rangeRow.createEl('input', { type: 'range' });
+    slider.style.cssText = 'flex: 1; min-width: 100px;';
+    slider.step = '0.1';
+
+    // 最大值
+    const maxLabel = rangeRow.createSpan({ text: t("tts_speech_rate_max") });
+    maxLabel.style.cssText = 'font-size: 0.85em; color: var(--text-muted);';
+    const maxInput = rangeRow.createEl('input', { type: 'number' });
+    maxInput.style.cssText = 'width: 70px; padding: 4px 6px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);';
+    maxInput.step = '0.1';
+
+    // 当前值显示
+    const valueDisplay = rateContainer.createDiv({ cls: 'speech-rate-value-display' });
+    valueDisplay.style.cssText = 'text-align: center; font-size: 0.9em; color: var(--text-muted); padding: 4px 0;';
+    valueDisplay.textContent = `当前语速: ${slider.value}`;
+
+    // ---- 加载当前预设的语速配置 ----
+    const loadRateConfig = () => {
+      const preset = settings.ttsPreset || 'custom';
+      const config = settings.speechRatePresets?.[preset] || { min: 0.5, max: 2.0, value: 1.0 };
+      minInput.value = String(config.min);
+      maxInput.value = String(config.max);
+      slider.min = String(config.min);
+      slider.max = String(config.max);
+      slider.value = String(config.value);
+      valueDisplay.textContent = t("tts_speech_rate_current", config.value);
+    };
+    loadRateConfig();
+
+    // ---- 保存当前语速配置 ----
+    const saveRateConfig = () => {
+      const preset = settings.ttsPreset || 'custom';
+      if (!settings.speechRatePresets) settings.speechRatePresets = {};
+      if (!settings.speechRatePresets[preset]) {
+        settings.speechRatePresets[preset] = { min: 0.5, max: 2.0, value: 1.0 };
+      }
+      const config = settings.speechRatePresets[preset];
+      config.min = parseFloat(minInput.value) || 0.5;
+      config.max = parseFloat(maxInput.value) || 2.0;
+      config.value = parseFloat(slider.value) || 1.0;
+      // 确保 min < max
+      if (config.min >= config.max) {
+        config.max = config.min + 0.5;
+        maxInput.value = String(config.max);
+      }
+      // 如果当前值超出范围，修正
+      if (config.value < config.min) config.value = config.min;
+      if (config.value > config.max) config.value = config.max;
+      slider.value = String(config.value);
+      // 同步更新滑块的 min/max 属性
+      slider.min = String(config.min);
+      slider.max = String(config.max);
+      valueDisplay.textContent = t("tts_speech_rate_current", config.value);
+      plugin.saveSettings();
+    };
+
+    // ---- 事件绑定 ----
+    minInput.addEventListener('change', saveRateConfig);
+    maxInput.addEventListener('change', saveRateConfig);
+    slider.addEventListener('input', () => {
+      const val = parseFloat(slider.value) || 1.0;
+      const preset = settings.ttsPreset || 'custom';
+      if (settings.speechRatePresets && settings.speechRatePresets[preset]) {
+        settings.speechRatePresets[preset].value = val;
+        valueDisplay.textContent = t("tts_speech_rate_current", val);
+        plugin.saveSettings();
+      }
+    });
+
+    // 保存引用供切换预设时更新
+    this.rateContainer = rateContainer;
+    this.rateMinInput = minInput;
+    this.rateMaxInput = maxInput;
+    this.rateSlider = slider;
+    this.rateValueDisplay = valueDisplay;
+    this.loadRateConfig = loadRateConfig; // 供预设切换调用
+
+    // 保存引用，供显隐控制使用
+    this.variantContainer = variantContainer;
+
+    // ===== 网络TTS 发音测试 =====
+    const testContainer = container.createDiv({ cls: 'tts-test-container' });
+    testContainer.style.cssText = 'margin-top: 12px; padding-top: 8px;';
+
+    let testWordInput = null;
+
+    new Setting(testContainer)
+      .setName(t("tts_test_label"))
+      .setDesc(t("tts_test_desc"))
+      .addText(text => {
+        text.setValue('hello');
+        text.inputEl.placeholder = 'e.g. hello';
+        testWordInput = text;
+        return text;
+      })
+      .addButton(btn => {
+        btn.setButtonText(t("tts_test_play"))
+          .setCta()
+          .onClick(async () => {
+            const word = testWordInput ? testWordInput.getValue().trim() : 'hello';
+            if (!word) {
+              new Notice('Please enter a word to test.');
+              return;
+            }
+            // 临时禁用系统TTS，强制使用网络TTS
+            const oldEnable = settings.enableSystemTTS;
+            settings.enableSystemTTS = false;
+            try {
+              await playPronunciation(
+                word,
+                settings.ttsUrlTemplate,
+                settings.pronunciationVariant,
+                settings.defaultLanguage
+              );
+            } catch (e) {
+              // playPronunciation 内部已有错误处理，但以防万一
+              console.warn('TTS test failed:', e);
+            } finally {
+              settings.enableSystemTTS = oldEnable;
+            }
+          });
+        return btn;
+      });
+
+    // ===== 系统 TTS =====
+    container.createEl("h3", { text: t("tts_system_tts_title") });
+
+    // 启用开关
+    new Setting(container)
+      .setName(t("tts_system_tts_enable"))
+      .setDesc(t("tts_system_tts_desc"))
+      .addToggle(toggle => toggle
+        .setValue(settings.enableSystemTTS || false)
+        .onChange(async (val) => {
+          settings.enableSystemTTS = val;
+          await plugin.saveSettings();
+        })
+      );
+
+    // ---- 语音选择 ----
+    const voiceSetting = new Setting(container)
+      .setName(t("tts_system_voice_label"))
+      .setDesc(t("tts_system_voice_desc"));
+
+    const voiceControlRow = voiceSetting.controlEl.createDiv({ cls: 'system-voice-row' });
+    voiceControlRow.style.cssText = 'display: flex; align-items: center; gap: 8px; flex-wrap: wrap;';
+
+    const voiceDropdown = voiceControlRow.createEl('select');
+    voiceDropdown.style.cssText = 'flex: 1; min-width: 150px;';
+
+    // 试听按钮
+    const testBtn = voiceControlRow.createEl('button', { text: t("tts_system_voice_test") });
+    testBtn.style.cssText = 'flex-shrink: 0;';
+
+    // 加载状态与无语音提示（共享同一个元素）
+    const statusMsg = voiceControlRow.createSpan();
+    statusMsg.style.cssText = 'color: var(--text-muted); font-size: 0.9em; display: none;';
+
+    // 检查 speechSynthesis 是否可用
+    const isSpeechSupported = typeof window.speechSynthesis !== 'undefined' && window.speechSynthesis;
+
+    // 填充语音列表的函数
+    const populateVoices = () => {
+      // 添加安全检查
+      if (!isSpeechSupported) {
+        voiceDropdown.style.display = 'none';
+        testBtn.style.display = 'none';
+        statusMsg.style.display = 'inline';
+        statusMsg.textContent = t("tts_system_voice_no_voices");
+        return;
+      }
+
+      try {
+        const voices = window.speechSynthesis.getVoices();
+        voiceDropdown.innerHTML = '';
+        if (!voices || voices.length === 0) {
+          voiceDropdown.style.display = 'none';
+          testBtn.style.display = 'none';
+          statusMsg.style.display = 'inline';
+          statusMsg.textContent = t("tts_system_voice_no_voices");
+          return;
+        }
+        voiceDropdown.style.display = 'inline-block';
+        testBtn.style.display = 'inline-block';
+        statusMsg.style.display = 'none';
+
+        // 添加"默认"选项
+        const defaultOption = voiceDropdown.createEl('option', {
+          value: 'default',
+          text: t("tts_system_voice_default")
+        });
+        if (!settings.systemTTSVoiceName || settings.systemTTSVoiceName === 'default') {
+          defaultOption.selected = true;
+        }
+
+        // 按语言分组排序
+        const sorted = voices.sort((a, b) => a.lang.localeCompare(b.lang));
+        for (const voice of sorted) {
+          const option = voiceDropdown.createEl('option', {
+            value: voice.name || voice.voiceURI,
+            text: `${voice.name} (${voice.lang})`
+          });
+          if (settings.systemTTSVoiceName && settings.systemTTSVoiceName !== 'default' &&
+            (voice.name === settings.systemTTSVoiceName || voice.voiceURI === settings.systemTTSVoiceName)) {
+            option.selected = true;
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to get system voices:', e);
+        voiceDropdown.style.display = 'none';
+        testBtn.style.display = 'none';
+        statusMsg.style.display = 'inline';
+        statusMsg.textContent = t("tts_system_voice_no_voices");
+      }
+    };
+
+    // 显示加载状态
+    voiceDropdown.style.display = 'none';
+    testBtn.style.display = 'none';
+    statusMsg.style.display = 'inline';
+    statusMsg.textContent = t("tts_system_voice_loading");
+
+    // 首次填充（可能异步）
+    if (!isSpeechSupported) {
+      // 不支持：直接显示无语音
+      voiceDropdown.style.display = 'none';
+      testBtn.style.display = 'none';
+      statusMsg.style.display = 'inline';
+      statusMsg.textContent = t("tts_system_voice_no_voices");
+    } else {
+      // 支持：正常填充
+      const initialVoices = window.speechSynthesis.getVoices();
+      if (initialVoices && initialVoices.length > 0) {
+        populateVoices();
+      } else {
+        window.speechSynthesis.onvoiceschanged = () => {
+          try {
+            populateVoices();
+            // 若当前无存储值，默认选择"default"
+            if (!settings.systemTTSVoiceName) {
+              settings.systemTTSVoiceName = 'default';
+              plugin.saveSettings();
+            }
+          } catch (e) {
+            console.warn('Error on voices changed:', e);
+          }
+        };
+      }
+    }
+
+    // 下拉框变化时保存
+    voiceDropdown.addEventListener('change', () => {
+      settings.systemTTSVoiceName = voiceDropdown.value;
+      plugin.saveSettings();
+    });
+
+    // 试听按钮
+    let isPlaying = false;
+    testBtn.addEventListener('click', () => {
+      if (isPlaying) return;
+      if (!window.speechSynthesis) {
+        new Notice(t("tts_system_voice_no_voices"));
+        return;
+      }
+      try {
+        const testText = t("tts_system_test_text");
+        const utterance = new SpeechSynthesisUtterance(testText);
+        // 应用当前系统 TTS 参数
+        utterance.rate = settings.systemTTSSpeechRate ?? 1.0;
+        utterance.pitch = settings.systemTTSPitch ?? 1.0;
+        const voiceName = settings.systemTTSVoiceName || 'default';
+        if (voiceName !== 'default') {
+          const voices = window.speechSynthesis.getVoices();
+          const matched = voices.find(v => v.name === voiceName || v.voiceURI === voiceName);
+          if (matched) utterance.voice = matched;
+        }
+        isPlaying = true;
+        testBtn.textContent = t("tts_system_voice_test") + '...';
+        testBtn.disabled = true;
+        utterance.onend = () => {
+          isPlaying = false;
+          testBtn.textContent = t("tts_system_voice_test");
+          testBtn.disabled = false;
+        };
+        utterance.onerror = () => {
+          isPlaying = false;
+          testBtn.textContent = t("tts_system_voice_test");
+          testBtn.disabled = false;
+        };
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        console.warn('Test voice playback failed:', e);
+        new Notice(t("tts_system_voice_no_voices"));
+        isPlaying = false;
+        testBtn.textContent = t("tts_system_voice_test");
+        testBtn.disabled = false;
+      }
+    });
+
+    // ---- 语速（系统 TTS 专用） ----
+    new Setting(container)
+      .setName(t("tts_system_rate_label"))
+      .setDesc(t("tts_system_rate_desc"))
+      .addSlider(slider => {
+        const rate = Number(settings.systemTTSSpeechRate) || 1.0;
+        slider.setValue(rate)
+          .setDynamicTooltip()
+          .setLimits(0.5, 2.0, 0.1)
+          .onChange(async (value) => {
+            settings.systemTTSSpeechRate = value;
+            await plugin.saveSettings();
+          });
+        slider.sliderEl.value = rate;
+        return slider;
+      });
+
+    // ---- 音高 ----
+    new Setting(container)
+      .setName(t("tts_system_pitch_label"))
+      .setDesc(t("tts_system_pitch_desc"))
+      .addSlider(slider => {
+        const pitch = Number(settings.systemTTSPitch) || 1.0;
+        slider.setValue(pitch)
+          .setDynamicTooltip()
+          .setLimits(0.5, 2.0, 0.1)
+          .onChange(async (value) => {
+            settings.systemTTSPitch = value;
+            await plugin.saveSettings();
+          });
+        slider.sliderEl.value = pitch;
+        return slider;
+      });
+
+    // ---- 提示信息 ----
+    const hintDiv = container.createDiv({ cls: 'system-tts-hint' });
+    hintDiv.style.cssText = 'margin-top: 8px; font-size: 0.85em; color: var(--text-muted); padding-left: 15px;';
+    hintDiv.textContent = t("tts_system_hint");
+
+    // ----- 初始化显隐状态（根据预设控制网络 TTS 控件的显隐） -----
+    const initialPreset = settings.ttsPreset || 'custom';
+    this.toggleTtsControls(initialPreset);
+  }
+
+  // ----- 辅助方法：切换 TTS 控件的显隐 -----
+  toggleTtsControls(preset) {
+    // 控制“发音偏好”（US/UK）：有道或自定义时显示
+    if (this.variantContainer) {
+      if (preset === 'youdao' || preset === 'custom') {
+        this.variantContainer.style.display = 'block';
+      } else {
+        this.variantContainer.style.display = 'none';
+      }
+    }
+
+    // 控制“语速”：有道时隐藏，其他情况显示
+    if (this.rateContainer) {
+      this.rateContainer.style.display = (preset === 'youdao') ? 'none' : 'block';
+    }
   }
 
   buildAITab(container) {
@@ -6422,6 +7534,7 @@ class ExportModal extends Modal {
       includeDefinition: true,
       includeSource: true,
       includeStatus: true,
+      includeLang: false, 
       convertToHtml: true,
       oneLinePerWord: false
     };
@@ -6563,6 +7676,16 @@ class ExportModal extends Modal {
       this.options.includeStatus = statusCheck.checked;
     });
     statusRow.createSpan({ text: t("export_include_status") });
+
+    // 发音语言 (lang)字段
+    const langRow = optionsContainer.createDiv({ cls: "export-option-row" });
+    langRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 2px 0;";
+    const langCheck = langRow.createEl("input", { type: "checkbox" });
+    langCheck.checked = false;
+    langCheck.addEventListener("change", () => {
+      this.options.includeLang = langCheck.checked;
+    });
+    langRow.createSpan({ text: t("export_include_lang") });
 
     // 转换为 HTML（仅 TXT）
     const convertRow = optionsContainer.createDiv({ cls: "export-option-row export-convert-row" });
@@ -6844,17 +7967,17 @@ class ExportSingleWordModal extends Modal {
     const lines = [`## ${card.word}`, ''];
 
     // 音标
-    lines.push(`**${t("export_phonetic_label")}**：${card.phonetic || ''}`, '');
+    lines.push(`**${t("export_phonetic_label")}**: ${card.phonetic || ''}`, '');
     // 别名
     if (card.aliases && card.aliases.length > 0) {
-      lines.push(`**${t("export_aliases_label")}**：${card.aliases.join('、')}`, '');
+      lines.push(`**${t("export_aliases_label")}**: ${card.aliases.join(', ')}`, '');
     }
     // 来源
     const source = card.sourceFile?.split('/').pop() || '';
-    lines.push(`**${t("export_source_label")}**：${source}`, '');
+    lines.push(`**${t("export_source_label")}**: ${source}`, '');
     // 状态（复用全局函数）
     const status = getStatusLabel(card, this.plugin);
-    lines.push(`**${t("export_status_label")}**：${status}`, '');
+    lines.push(`**${t("export_status_label")}**: ${status}`, '');
 
     // 定义章节（复用全局函数）
     const sections = parseSectionsForExport(card.definition || '');
@@ -7022,7 +8145,205 @@ class ExportSimpleModal extends Modal {
   }
 }
 
-// 单词卡片右键菜单
+// ========== 添加/编辑语言映射模态窗 ==========
+class LanguageModal extends Modal {
+  constructor(app, plugin, existingLang = null, onSaveCallback = null) {
+    super(app);
+    this.plugin = plugin;
+    this.existingLang = existingLang;
+    this.onSaveCallback = onSaveCallback;
+    this.isEditing = !!existingLang;
+    this.displayName = existingLang?.displayName || '';
+    this.standardCode = existingLang?.standardCode || '';
+    this.presetCodes = existingLang?.presetCodes ? { ...existingLang.presetCodes } : { google: '', baidu: '', system: '', custom: '' };
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    this.titleEl.setText(t('language_edit_title'));
+
+    // --- 保存显示名称输入框引用 ---
+    let nameInputEl = null;
+
+    // 显示名称
+    new Setting(contentEl)
+      .setName(t('language_display_name'))
+      .addText(text => {
+        text.setValue(this.displayName);
+        text.onChange(val => this.displayName = val);
+        nameInputEl = text.inputEl;  // 保存引用
+        return text;
+      });
+
+    // 标准代码（下拉+手动输入）
+    const codeSetting = new Setting(contentEl)
+      .setName(t('language_standard_code'))
+      .setDesc(t('language_code_desc'));
+
+    let codeInputEl = null;
+    codeSetting.addText(text => {
+      text.setValue(this.standardCode);
+      text.onChange(val => this.standardCode = val);
+      codeInputEl = text.inputEl;
+      return text;
+    });
+    // 编辑模式下禁用标准代码框
+    if (this.isEditing && codeInputEl) {
+      codeInputEl.disabled = true;
+      codeInputEl.style.color = 'var(--text-muted)';
+      codeInputEl.style.opacity = '0.7';
+      // 编辑时不需要 datalist 提示
+      codeInputEl.removeAttribute('list');
+    }
+
+    // 创建 datalist
+    const datalist = document.createElement('datalist');
+    datalist.id = 'lang-code-list';
+    const builtinCodes = BUILTIN_LANGUAGES.map(l => l.standardCode);
+    builtinCodes.forEach(code => {
+      const option = document.createElement('option');
+      option.value = code;
+      datalist.appendChild(option);
+    });
+    contentEl.appendChild(datalist);
+
+    // 安全设置 list 属性
+    if (codeInputEl) {
+      codeInputEl.setAttribute('list', 'lang-code-list');
+    }
+
+    // --- 预设代码区域 ---
+    contentEl.createEl('hr');
+    contentEl.createEl('h4', { text: t('language_preset_codes') });
+
+    const presetLabels = [t('preset_google'), t('preset_baidu'), t('preset_system'), t('preset_custom')];
+    const presetKeys = ['google', 'baidu', 'system', 'custom'];
+    this.presetInputs = {};  // 存储预设输入框引用
+
+    for (let i = 0; i < presetKeys.length; i++) {
+      const key = presetKeys[i];
+      const setting = new Setting(contentEl)
+        .setName(t(presetLabels[i]));
+
+      let inputEl = null;
+      setting.addText(text => {
+        text.setValue(this.presetCodes[key] || '');
+        text.onChange(val => this.presetCodes[key] = val);
+        inputEl = text.inputEl;
+        return text;
+      });
+      // 保存引用
+      this.presetInputs[key] = inputEl;
+
+      setting.addButton(btn => {
+        btn.setButtonText('↺');
+        btn.setTooltip(t('language_reset_default'));
+        btn.onClick(() => {
+          const builtin = BUILTIN_LANGUAGES.find(l => l.standardCode === this.standardCode);
+          if (builtin && builtin.presetCodes && builtin.presetCodes[key]) {
+            this.presetCodes[key] = builtin.presetCodes[key];
+          } else {
+            this.presetCodes[key] = this.standardCode;
+          }
+          if (this.presetInputs[key]) {
+            this.presetInputs[key].value = this.presetCodes[key];
+          }
+        });
+        return btn;
+      });
+    }
+
+    // --- 标准代码 change 事件（自动填充） ---
+    if (codeInputEl) {
+      codeInputEl.addEventListener('change', () => {
+        const code = codeInputEl.value.trim();
+        const selected = BUILTIN_LANGUAGES.find(l => l.standardCode === code);
+        if (selected) {
+          // 更新显示名称
+          this.displayName = selected.displayName;
+          if (nameInputEl) nameInputEl.value = this.displayName;
+
+          // 更新预设代码
+          this.presetCodes = {
+            google: selected.presetCodes.google || code,
+            baidu: selected.presetCodes.baidu || code,
+            system: selected.presetCodes.system || code,
+            custom: selected.presetCodes.custom || code
+          };
+          // 更新预设输入框的值
+          for (const key of presetKeys) {
+            if (this.presetInputs[key]) {
+              this.presetInputs[key].value = this.presetCodes[key];
+            }
+          }
+        } else {
+          // 未匹配到内置语言，清空显示名称和预设代码（让用户手动填写）
+          this.displayName = '';
+          if (nameInputEl) nameInputEl.value = '';
+          this.presetCodes = { google: '', baidu: '', system: '', custom: '' };
+          for (const key of presetKeys) {
+            if (this.presetInputs[key]) {
+              this.presetInputs[key].value = '';
+            }
+          }
+        }
+      });
+    }
+
+    // --- 底部按钮 ---
+    const buttonDiv = contentEl.createDiv({ cls: 'modal-button-container' });
+    buttonDiv.style.cssText = 'display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;';
+    const cancelBtn = buttonDiv.createEl('button', { text: t('cancel') });
+    cancelBtn.addEventListener('click', () => this.close());
+    const saveBtn = buttonDiv.createEl('button', { text: t('save'), cls: 'mod-cta' });
+    saveBtn.addEventListener('click', () => this.save());
+  }
+
+  async save() {
+    const displayName = this.displayName.trim();
+    const standardCode = this.standardCode.trim();
+    if (!displayName || !standardCode) {
+      new Notice(t('language_fill_required'));
+      return;
+    }
+    const duplicate = this.plugin.settings.languages.some(l =>
+      l.standardCode === standardCode && (this.isEditing ? l.standardCode !== this.existingLang.standardCode : true)
+    );
+    if (duplicate) {
+      new Notice(t('language_code_exists'));
+      return;
+    }
+
+    const langEntry = {
+      id: standardCode,
+      displayName: displayName,
+      standardCode: standardCode,
+      presetCodes: {
+        google: this.presetCodes.google || standardCode,
+        baidu: this.presetCodes.baidu || standardCode,
+        system: this.presetCodes.system || standardCode,
+        custom: this.presetCodes.custom || standardCode
+      }
+    };
+
+    if (this.isEditing) {
+      const idx = this.plugin.settings.languages.findIndex(l => l.standardCode === this.existingLang.standardCode);
+      if (idx !== -1) {
+        this.plugin.settings.languages[idx] = langEntry;
+      }
+    } else {
+      this.plugin.settings.languages.push(langEntry);
+    }
+
+    await this.plugin.saveSettings();
+    if (this.onSaveCallback) this.onSaveCallback();
+    this.close();
+    new Notice(this.isEditing ? t('language_updated') : t('language_added'));
+  }
+}
+
+// ========== 单词卡片右键菜单 ==========
 class WordContextMenu {
   constructor(plugin, wordObj) { this.plugin = plugin; this.wordObj = wordObj; }
 
@@ -7477,6 +8798,16 @@ class SimpleWordbookPlugin extends Plugin {
     const { scopeMode, scopePaths } = this.settings;
     if (!scopePaths || scopePaths.length === 0) return true;
     const normalizedPath = normalizePath(filePath).toLowerCase();
+
+    // 根目录通配符 *
+    const hasRootWildcard = scopePaths.includes('*');
+    if (hasRootWildcard) {
+      const isRootFile = !normalizedPath.includes('/');
+      if (isRootFile) {
+        return scopeMode === "include";
+      }
+    }
+
     const matches = scopePaths.some(p => {
       let normalizedP = normalizePath(p).toLowerCase();
       if (!normalizedP.endsWith('/')) {
@@ -7715,6 +9046,38 @@ class SimpleWordbookPlugin extends Plugin {
     if (this.settings.customHighlightColor === undefined) {
       this.settings.customHighlightColor = "";
     }
+
+    // 发音设置字段初始化
+    if (this.settings.defaultLanguage === undefined) {
+      this.settings.defaultLanguage = "en";
+    }
+    // 初始化语言列表
+    if (!this.settings.languages || this.settings.languages.length === 0) {
+      // 语言列表为空时，使用完整的内置语言列表
+      this.settings.languages = JSON.parse(JSON.stringify(BUILTIN_LANGUAGES));
+    }
+
+    // 检查 defaultLanguage 是否存在于语言列表中，若不存在则添加该语言（使用标准代码作为显示名称）
+    const defaultLangExists = this.settings.languages.some(l => l.standardCode === this.settings.defaultLanguage);
+    if (!defaultLangExists) {
+      const newLang = {
+        id: this.settings.defaultLanguage,
+        displayName: this.settings.defaultLanguage,
+        standardCode: this.settings.defaultLanguage,
+        presetCodes: { google: this.settings.defaultLanguage, baidu: this.settings.defaultLanguage, system: this.settings.defaultLanguage, custom: this.settings.defaultLanguage },
+      };
+      this.settings.languages.push(newLang);
+    }
+
+    // 网络 TTS预设值初始化
+    if (this.settings.ttsPreset === undefined) {
+      this.settings.ttsPreset = "youdao";
+    }
+    // 系统 TTS 字段初始化
+    if (this.settings.systemTTSSpeechRate === undefined) this.settings.systemTTSSpeechRate = 1.0;
+    if (this.settings.systemTTSPitch === undefined) this.settings.systemTTSPitch = 1.0;
+    if (this.settings.systemTTSVoiceName === undefined) this.settings.systemTTSVoiceName = "";
+
     // 系统提示词兼容
     if (!this.settings.systemPrompts) this.settings.systemPrompts = [];
 

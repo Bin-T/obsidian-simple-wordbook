@@ -978,6 +978,7 @@
   /* 所有标签页描述过长时换行 */
   .wordbook-setting-files-container .setting-item .setting-item-description,
   .wordbook-setting-general-container .setting-item .setting-item-description,
+  .wordbook-setting-tts-container .setting-item .setting-item-description,
   .wordbook-setting-ai-container .setting-item .setting-item-description {
     white-space: normal;
     word-break: break-word;
@@ -986,6 +987,7 @@
   /* 让所有设置标签页的控制区允许子元素换行 */
   .wordbook-setting-files-container .setting-item .setting-item-control,
   .wordbook-setting-general-container .setting-item .setting-item-control,
+  .wordbook-setting-tts-container .setting-item .setting-item-control,
   .wordbook-setting-ai-container .setting-item .setting-item-control {
     flex-wrap: wrap;
   }
@@ -993,6 +995,7 @@
   /* 所有设置标签页中控制区的文本标签自动换行 */
   .wordbook-setting-files-container .setting-item .setting-item-control span,
   .wordbook-setting-general-container .setting-item .setting-item-control span,
+  .wordbook-setting-tts-container .setting-item .setting-item-control span,
   .wordbook-setting-ai-container .setting-item .setting-item-control span {
     white-space: normal;
     word-break: break-word;
