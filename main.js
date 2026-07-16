@@ -264,6 +264,7 @@ const locale = {
     tts_system_fallback_notice: "No {lang} voice available. Please switch back to online TTS or change system voice.",
     tts_system_auto_switched: "Automatically switched to {voice} to support the current language.",
     tts_system_no_voice_for_lang: "No system voice available for {lang}. Please install the language pack or disable System TTS.",
+    command_pronounce_selected: "Read selected text",
 
     settings_tab_ai: "AI Config",
     settings_api_config: "API Configuration",
@@ -685,6 +686,7 @@ const locale = {
     tts_system_fallback_notice: "当前系统无 {lang} 语音，请切换回网络 TTS 或更换系统语音。",
     tts_system_auto_switched: "已自动切换到 {voice} 以支持当前语言。",
     tts_system_no_voice_for_lang: "当前系统缺少 {lang} 语音包，请安装语音包或关闭“系统 TTS”。",
+    command_pronounce_selected: "朗读选中的文本",
 
     settings_tab_ai: "AI 配置",
     settings_api_config: "API 配置",
@@ -2969,7 +2971,7 @@ class HoverPreview {
   }
 
   async showTooltip(target, word) {
-    // ★ 清除可能残留的关闭定时器
+    // 清除可能残留的关闭定时器
     if (this.closeTimeout) {
       clearTimeout(this.closeTimeout);
       this.closeTimeout = null;
@@ -3006,6 +3008,9 @@ class HoverPreview {
 
     const tooltip = document.createElement("div");
     tooltip.className = "simple-wordbook-tooltip";
+
+    tooltip.dataset.lang = currentCard.lang || this.plugin.settings.defaultLanguage || 'en';
+
     if (this.plugin.settings.enableBlurDefinition) {
       tooltip.classList.add("blur-definition");
     }
@@ -3511,6 +3516,8 @@ class SidebarView extends ItemView {
     };
     cardDiv.style.setProperty("--card-color", colorMap[wordObj.color] || "var(--interactive-accent)");
 
+    cardDiv.dataset.lang = wordObj.lang || this.plugin.settings.defaultLanguage || 'en';
+
     const actionsDiv = cardDiv.createDiv({ cls: "card-actions" });
     if (this.plugin.settings.enableMastery) {
       const masteryBtn = actionsDiv.createDiv({ cls: "action-icon" });
@@ -3879,6 +3886,8 @@ class LookupView extends ItemView {
       cyan: "var(--color-cyan)"
     };
     cardDiv.style.setProperty("--card-color", colorMap[card.color] || "var(--interactive-accent)");
+
+    cardDiv.dataset.lang = card.lang || this.plugin.settings.defaultLanguage || 'en';
 
     // 操作按钮（掌握/忽略）
     const actionsDiv = cardDiv.createDiv({ cls: "card-actions" });
@@ -8539,7 +8548,14 @@ class SimpleWordbookPlugin extends Plugin {
         }
       }
     });
-    
+
+    // ===== 添加命令：朗读选中的文本 =====
+    this.addCommand({
+      id: 'pronounce-selected-text',
+      name: t("command_pronounce_selected"),
+      callback: () => this.pronounceSelectedText()
+    });
+
     this.registerEvent(this.app.workspace.on("editor-menu", (menu, editor) => {
       const selected = editor.getSelection().trim();
       if (selected) {
@@ -8548,7 +8564,7 @@ class SimpleWordbookPlugin extends Plugin {
 
       // 查词功能（如果选中文本）
       if (selected) {
-        // ★ 截断显示：超过20个字符截断并加 …
+        // 截断显示：超过20个字符截断并加 …
         const displayText = selected.length > 20 ? selected.slice(0, 20) + '…' : selected;
         const submenu = menu.addItem(item => {
           item.setTitle(t("editor_menu_lookup", displayText)).setIcon("search-code");
@@ -8936,7 +8952,7 @@ class SimpleWordbookPlugin extends Plugin {
         id: id,
         name: name,
         callback: () => {
-          // ★ 使用统一方法获取选中文本
+          // 使用统一方法获取选中文本
           const selected = this.getSelectedText();
           if (!selected) {
             new Notice(t("notice_select_word"));
@@ -8965,6 +8981,49 @@ class SimpleWordbookPlugin extends Plugin {
       if (text && text.trim()) return text.trim();
     }
     return null;
+  }
+
+  // ===== 朗读选中的文本 =====
+  async pronounceSelectedText() {
+    const selection = window.getSelection();
+    if (!selection || selection.isCollapsed || !selection.toString().trim()) {
+      new Notice(t("notice_select_word"));
+      return;
+    }
+    const text = selection.toString().trim();
+
+    let lang = null;
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      let node = range.startContainer;
+      while (node && node.nodeType !== Node.DOCUMENT_NODE) {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          const el = node;
+          const container = el.closest?.('.word-card, .simple-wordbook-tooltip');
+          if (container) {
+            lang = container.dataset.lang || null;
+            break;
+          }
+        }
+        node = node.parentNode;
+      }
+    }
+
+    if (!lang) {
+      lang = this.settings.defaultLanguage || 'en';
+    }
+
+    try {
+      await playPronunciation(
+        text,
+        this.settings.ttsUrlTemplate,
+        this.settings.pronunciationVariant,
+        lang
+      );
+    } catch (e) {
+      console.warn('发音失败:', e);
+      new Notice(t("notice_tts_playback_failed"));
+    }
   }
 
   // ===== 打开快捷键设置并过滤本插件命令 =====
