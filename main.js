@@ -218,7 +218,9 @@ const locale = {
     language_deleted: "Language deleted",
     language_updated: "Language updated",
     language_added: "Language added",
+    language_delete_confirm: "Are you sure you want to delete this language?",
     language_delete_confirm_with_count: "This language is used by {0} words, are you sure to delete?",
+    language_cannot_delete_en: "Cannot delete the fallback language 'en'.",
     language_fill_required: "Please fill in all required fields",
     language_code_exists: "Standard code already exists",
     language_edit_title: "Add/Edit Language",
@@ -640,7 +642,9 @@ const locale = {
     language_deleted: "语言已删除",
     language_updated: "语言已更新",
     language_added: "语言已添加",
-    language_delete_confirm_with_count: "该语言被 {0} 个单词使用，确定删除吗？",
+    language_delete_confirm: "确定删除该语言吗？",
+    language_delete_confirm_with_count: "该语言已被 {0} 个单词使用，确定删除吗？",
+    language_cannot_delete_en: "不能删除回退语言 'en'。",
     language_fill_required: "请填写完整信息",
     language_code_exists: "标准代码已存在",
     language_edit_title: "新增/编辑语言",
@@ -1961,7 +1965,7 @@ class Highlighter {
     this._observedLayers = new WeakSet();
     this._matchCache = new WeakMap();
     this._setupTimer = null;
-    this._currentEditorPath = null;   // ★ 缓存当前编辑器的文件路径
+    this._currentEditorPath = null;   // 缓存当前编辑器的文件路径
   }
 
   // ---------- 样式辅助 ----------
@@ -2207,16 +2211,14 @@ class Highlighter {
         path = this.getPathForContainer(container);
       }
 
-      // ★ 增强：如果仍然没有路径，但容器是可见的阅读视图，则使用活动文件路径
+      // 如果仍然没有路径，但容器是可见的阅读视图，则使用活动文件路径
       if (!path) {
         // 检查容器是否可见（在视口中或部分可见）
         const rect = container.getBoundingClientRect();
         const isVisible = rect.width > 0 && rect.height > 0 &&
           rect.bottom >= -200 && rect.top <= window.innerHeight + 200;
         if (isVisible) {
-          // 如果容器可见，并且是当前活动文件（通常是阅读模式），则使用活动文件路径
-          // 但注意：可能有多个可见容器，但只有一个是活动文件，所以这里只能猜测
-          // 更安全的做法：如果容器包含 .markdown-preview-view，则使用 activeFile?.path
+          // 如果容器可见，并且是当前活动文件（阅读模式），则使用活动文件路径
           if (container.matches('.markdown-preview-view, .markdown-reading-view')) {
             path = activeFile?.path || null;
           }
@@ -2315,7 +2317,7 @@ class Highlighter {
           return Decoration.none;
         }
 
-        // ★★★ 优先获取编辑器自身的文件路径 ★★★
+        // 优先获取编辑器自身的文件路径
         let path = null;
         // 方法1：通过 editorInfoField 获取当前编辑器对应的文件路径（最准确）
         try {
@@ -2425,7 +2427,7 @@ class Highlighter {
       this.plugin.app.workspace.on('simple-wordbook:data-updated', () => this.debouncedRefresh())
     );
 
-    // ★★★ 监听活动叶子切换事件（包括编辑器焦点切换）★★★
+    // 监听活动叶子切换事件（包括编辑器焦点切换）
     // 当用户切换编辑器标签或点击不同文档时，触发刷新，确保每个编辑器使用正确的路径进行高亮判断
     this.plugin.registerEvent(
       this.plugin.app.workspace.on('active-leaf-change', () => this.debouncedRefresh())
@@ -2484,7 +2486,7 @@ class Highlighter {
     if (current) mergedRects.push(current);
     if (mergedRects.length === 0) return null;
 
-    // ★ 正确计算实际缩放因子（视口尺寸 / 布局尺寸）
+    // 正确计算实际缩放因子（视口尺寸 / 布局尺寸）
     const layerRect = layer.getBoundingClientRect();
     const scaleX = layerRect.width ? layerRect.width / layer.offsetWidth : 1;
     const scaleY = layerRect.height ? layerRect.height / layer.offsetHeight : 1;
@@ -3095,9 +3097,9 @@ class HoverPreview {
           content = `${phoneticHtml}\n\n${content}`;
         }
         const processed = processLineBreaks(content);
-        // ★ 等待渲染完成
+        // 等待渲染完成
         await MarkdownRenderer.render(this.plugin.app, processed, contentDiv, currentCard.sourceFile, this.plugin);
-        // ★ 修复内部链接
+        // 修复内部链接
         fixInternalLinks(contentDiv, this.plugin.app, currentCard.sourceFile);
         this.repositionTooltip();
       } else {
@@ -3185,7 +3187,7 @@ class HoverPreview {
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
 
-    // ★ 记录固定 top，并应用最大高度
+    // 记录固定 top，并应用最大高度
     this._fixedTop = top;
     this._applyMaxHeight(tooltip);
 
@@ -3478,7 +3480,7 @@ class SidebarView extends ItemView {
     this.filterWords();
     this.updateCardVisibility();
     if (this.updateTabCounts) this.updateTabCounts();
-    // ★ 触发新标签页中卡片的渲染
+    // 触发新标签页中卡片的渲染
     this._scheduleBatchRendering(this.filteredWords);
   }
 
@@ -3931,7 +3933,7 @@ class LookupView extends ItemView {
       );
     });
 
-    // ★★★ 显示匹配程度标签 ★★★
+    // 显示匹配程度标签
     const matchType = card._matchType;
     if (matchType) {
       const label = wordLine.createSpan({ cls: "match-type-label" });
@@ -4254,12 +4256,12 @@ class LookupView extends ItemView {
     }
   }
 
-  // 从文本中提取音标（增强版，支持多种格式）
+  // 从文本中提取音标（支持多种格式）
   extractPhonetic(text) {
     // 匹配方括号或斜杠包裹的音标
     const phoneticRegex = /\[[^\]]+\]|\/[^\/]+\//g;
     const labelSet = ['英', '美', 'UK', 'US', 'BrE', 'AmE', 'Br', 'Am', '英式', '美式', '英音', '美音', 'British', 'American'];
-    // ★★★ 添加 'g' 标志以支持 matchAll ★★★
+    // 添加 'g' 标志以支持 matchAll
     const labelRegex = new RegExp(labelSet.join('|'), 'gi');
     let matches = [];
     let match;
@@ -4330,10 +4332,16 @@ class LookupView extends ItemView {
 
 // ========== 辅助类 ==========
 class ConfirmModal extends Modal {
-  constructor(app, onConfirm, onCancel) { super(app); this.onConfirm = onConfirm; this.onCancel = onCancel; }
+  constructor(app, onConfirm, onCancel, message = null) {
+    super(app);
+    this.onConfirm = onConfirm;
+    this.onCancel = onCancel;
+    this.message = message;
+  }
   onOpen() {
     const { contentEl } = this;
-    contentEl.createEl("p", { text: t("delete_confirm") });
+    const msg = this.message || t("delete_confirm");
+    contentEl.createEl("p", { text: msg });
     const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
     const confirmBtn = buttonDiv.createEl("button", { text: t("confirm"), cls: "mod-cta" });
     const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
@@ -5672,11 +5680,18 @@ class WordbookSettingTab extends PluginSettingTab {
       const defaultCode = settings.defaultLanguage || 'en';
       const lang = settings.languages.find(l => l.standardCode === defaultCode) || settings.languages.find(l => l.standardCode === 'en');
       if (!lang) return;
+
+      // 禁止删除 en
+      if (lang.standardCode === 'en') {
+        new Notice(t('language_cannot_delete_en'));
+        return;
+      }
+
       const allCards = plugin.getAllCards();
       const count = allCards.filter(c => c.lang === lang.standardCode).length;
-      const confirmMsg = count > 0 ? t('language_delete_confirm_with_count', count) : t('delete_confirm');
+      const confirmMsg = count > 0 ? t('language_delete_confirm_with_count', count) : t('language_delete_confirm');
       const confirmed = await new Promise((resolve) => {
-        const modal = new ConfirmModal(plugin.app, () => resolve(true), () => resolve(false));
+        const modal = new ConfirmModal(plugin.app, () => resolve(true), () => resolve(false), confirmMsg);
         modal.open();
       });
       if (!confirmed) return;
@@ -6687,7 +6702,7 @@ class WordbookSettingTab extends PluginSettingTab {
         nameInput.value = p.name;
         nameInput.style.marginRight = "8px";
 
-        // ★★★ 系统提示词下拉使用 getAllSystemPromptOptions（内置+自定义）★★★
+        // 系统提示词下拉使用 getAllSystemPromptOptions（内置+自定义）
         const systemSelect = document.createElement("select");
         systemSelect.className = "system-select";
         systemSelect.style.marginRight = "8px";
@@ -6817,7 +6832,7 @@ class WordbookSettingTab extends PluginSettingTab {
     };
     renderSystemPrompts();
 
-    // ★★★ 刷新所有关联下拉（包含内置 + 自定义）★★★
+    // 刷新所有关联下拉（包含内置 + 自定义）
     const refreshAllSystemSelects = () => {
       const allOptions = getAllSystemPromptOptions(settings);
 
@@ -6860,7 +6875,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // ===== 默认提示词关联 =====
     container.createEl("h4", { text: t("settings_ai_default_prompt") });
 
-    // ★★★ 默认提示词关联下拉包含内置 + 自定义 ★★★
+    // 默认提示词关联下拉包含内置 + 自定义
     new Setting(container)
       .setName(t("settings_default_system_prompt"))
       .setDesc(t("settings_default_system_prompt_desc"))
@@ -8717,19 +8732,19 @@ class SimpleWordbookPlugin extends Plugin {
 
     let response;
     try {
-      // ★★★ 将 fetch 放在 try-catch 中，单独捕获网络层错误 ★★★
+      // 将 fetch 放在 try-catch 中，单独捕获网络层错误
       response = await fetch(url, {
         method: "POST",
         headers: headers,
         body: JSON.stringify(body)
       });
     } catch (networkError) {
-      // ★★★ 网络层错误（DNS 解析失败、连接拒绝、超时等） ★★★
+      // 网络层错误（DNS 解析失败、连接拒绝、超时等）
       console.error("Network error:", networkError);
       throw new Error(t("api_error_network"));
     }
 
-    // ★★★ HTTP 状态错误单独处理，显示状态码 ★★★
+    // HTTP 状态错误单独处理，显示状态码
     if (!response.ok) {
       let errorText;
       try {
@@ -8737,11 +8752,11 @@ class SimpleWordbookPlugin extends Plugin {
       } catch (e) {
         errorText = "";
       }
-      // ★ 支持参数插值
+      // 支持参数插值
       throw new Error(t("api_error_http", response.status, errorText));
     }
 
-    // ★★★ 解析响应数据，增加更详细的错误提示 ★★★
+    // 解析响应数据，增加更详细的错误提示
     let data;
     try {
       data = await response.json();
@@ -8781,7 +8796,7 @@ class SimpleWordbookPlugin extends Plugin {
       return leaf;
     }
 
-    // 最后回退到创建新标签页（一般不会到这里）
+    // 最后回退到创建新标签页
     leaf = this.app.workspace.getLeaf('tab');
     leaf.setViewState({ type: VIEW_TYPE_LOOKUP, active: true });
     return leaf;
@@ -9126,6 +9141,23 @@ class SimpleWordbookPlugin extends Plugin {
         presetCodes: { google: this.settings.defaultLanguage, baidu: this.settings.defaultLanguage, system: this.settings.defaultLanguage, custom: this.settings.defaultLanguage },
       };
       this.settings.languages.push(newLang);
+    }
+
+    // 确保 en 语言始终存在（防呆）
+    if (!this.settings.languages.some(l => l.standardCode === 'en')) {
+      const enLang = BUILTIN_LANGUAGES.find(l => l.standardCode === 'en');
+      if (enLang) {
+        this.settings.languages.push({ ...enLang });
+        // 如果默认语言不存在或为空，也重置为 en
+        if (!this.settings.languages.some(l => l.standardCode === this.settings.defaultLanguage)) {
+          this.settings.defaultLanguage = 'en';
+        }
+      }
+    }
+
+    // 确保 defaultLanguage 始终指向一个存在的语言 en
+    if (!this.settings.languages.some(l => l.standardCode === this.settings.defaultLanguage)) {
+      this.settings.defaultLanguage = 'en';
     }
 
     // 网络 TTS预设值初始化
