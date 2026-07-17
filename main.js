@@ -5756,6 +5756,9 @@ class WordbookSettingTab extends PluginSettingTab {
         drop.addOption('google', t("tts_preset_google"));
         drop.addOption('custom', t("tts_preset_custom"));
 
+        // 保存引用
+        this.presetDropdown = drop;
+
         // 读取保存的预设
         const currentPreset = settings.ttsPreset || 'custom';
         drop.setValue(currentPreset);
@@ -5803,18 +5806,27 @@ class WordbookSettingTab extends PluginSettingTab {
         text.setValue(settings.ttsUrlTemplate);
         text.onChange(async (val) => {
           settings.ttsUrlTemplate = val;
+          // 用户手动修改时，自动切换预设为 'custom'
           if (settings.ttsPreset !== 'custom') {
             settings.ttsPreset = 'custom';
-            const presetDropdown = container.querySelector('.dropdown');
-            if (presetDropdown) presetDropdown.value = 'custom';
+            // 使用保存的引用更新下拉框
+            if (this.presetDropdown) {
+              this.presetDropdown.setValue('custom');
+              // 触发 change 事件以更新其他 UI 控件
+              if (this.presetDropdown.selectEl) {
+                this.presetDropdown.selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            }
             this.toggleTtsControls('custom');
           }
           await plugin.saveSettings();
         });
+        // 设置行数和宽度
         text.inputEl.rows = 1;
         text.inputEl.style.width = "100%";
         text.inputEl.style.resize = "vertical";
         text.inputEl.style.minHeight = "32px";
+        // 保存引用，供预设切换时更新
         this.ttsTemplateInput = text;
         return text;
       });
@@ -5871,7 +5883,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // ---- 调速控件 ----
     // 最小/最大值输入行
     const rangeRow = rateContainer.createDiv({ cls: 'speech-rate-range-row' });
-    rangeRow.style.cssText = 'display: flex; align-items: center; gap: 12px; margin-bottom: 12px; flex-wrap: wrap;';
+    rangeRow.style.cssText = 'display: flex; align-items: center; gap: 12px; margin-bottom: 4px; flex-wrap: wrap;';
 
     // 最小值
     const minLabel = rangeRow.createSpan({ text: t("tts_speech_rate_min") });
@@ -5895,7 +5907,6 @@ class WordbookSettingTab extends PluginSettingTab {
     // 当前值显示
     const valueDisplay = rateContainer.createDiv({ cls: 'speech-rate-value-display' });
     valueDisplay.style.cssText = 'text-align: center; font-size: 0.9em; color: var(--text-muted); padding: 4px 0;';
-    valueDisplay.textContent = `当前语速: ${slider.value}`;
 
     // ---- 加载当前预设的语速配置 ----
     const loadRateConfig = () => {
