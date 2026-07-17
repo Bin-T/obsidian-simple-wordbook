@@ -1053,7 +1053,8 @@ const DEFAULT_SETTINGS = {
   languages: BUILTIN_LANGUAGES,
   defaultLanguage: "en",      // 默认发音语言（卡片无 lang 时回退）
   ttsPreset: "youdao",        // 当前选中的预设：'custom' | 'youdao' | 'baidu' | 'google'
-  ttsUrlTemplate: "https://dict.youdao.com/dictvoice?audio={{word}}&type=2",
+  ttsUrlTemplate: "https://dict.youdao.com/dictvoice?audio={{word}}&type={{type}}",
+  customTtsUrlTemplate: "",
   pronunciationVariant: "us",
   speechRatePresets: {
     youdao: { min: 1, max: 5, value: 3 },
@@ -5765,24 +5766,32 @@ class WordbookSettingTab extends PluginSettingTab {
 
         drop.onChange(async (val) => {
           settings.ttsPreset = val;
+          let url;
 
-          // 根据预设填充模板
-          let url = settings.ttsUrlTemplate;
-          if (val === 'youdao') {
-            url = 'https://dict.youdao.com/dictvoice?audio={{word}}&type={{type}}';
-          } else if (val === 'baidu') {
-            url = 'https://fanyi.baidu.com/gettts?lan={{lang}}&text={{word}}&spd={{rate}}&source=web';
-          } else if (val === 'google') {
-            url = 'https://translate.google.com/translate_tts?ie=UTF-8&q={{word}}&tl={{lang}}&client=tw-ob&ttsspeed={{rate}}';
+          if (val === 'custom') {
+            // 自定义：使用保存的自定义模板，若为空则回退到默认
+            url = settings.customTtsUrlTemplate || settings.ttsUrlTemplate || DEFAULT_SETTINGS.ttsUrlTemplate;
+            settings.ttsUrlTemplate = url;
           } else {
-            // 自定义：保留当前值
-            url = settings.ttsUrlTemplate;
+            // 预设模板
+            if (val === 'youdao') {
+              url = 'https://dict.youdao.com/dictvoice?audio={{word}}&type={{type}}';
+            } else if (val === 'baidu') {
+              url = 'https://fanyi.baidu.com/gettts?lan={{lang}}&text={{word}}&spd={{rate}}&source=web';
+            } else if (val === 'google') {
+              url = 'https://translate.google.com/translate_tts?ie=UTF-8&q={{word}}&tl={{lang}}&client=tw-ob&ttsspeed={{rate}}';
+            } else {
+              // 自定义：保留当前值
+              url = settings.ttsUrlTemplate;
+            }
+            settings.ttsUrlTemplate = url;
           }
 
           // 更新模板输入框
           if (this.ttsTemplateInput) {
-            this.ttsTemplateInput.setValue(url);
+            this.ttsTemplateInput.setValue(settings.ttsUrlTemplate);
           }
+
           settings.ttsUrlTemplate = url;
           await plugin.saveSettings();
 
@@ -5805,20 +5814,27 @@ class WordbookSettingTab extends PluginSettingTab {
       .addTextArea(text => {
         text.setValue(settings.ttsUrlTemplate);
         text.onChange(async (val) => {
-          settings.ttsUrlTemplate = val;
-          // 用户手动修改时，自动切换预设为 'custom'
+          // 保存自定义模板
+          settings.customTtsUrlTemplate = val;
+
+          // 用户修改，如果当前预设不是 custom，自动切换
           if (settings.ttsPreset !== 'custom') {
             settings.ttsPreset = 'custom';
-            // 使用保存的引用更新下拉框
             if (this.presetDropdown) {
-              this.presetDropdown.setValue('custom');
-              // 触发 change 事件以更新其他 UI 控件
-              if (this.presetDropdown.selectEl) {
-                this.presetDropdown.selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+              // 手动更新下拉框选中状态，但不触发 onChange
+              const select = this.presetDropdown.selectEl;
+              select.value = 'custom';
+              // 刷新 UI 显隐和语速配置
+              this.toggleTtsControls('custom');
+              if (this.loadRateConfig) {
+                this.loadRateConfig();
               }
             }
-            this.toggleTtsControls('custom');
           }
+
+          // 更新当前模板
+          settings.ttsUrlTemplate = val;
+
           await plugin.saveSettings();
         });
         // 设置行数和宽度
@@ -9175,6 +9191,11 @@ class SimpleWordbookPlugin extends Plugin {
     if (this.settings.ttsPreset === undefined) {
       this.settings.ttsPreset = "youdao";
     }
+    // 确保 customTtsUrlTemplate 存在
+    if (this.settings.customTtsUrlTemplate === undefined) {
+      this.settings.customTtsUrlTemplate = "";
+    }
+
     // 系统 TTS 字段初始化
     if (this.settings.systemTTSSpeechRate === undefined) this.settings.systemTTSSpeechRate = 1.0;
     if (this.settings.systemTTSPitch === undefined) this.settings.systemTTSPitch = 1.0;
