@@ -5799,22 +5799,22 @@ class WordbookSettingTab extends PluginSettingTab {
     const templateSetting = new Setting(container)
       .setName(t("settings_tts_template"))
       .setDesc(t("tts_template_desc"))
-      .addText(text => {
+      .addTextArea(text => {
         text.setValue(settings.ttsUrlTemplate);
         text.onChange(async (val) => {
           settings.ttsUrlTemplate = val;
-          // 用户手动修改模板时，自动切换预设为 'custom'
           if (settings.ttsPreset !== 'custom') {
             settings.ttsPreset = 'custom';
-            // 同步更新预设下拉的显示值
             const presetDropdown = container.querySelector('.dropdown');
             if (presetDropdown) presetDropdown.value = 'custom';
-            // 切换预设时重新调整显隐
             this.toggleTtsControls('custom');
           }
           await plugin.saveSettings();
         });
-        // 保存输入框引用，供预设填充使用
+        text.inputEl.rows = 1;
+        text.inputEl.style.width = "100%";
+        text.inputEl.style.resize = "vertical";
+        text.inputEl.style.minHeight = "32px";
         this.ttsTemplateInput = text;
         return text;
       });
