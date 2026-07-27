@@ -232,9 +232,9 @@
 /* ===== 模块三：模态框 ===== */
 
 /* 部件：添加/编辑单词模态框的文本框 */
-.simple-wordbook-modal textarea {
-  width: 100%;
-  min-height: 220px;
+.wordbook-add-edit-modal textarea {
+  /*width: 100%;*/
+  /*min-height: 220px;*/ /*已有内联样式200px*/
 }
 
 

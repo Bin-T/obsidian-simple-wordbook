@@ -416,6 +416,14 @@ const locale = {
     notice_api_migrate_fail: "Migration to keychain failed: {0}",
     notice_secret_storage_unavailable: "⚠️ Official Keychain is not available in this Obsidian version. Switched to Local Encrypted mode.",
 
+    example_fetch_btn: "Fetch example from current document",
+    example_picker_title: "Select / Edit Example",
+    example_picker_desc: "The paragraph containing the word has been auto-detected. You can edit it below, then click 'Confirm' to insert it into the definition.",
+    example_picker_confirm: "Insert Example",
+    example_appended: "✅ Added to '{0}' section",
+    example_no_sentence: "No paragraph detected. Please enter manually or reposition the cursor.",
+    example_edit_only: "This feature is only available in edit mode",
+
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
     builtin_prompt_cute_name: "Cute & Soft",
@@ -839,6 +847,14 @@ const locale = {
     notice_api_saved_encrypted: "✅ API Key 已加密保存",
     notice_api_migrate_fail: "迁移到官方密钥链失败：{0}",
     notice_secret_storage_unavailable: "⚠️ 当前 Obsidian 版本不支持官方密钥链，已切换到本地加密模式。",
+
+    example_fetch_btn: "获取当前文档例句",
+    example_picker_title: "选择 / 编辑例句",
+    example_picker_desc: "下方自动检测了当前单词所在的段落，你可以自由修改或删减，然后点击“确认”插入到释义中。",
+    example_picker_confirm: "确认插入例句",
+    example_appended: "✅ 已添加内容到「{0}」章节",
+    example_no_sentence: "未检测到当前所在段落，请手动输入或重新定位光标。",
+    example_edit_only: "该功能仅在编辑模式下可用",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -4597,12 +4613,13 @@ class WordModal extends Modal {
     this.selectedFile = existingCard?.sourceFile || "";
     this.phonetic = existingCard?.phonetic || "";
     this.lang = existingCard?.lang || "";
+    this.defTextArea = null;  // 保存释义文本域引用
   }
 
   onOpen() {
     const { contentEl } = this;
     contentEl.empty();
-    contentEl.addClass("simple-wordbook-modal");
+    contentEl.addClass("wordbook-add-edit-modal");
     this.titleEl.setText(this.existingCard ? t("edit_word_title") : t("add_word_title"));
 
     new Setting(contentEl).setName(t("word_label")).addText(text => {
@@ -4617,15 +4634,100 @@ class WordModal extends Modal {
       text.inputEl.placeholder = "e.g. teɪk";
     });
 
+    // ===== 释义框设置 =====
     const defSetting = new Setting(contentEl).setName(t("definition_label"));
-    defSetting.addTextArea(area => {
-      area.setValue(this.definition);
-      area.onChange(val => this.definition = val);
-      area.inputEl.rows = 6;
-      area.inputEl.style.width = "100%";
-      area.inputEl.style.resize = 'vertical';
-      area.inputEl.placeholder = t("definition_placeholder");
+    const controlEl = defSetting.controlEl;
+    controlEl.empty(); // 清空默认占位，用自定义布局
+
+    // 包裹容器（相对定位）
+    const wrapper = controlEl.createDiv();
+    wrapper.style.cssText = 'position: relative; width: 100%;';
+
+    // 文本域
+    const textArea = wrapper.createEl('textarea');
+    textArea.value = this.definition;
+    textArea.placeholder = t("definition_placeholder");
+    textArea.rows = 6;
+    textArea.style.cssText = `
+  width: 100%;
+  min-height: 200px;
+  padding: 8px 36px 8px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  resize: vertical;
+  font-family: var(--font-text);
+`;
+    textArea.addEventListener('input', () => {
+      this.definition = textArea.value;
     });
+    this.defTextArea = textArea; // 保存引用
+
+    // 右上角浮动图标按钮
+    const fetchBtn = wrapper.createEl('button');
+    setIcon(fetchBtn, 'quote');
+    fetchBtn.setAttribute('aria-label', t("example_fetch_btn"));
+    fetchBtn.style.cssText = `
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 0;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+`;
+
+    // ---- 检测当前是否在编辑模式（使用 getMode） ----
+    const leaf = this.app.workspace.activeLeaf;
+    let isEditMode = false;
+    if (leaf && leaf.view) {
+      const view = leaf.view;
+      if (view.getViewType && view.getViewType() === 'markdown') {
+        // 使用 getMode 方法
+        if (typeof view.getMode === 'function') {
+          isEditMode = view.getMode() === 'source';
+        } else {
+          // 降级方案：检查 editor 和 previewMode
+          isEditMode = !!view.editor && view.previewMode === false;
+        }
+      }
+    }
+
+    if (!isEditMode) {
+      // 非编辑模式：禁用按钮，变为灰色
+      fetchBtn.disabled = true;
+      fetchBtn.style.opacity = '0.3';
+      fetchBtn.style.cursor = 'not-allowed';
+      fetchBtn.setAttribute('aria-label', t("example_edit_only"));
+    } else {
+      // 编辑模式：正常事件
+      fetchBtn.addEventListener('mouseenter', () => {
+        fetchBtn.style.background = 'var(--background-modifier-hover)';
+        fetchBtn.style.color = 'var(--text-normal)';
+      });
+      fetchBtn.addEventListener('mouseleave', () => {
+        fetchBtn.style.background = 'transparent';
+        fetchBtn.style.color = 'var(--text-muted)';
+      });
+      fetchBtn.addEventListener('click', () => {
+        const sentence = this.plugin.getSelectedSentence();
+        if (!sentence) {
+          new Notice(t("example_no_sentence"));
+        }
+        new SentencePickerModal(this.app, this.plugin, sentence, this.word, (finalText) => {
+          this.appendExample(finalText);
+        }).open();
+      });
+    }
 
     new Setting(contentEl).setName(t("aliases_label")).addText(text => {
       text.setValue(this.aliasesStr);
@@ -4721,6 +4823,53 @@ class WordModal extends Modal {
     cancelBtn.addEventListener("click", () => this.close());
   }
 
+  // ----- 追加例句到释义末尾（带章节标题） -----
+  appendExample(text) {
+    if (!text) return;
+
+    // 1. 根据语言决定章节标题
+    const lang = getLocale() === locale.zh ? 'zh' : 'en';
+    const sectionTitle = lang === 'zh' ? '例句' : 'Examples';
+    const titlePattern = `**${sectionTitle}**`;
+
+    // 2. 检测已存在的例句章节（兼容中英文旧标题）
+    const existingRegex = /^\*\*(例句|Examples?)\*\*/i;
+    let currentDef = this.definition || '';
+    const parts = currentDef.split(/\n---\s*\n/);
+    let foundIndex = -1;
+
+    for (let i = 0; i < parts.length; i++) {
+      if (existingRegex.test(parts[i].trim())) {
+        foundIndex = i;
+        break;
+      }
+    }
+
+    if (foundIndex !== -1) {
+      // 已存在 → 在章节内容末尾追加
+      let existingContent = parts[foundIndex];
+      const lines = existingContent.split('\n');
+      const titleLine = lines[0];
+      let body = lines.slice(1).join('\n').trim();
+      body = body ? body + '\n' + text : text;
+      parts[foundIndex] = titleLine + '\n' + body;
+      this.definition = parts.join('\n\n---\n\n');
+    } else {
+      // 不存在 → 新建章节
+      const newSection = titlePattern + '\n' + text;
+      this.definition = currentDef.trim()
+        ? currentDef + '\n\n---\n' + newSection
+        : newSection;
+    }
+
+    // 3. 刷新文本域
+    if (this.defTextArea) {
+      this.defTextArea.value = this.definition;
+    }
+
+    new Notice(t("example_appended", sectionTitle));
+  }
+
   async save() {
     if (!this.word) { new Notice(t("word_required")); return; }
     if (!this.selectedFile) { new Notice(t("select_wordbook")); return; }
@@ -4758,6 +4907,117 @@ class WordModal extends Modal {
       new Notice(t("save_failed"));
       console.error(e);
     }
+  }
+}
+
+// ========== 文档单词所在句子选择模态框（用于提取例句） ==========
+class SentencePickerModal extends Modal {
+  constructor(app, plugin, initialText, word, onConfirm) {
+    super(app);
+    this.plugin = plugin;
+    this.initialText = initialText || '';
+    this.word = word || '';
+    this.onConfirm = onConfirm;
+  }
+
+  // 转义正则特殊字符
+  escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  onOpen() {
+    const { contentEl } = this;
+    contentEl.empty();
+    this.titleEl.setText(t("example_picker_title"));
+
+    const desc = contentEl.createEl('p', { text: t("example_picker_desc") });
+    desc.style.cssText = 'color: var(--text-muted); font-size: 0.9em; margin-bottom: 12px;';
+
+    // ---- 使用 contenteditable div ----
+    const editDiv = contentEl.createEl('div', { cls: 'example-edit-area' });
+    editDiv.setAttribute('contenteditable', 'true');
+    editDiv.style.cssText = `
+    width: 100%;
+    min-height: 120px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    resize: vertical;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    outline: none;
+    line-height: 1.6;
+  `;
+
+    // ---- 高亮函数（目标单词高亮显示） ----
+    const highlightText = (text) => {
+      if (!text) return text;
+      let result = text;
+      if (this.word && this.word.trim()) {
+        const wordLower = this.word.trim().toLowerCase();
+        const regex = new RegExp(`\\b(${this.escapeRegex(wordLower)})\\b`, 'gi');
+        result = result.replace(regex, (match) => {
+          return `<span style="color: var(--text-accent); font-weight: 500;">${match}</span>`;
+        });
+      }
+      return result;
+    };
+
+    // ---- 刷新高亮（应用高亮） ----
+    const refreshHighlight = () => {
+      const plainText = editDiv.innerText;
+      const newHtml = highlightText(plainText);
+      if (editDiv.innerHTML !== newHtml) {
+        editDiv.innerHTML = newHtml;
+      }
+    };
+
+    // ---- 清除高亮（只保留纯文本） ----
+    const clearHighlight = () => {
+      const plainText = editDiv.innerText;
+      if (editDiv.innerHTML !== plainText) {
+        editDiv.innerHTML = plainText;
+      }
+    };
+
+    // ---- 初始渲染：显示高亮 ----
+    editDiv.innerHTML = highlightText(this.initialText) || '';
+    this.editDiv = editDiv;
+
+    // ---- 聚焦时：清除高亮（纯文本编辑） ----
+    editDiv.addEventListener('focus', () => {
+      clearHighlight();
+    });
+
+    // ---- 失焦时：重新应用高亮 ----
+    editDiv.addEventListener('blur', () => {
+      refreshHighlight();
+    });
+
+    // ---- 按钮 ----
+    const buttonDiv = contentEl.createDiv({ cls: 'modal-button-container' });
+    buttonDiv.style.cssText = 'display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;';
+
+    const cancelBtn = buttonDiv.createEl('button', { text: t('cancel') });
+    cancelBtn.addEventListener('click', () => this.close());
+
+    const confirmBtn = buttonDiv.createEl('button', { text: t("example_picker_confirm"), cls: 'mod-cta' });
+    confirmBtn.addEventListener('click', () => {
+      refreshHighlight();
+      const finalText = this.editDiv.innerText.trim();
+      if (finalText) {
+        this.onConfirm(finalText);
+      }
+      this.close();
+    });
+
+    // ---- 延迟执行使编辑区域失焦，以显示高亮 ----
+    setTimeout(() => {
+      editDiv.blur();
+    }, 10);
   }
 }
 
@@ -9023,6 +9283,43 @@ class SimpleWordbookPlugin extends Plugin {
       if (text && text.trim()) return text.trim();
     }
     return null;
+  }
+
+  // ===== 获取单词所在的段落（编辑模式下通过光标所在获取的完整段落） =====
+  getSelectedSentence() {
+    // 编辑模式（CodeMirror）
+    const activeEditor = this.app.workspace.activeEditor;
+    if (!activeEditor || !activeEditor.editor) {
+      return '';
+    }
+
+    const editor = activeEditor.editor;
+    const cursor = editor.getCursor('from');
+    const lineCount = editor.lineCount();
+
+    // 向上找段落起始（空行分隔）
+    let startLine = cursor.line;
+    while (startLine > 0) {
+      const prevLine = editor.getLine(startLine - 1);
+      if (prevLine.trim() === '') break;
+      startLine--;
+    }
+
+    // 向下找段落结束（空行分隔）
+    let endLine = cursor.line;
+    while (endLine < lineCount - 1) {
+      const nextLine = editor.getLine(endLine + 1);
+      if (nextLine.trim() === '') break;
+      endLine++;
+    }
+
+    // 拼接整个段落
+    let paragraph = '';
+    for (let i = startLine; i <= endLine; i++) {
+      paragraph += editor.getLine(i);
+      if (i < endLine) paragraph += '\n';
+    }
+    return paragraph.trim();
   }
 
   // ===== 朗读选中的文本 =====
