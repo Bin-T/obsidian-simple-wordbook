@@ -300,6 +300,35 @@
   text-decoration-color: var(--word-underline-color, var(--word-highlight-color, var(--interactive-accent)));
 }
 
+/* 部件：文本颜色高亮模式 */
+
+/* 文本模式：文字变色，背景透明 */
+.simple-wordbook-highlight.hi-text,
+.simple-wordbook-pdf-highlight.hi-text {
+  color: var(--word-highlight-color, var(--interactive-accent));
+  background-color: transparent;
+}
+
+/* 悬停时保持背景透明，避免干扰 */
+.simple-wordbook-highlight.hi-text:hover,
+.simple-wordbook-pdf-highlight.hi-text:hover {
+  background-color: transparent;
+}
+
+/* 确保下划线颜色跟随高亮色 */
+.simple-wordbook-highlight.hi-text.hi-underline,
+.simple-wordbook-highlight.hi-text.hi-dashed,
+.simple-wordbook-highlight.hi-text.hi-dotted,
+.simple-wordbook-highlight.hi-text.hi-wavy,
+.simple-wordbook-highlight.hi-text.hi-double,
+.simple-wordbook-pdf-highlight.hi-text.hi-underline,
+.simple-wordbook-pdf-highlight.hi-text.hi-dashed,
+.simple-wordbook-pdf-highlight.hi-text.hi-dotted,
+.simple-wordbook-pdf-highlight.hi-text.hi-wavy,
+.simple-wordbook-pdf-highlight.hi-text.hi-double {
+  text-decoration-color: var(--word-underline-color, var(--word-highlight-color, var(--interactive-accent)));
+}
+
 
 /* ===== 模块五：PDF 高亮 ===== */
 

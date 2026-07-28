@@ -155,6 +155,8 @@ const locale = {
     color_custom_picker_tooltip: "Custom: Click to pick color",
     settings_follow_card: "Follow card color",
     settings_follow_card_desc: "When ON, background highlight follows card color.",
+    settings_enable_text_highlight: "Text Color Highlight",
+    settings_enable_text_highlight_desc: "When enabled, uses text color instead of background color for highlights. Only applies to Markdown files; PDFs will still use background highlighting.",
     settings_md_opacity: "Markdown Highlight Opacity",
     settings_md_opacity_desc: "Control the opacity of highlight background in Markdown files (default: 30%)",
     settings_pdf_opacity: "PDF Highlight Opacity",
@@ -587,6 +589,8 @@ const locale = {
     color_custom_picker_tooltip: "自定义：点击选择颜色",
     settings_follow_card: "跟随卡片颜色",
     settings_follow_card_desc: "开启后，背景高亮跟随侧边栏卡片颜色。",
+    settings_enable_text_highlight: "文本颜色高亮",
+    settings_enable_text_highlight_desc: "开启后，使用文字颜色代替背景高亮。仅对 Markdown 文件生效，PDF 仍使用背景高亮。",
     settings_md_opacity: "Markdown 高亮透明度",
     settings_md_opacity_desc: "控制 Markdown 文件中高亮背景的不透明度（默认值：30%）",
     settings_pdf_opacity: "PDF 高亮透明度",
@@ -1054,6 +1058,7 @@ const DEFAULT_SETTINGS = {
   pdfHighlightOpacity: 70,  // PDF 高亮透明度，0-100，默认 70%
   underlineColor: "",
   followCardColor: true,
+  enableTextColorHighlight: false,
   highlightStyles: {
     underlineType: "none",
     bold: false
@@ -1989,16 +1994,26 @@ class Highlighter {
   getHighlightClasses() {
     const styles = this.plugin.settings.highlightStyles;
     const classes = ['simple-wordbook-highlight'];
+    const isTextMode = this.plugin.settings.enableTextColorHighlight;
+    const colorNone = this.plugin.settings.highlightColor === "none";
+
+    // 只有当颜色不是 "none" 时，才添加背景或文本类
+    if (!colorNone) {
+      if (isTextMode) {
+        classes.push('hi-text');
+      } else {
+        classes.push('hi-background');
+      }
+    }
+
+    // 下划线样式
     const underline = styles.underlineType;
     if (underline === 'solid') classes.push('hi-underline');
     else if (underline === 'dashed') classes.push('hi-dashed');
     else if (underline === 'dotted') classes.push('hi-dotted');
     else if (underline === 'wavy') classes.push('hi-wavy');
     else if (underline === 'double') classes.push('hi-double');
-    // ↓ 仅当高亮颜色不是 "none" 时才添加背景类
-    if (this.plugin.settings.highlightColor !== "none") {
-      classes.push('hi-background');
-    }
+
     if (styles.bold) classes.push('hi-bold');
     return classes.join(' ');
   }
@@ -2522,7 +2537,13 @@ class Highlighter {
       if (rect.right - rect.left <= 0 || rect.bottom - rect.top <= 0) continue;
 
       const span = document.createElement('span');
-      span.className = this.getHighlightClasses() + ' simple-wordbook-pdf-highlight';
+      // PDF 高亮强制使用背景模式（不跟随文本颜色高亮开关）
+      let pdfClasses = 'simple-wordbook-pdf-highlight';
+      if (this.plugin.settings.highlightColor !== "none") {
+        pdfClasses += ' hi-background';
+      }
+      span.className = pdfClasses;
+
       span.setAttribute('data-cards', JSON.stringify(cardsData));
       span.setAttribute('data-current-source', selectedCard.sourceFile);
       span.style.setProperty('--word-highlight-color', mainColor);
@@ -5713,6 +5734,19 @@ class WordbookSettingTab extends PluginSettingTab {
         .setValue(this.plugin.settings.followCardColor)
         .onChange(async (val) => {
           this.plugin.settings.followCardColor = val;
+          await this.plugin.saveSettings();
+          await this.plugin.highlighter.refresh();
+        })
+      );
+
+    // ---- 文本颜色高亮 ----
+    new Setting(container)
+      .setName(t("settings_enable_text_highlight"))
+      .setDesc(t("settings_enable_text_highlight_desc"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableTextColorHighlight)
+        .onChange(async (val) => {
+          this.plugin.settings.enableTextColorHighlight = val;
           await this.plugin.saveSettings();
           await this.plugin.highlighter.refresh();
         })
