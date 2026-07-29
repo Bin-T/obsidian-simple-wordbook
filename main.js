@@ -123,9 +123,9 @@ const locale = {
     export_convert_html: "Convert to HTML (TXT only, recommended)",
     export_convert_hint: "Convert Markdown bold and line breaks to Anki-compatible HTML tags (<b> and <br>)",
     export_one_line_per_word: "One word per line (no quotes, convert line breaks to spaces)",
-    export_save_location: "Save Location",
+    export_save_location: "Save Location:",
     export_select_folder: "Select Folder",
-    export_filename: "Filename",
+    export_filename: "Filename:",
     export_success: "Exported successfully to {0}",
     export_no_wordbook: "Please select at least one wordbook",
     export_no_word: "No words match the selected range",
@@ -420,11 +420,23 @@ const locale = {
 
     example_fetch_btn: "Fetch example from current document",
     example_picker_title: "Select / Edit Example",
-    example_picker_desc: "The paragraph containing the word has been auto-detected. You can edit it below, then click 'Confirm' to insert it into the definition.",
+    example_picker_desc: "The content containing the current word has been auto-detected. You can edit it below, then click 'Confirm' to insert it into the definition.",
     example_picker_confirm: "Insert Example",
     example_appended: "✅ Added to '{0}' section",
-    example_no_sentence: "No paragraph detected. Please enter manually or reposition the cursor.",
+    example_no_sentence: "No content detected. Please enter manually or reposition the cursor.",
     example_edit_only: "This feature is only available in edit mode",
+    example_extract_mode: "Extract mode:",
+    example_extract_mode_desc: "Switching mode will overwrite the current content.",
+    example_mode_paragraph: "By empty line",
+    example_mode_line: "By line break",
+    example_mode_sentence: "By sentence boundary",
+    example_mode_list: "By list item",
+    example_mode_paragraph_desc: "Extract the complete paragraph where the cursor is located, using empty lines as boundaries.",
+    example_mode_line_desc: "Extract the current line where the cursor is located, using line breaks as boundaries.",
+    example_mode_sentence_desc: "Intelligently detect sentence boundaries (。！？.!?) and extract the sentence where the cursor is located.",
+    example_mode_list_desc: "Detect list markers (-, *, numbers.) and extract the list item where the cursor is located.",
+    example_section_title: "Examples",
+    example_section_title_label: "Section Title",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -557,9 +569,9 @@ const locale = {
     export_convert_html: "转换为 HTML（仅 TXT 格式，推荐勾选）",
     export_convert_hint: "将 Markdown 粗体（**）和换行转为 Anki 可识别的 HTML 标签（<b> 和 <br>），导入时请勾选“允许使用 HTML”。",
     export_one_line_per_word: "每行一个单词（无引号，换行转空格）",
-    export_save_location: "保存位置",
+    export_save_location: "保存位置：",
     export_select_folder: "选择文件夹",
-    export_filename: "文件名",
+    export_filename: "文件名：",
     export_success: "成功导出至 {0}",
     export_no_wordbook: "请至少选择一个单词本",
     export_no_word: "所选单词本中没有符合范围的单词",
@@ -854,11 +866,23 @@ const locale = {
 
     example_fetch_btn: "获取当前文档例句",
     example_picker_title: "选择 / 编辑例句",
-    example_picker_desc: "下方自动检测了当前单词所在的段落，你可以自由修改或删减，然后点击“确认”插入到释义中。",
+    example_picker_desc: "下方已自动提取当前单词所在的内容，你可自由修改或删减，然后点击“确认”插入到释义中。",
     example_picker_confirm: "确认插入例句",
     example_appended: "✅ 已添加内容到「{0}」章节",
-    example_no_sentence: "未检测到当前所在段落，请手动输入或重新定位光标。",
+    example_no_sentence: "未提取到内容，请手动输入或重新定位光标。",
     example_edit_only: "该功能仅在编辑模式下可用",
+    example_extract_mode: "提取方式：",
+    example_extract_mode_desc: "切换提取方式将覆盖当前编辑的内容。",
+    example_mode_paragraph: "按空行分隔提取",
+    example_mode_line: "按换行分隔提取",
+    example_mode_sentence: "按句子边界提取",
+    example_mode_list: "按列表项提取",
+    example_mode_paragraph_desc: "以空行为边界，提取光标所在的完整段落。",
+    example_mode_line_desc: "以换行为边界，提取光标所在的当前行。",
+    example_mode_sentence_desc: "智能识别标点（。！？.!?），提取光标所在的句子。",
+    example_mode_list_desc: "检测列表标记（-、*、数字.），提取光标所在的列表项。",
+    example_section_title: "例句",
+    example_section_title_label: "章节标题",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -4740,13 +4764,22 @@ class WordModal extends Modal {
         fetchBtn.style.color = 'var(--text-muted)';
       });
       fetchBtn.addEventListener('click', () => {
-        const sentence = this.plugin.getSelectedSentence();
+        const sentence = this.plugin.getSelectedSentence('paragraph', this.word);
         if (!sentence) {
           new Notice(t("example_no_sentence"));
         }
-        new SentencePickerModal(this.app, this.plugin, sentence, this.word, (finalText) => {
-          this.appendExample(finalText);
-        }).open();
+        const defaultTitle = t("example_section_title");
+        new SentencePickerModal(
+          this.app,
+          this.plugin,
+          sentence,
+          this.word,
+          (finalText, customTitle) => {
+            this.appendExample(finalText, customTitle);
+          },
+          'paragraph', // 默认模式，按空行分隔提取
+          defaultTitle
+        ).open();
       });
     }
 
@@ -4845,22 +4878,23 @@ class WordModal extends Modal {
   }
 
   // ----- 追加例句到释义末尾（带章节标题） -----
-  appendExample(text) {
+  appendExample(text, customTitle = null) {
     if (!text) return;
 
-    // 1. 根据语言决定章节标题
-    const lang = getLocale() === locale.zh ? 'zh' : 'en';
-    const sectionTitle = lang === 'zh' ? '例句' : 'Examples';
+    // 优先使用自定义标题，否则使用语言包默认标题
+    const sectionTitle = customTitle && customTitle.trim() ? customTitle.trim() : t("example_section_title");
     const titlePattern = `**${sectionTitle}**`;
 
-    // 2. 检测已存在的例句章节（兼容中英文旧标题）
-    const existingRegex = /^\*\*(例句|Examples?)\*\*/i;
     let currentDef = this.definition || '';
     const parts = currentDef.split(/\n---\s*\n/);
     let foundIndex = -1;
 
+    // 用 sectionTitle 匹配已存在的章节标题
     for (let i = 0; i < parts.length; i++) {
-      if (existingRegex.test(parts[i].trim())) {
+      const trimmed = parts[i].trim();
+      if (!trimmed) continue;
+      const match = trimmed.match(/^\*\*(.+?)\*\*\s*/);
+      if (match && match[1].trim() === sectionTitle) {
         foundIndex = i;
         break;
       }
@@ -4872,7 +4906,8 @@ class WordModal extends Modal {
       const lines = existingContent.split('\n');
       const titleLine = lines[0];
       let body = lines.slice(1).join('\n').trim();
-      body = body ? body + '\n' + text : text;
+      // 追加时在已有内容和新增内容之间加一个空行
+      body = body ? body + '\n\n' + text : text;
       parts[foundIndex] = titleLine + '\n' + body;
       this.definition = parts.join('\n\n---\n\n');
     } else {
@@ -4933,12 +4968,15 @@ class WordModal extends Modal {
 
 // ========== 文档单词所在句子选择模态框（用于提取例句） ==========
 class SentencePickerModal extends Modal {
-  constructor(app, plugin, initialText, word, onConfirm) {
+  constructor(app, plugin, initialText, word, onConfirm, extractMode = 'paragraph', defaultSectionTitle = null) {
     super(app);
     this.plugin = plugin;
     this.initialText = initialText || '';
     this.word = word || '';
     this.onConfirm = onConfirm;
+    this.extractMode = extractMode || 'paragraph';
+    this.currentText = initialText || '';
+    this.defaultSectionTitle = defaultSectionTitle || t("example_section_title");
   }
 
   // 转义正则特殊字符
@@ -4951,27 +4989,62 @@ class SentencePickerModal extends Modal {
     contentEl.empty();
     this.titleEl.setText(t("example_picker_title"));
 
+    // ---- 描述文字 ----
     const desc = contentEl.createEl('p', { text: t("example_picker_desc") });
     desc.style.cssText = 'color: var(--text-muted); font-size: 0.9em; margin-bottom: 12px;';
 
-    // ---- 使用 contenteditable div ----
-    const editDiv = contentEl.createEl('div', { cls: 'example-edit-area' });
-    editDiv.setAttribute('contenteditable', 'true');
-    editDiv.style.cssText = `
-    width: 100%;
-    min-height: 120px;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid var(--background-modifier-border);
-    background: var(--background-primary);
-    color: var(--text-normal);
-    resize: vertical;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    outline: none;
-    line-height: 1.6;
-  `;
+    // ---- 提取模式下拉选择器 ----
+    let currentMode = this.extractMode || 'paragraph';
+
+    const modeSetting = new Setting(contentEl)
+      .setName(t("example_extract_mode"))
+      .setDesc(t("example_extract_mode_desc"))
+      .addDropdown(drop => {
+        drop.addOption('paragraph', t("example_mode_paragraph"))
+          .addOption('line', t("example_mode_line"))
+          .addOption('sentence', t("example_mode_sentence"))
+          .addOption('list', t("example_mode_list"))
+          .setValue(currentMode)
+          .onChange((val) => {
+            currentMode = val;
+            // 更新模式说明
+            modeDescEl.textContent = descMap[val] || descMap['paragraph'];
+            // 重新提取内容
+            const newText = this.plugin.getSelectedSentence(val, this.word);
+            if (newText) {
+              this.currentText = newText;
+              if (this.editDiv) {
+                this.editDiv.innerHTML = this.highlightText(newText);
+              }
+            } else {
+              if (this.editDiv) {
+                this.editDiv.innerHTML = '<span style="color: var(--text-muted);">未提取到内容，请手动输入。</span>';
+              }
+            }
+          });
+        this.modeDropdown = drop;
+        return drop;
+      });
+
+    // ---- 动态模式说明区 ----
+    const descMap = {
+      'paragraph': t("example_mode_paragraph_desc"),
+      'line': t("example_mode_line_desc"),
+      'sentence': t("example_mode_sentence_desc"),
+      'list': t("example_mode_list_desc")
+    };
+
+    const modeDescEl = contentEl.createEl('p', {
+      text: descMap[this.extractMode] || descMap['paragraph']
+    });
+    modeDescEl.style.cssText = `
+      font-size: 0.85em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      padding: 6px 10px;
+      background: var(--background-secondary);
+      border-radius: 4px;
+    `;
 
     // ---- 高亮函数（目标单词高亮显示） ----
     const highlightText = (text) => {
@@ -4986,37 +5059,77 @@ class SentencePickerModal extends Modal {
       }
       return result;
     };
-
-    // ---- 刷新高亮（应用高亮） ----
-    const refreshHighlight = () => {
-      const plainText = editDiv.innerText;
-      const newHtml = highlightText(plainText);
-      if (editDiv.innerHTML !== newHtml) {
-        editDiv.innerHTML = newHtml;
-      }
-    };
+    this.highlightText = highlightText;
 
     // ---- 清除高亮（只保留纯文本） ----
     const clearHighlight = () => {
-      const plainText = editDiv.innerText;
-      if (editDiv.innerHTML !== plainText) {
-        editDiv.innerHTML = plainText;
+      if (!this.editDiv) return;
+      const plainText = this.editDiv.innerText;
+      if (this.editDiv.innerHTML !== plainText) {
+        this.editDiv.innerHTML = plainText;
       }
     };
 
-    // ---- 初始渲染：显示高亮 ----
-    editDiv.innerHTML = highlightText(this.initialText) || '';
+    // ---- 刷新高亮 ----
+    const refreshHighlight = () => {
+      if (!this.editDiv) return;
+      const plainText = this.editDiv.innerText;
+      const newHtml = highlightText(plainText);
+      if (this.editDiv.innerHTML !== newHtml) {
+        this.editDiv.innerHTML = newHtml;
+      }
+    };
+
+    // ---- 创建可编辑区域 ----
+    const editDiv = contentEl.createEl('div', { cls: 'example-edit-area' });
+    editDiv.setAttribute('contenteditable', 'true');
+    editDiv.style.cssText = `
+      width: 100%;
+      min-height: 120px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid var(--background-modifier-border);
+      background: var(--background-primary);
+      color: var(--text-normal);
+      resize: vertical;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      outline: none;
+      line-height: 1.6;
+    `;
+
+    // 初始渲染：显示高亮
+    const initialText = this.initialText || '';
+    editDiv.innerHTML = highlightText(initialText) || '';
     this.editDiv = editDiv;
 
-    // ---- 聚焦时：清除高亮（纯文本编辑） ----
+    // ---- 聚焦/失焦事件 ----
     editDiv.addEventListener('focus', () => {
       clearHighlight();
     });
 
-    // ---- 失焦时：重新应用高亮 ----
     editDiv.addEventListener('blur', () => {
       refreshHighlight();
     });
+
+    // 监听用户编辑，更新 currentText
+    editDiv.addEventListener('input', () => {
+      this.currentText = editDiv.innerText;
+    });
+
+    // ---- 章节标题输入框 ----
+    const sectionTitleSetting = new Setting(contentEl)
+      .setName(t("example_section_title_label") || "Section Title")
+      .addText(text => {
+        text.setValue(this.defaultSectionTitle || t("example_section_title"));
+        text.inputEl.placeholder = t("example_section_title");
+        text.onChange(val => {
+          this.customSectionTitle = val.trim() || null;
+        });
+        this.sectionTitleInput = text;
+        return text;
+      });
 
     // ---- 按钮 ----
     const buttonDiv = contentEl.createDiv({ cls: 'modal-button-container' });
@@ -5030,14 +5143,15 @@ class SentencePickerModal extends Modal {
       refreshHighlight();
       const finalText = this.editDiv.innerText.trim();
       if (finalText) {
-        this.onConfirm(finalText);
+        const customTitle = this.sectionTitleInput ? this.sectionTitleInput.getValue().trim() : null;
+        this.onConfirm(finalText, customTitle || null);
       }
       this.close();
     });
 
     // ---- 延迟执行使编辑区域失焦，以显示高亮 ----
     setTimeout(() => {
-      editDiv.blur();
+      if (editDiv) editDiv.blur();
     }, 10);
   }
 }
@@ -8083,7 +8197,7 @@ class ExportModal extends Modal {
     const folderRow = locationContainer.createDiv({ cls: "export-folder-row" });
     folderRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
 
-    const folderLabel = folderRow.createSpan({ text: t("export_save_location") + "：" });
+    const folderLabel = folderRow.createSpan({ text: t("export_save_location") });
     folderLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
 
     const folderBtn = folderRow.createEl("button", { text: t("export_select_folder") });
@@ -8104,7 +8218,7 @@ class ExportModal extends Modal {
     const nameRow = locationContainer.createDiv({ cls: "export-name-row" });
     nameRow.style.cssText = "display: flex; align-items: center; gap: 8px; padding: 4px 0;";
 
-    const nameLabel = nameRow.createSpan({ text: t("export_filename") + "：" });
+    const nameLabel = nameRow.createSpan({ text: t("export_filename") });
     nameLabel.style.cssText = "flex-shrink: 0; font-size: var(--font-ui-small); color: var(--text-normal); min-width: 70px;";
 
     const nameInput = nameRow.createEl("input", { type: "text" });
@@ -9319,8 +9433,8 @@ class SimpleWordbookPlugin extends Plugin {
     return null;
   }
 
-  // ===== 获取单词所在的段落（编辑模式下通过光标所在获取的完整段落） =====
-  getSelectedSentence() {
+  // ===== 获取单词所在的段落/句子/列表项 =====
+  getSelectedSentence(mode = 'paragraph', targetWord = null) {
     // 编辑模式（CodeMirror）
     const activeEditor = this.app.workspace.activeEditor;
     if (!activeEditor || !activeEditor.editor) {
@@ -9331,29 +9445,207 @@ class SimpleWordbookPlugin extends Plugin {
     const cursor = editor.getCursor('from');
     const lineCount = editor.lineCount();
 
-    // 向上找段落起始（空行分隔）
-    let startLine = cursor.line;
-    while (startLine > 0) {
-      const prevLine = editor.getLine(startLine - 1);
-      if (prevLine.trim() === '') break;
-      startLine--;
+    // ---- 工具函数：判断行是否为 Markdown 块 ----
+    const isMarkdownBlock = (lineText) => {
+      const trimmed = lineText.trim();
+      if (!trimmed) return false;
+      return /^(\s*[-*+]\s|\s*\d+\.\s|#{1,6}\s|```|>\s|---|\*\*\*|___|\[TOC\])/.test(trimmed);
+    };
+
+    // ---- 工具函数：按句子切分 ----
+    const splitIntoSentences = (text) => {
+      if (!text) return [];
+      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        try {
+          // 直接检测整个段落文本识别文本语言（标点符号 + 字符范围）
+          const isCJK = /[。！？]/.test(text) || /[\u4e00-\u9fff\u3040-\u30FF\uAC00-\uD7AF]/.test(text);
+          const langKey = isCJK ? 'zh' : 'en';
+          const segmenter = new Intl.Segmenter(langKey, { granularity: 'sentence' });
+          const segments = segmenter.segment(text);
+          const result = [];
+          for (const seg of segments) {
+            const sentence = seg.segment.trim();
+            if (sentence) result.push(sentence);
+          }
+          return result;
+        } catch (e) { /* fallback */ }
+      }
+      // 降级方案：按常见标点切分，保留最后一个无标点的句子
+      const matches = text.match(/[^。！？.!?]+[。！？.!?]+|[^。！？.!?]+$/g);
+      return matches ? matches.map(s => s.trim()).filter(s => s) : [text.trim()];
+    };
+
+    // ---- 按空行划定上下文（光标所在的完整段落） ----
+    let paraStart = cursor.line;
+    let paraEnd = cursor.line;
+
+    // 向上找空行
+    for (let i = cursor.line - 1; i >= 0; i--) {
+      if (editor.getLine(i).trim() === '') break;
+      paraStart = i;
+    }
+    // 向下找空行
+    for (let i = cursor.line + 1; i < lineCount; i++) {
+      if (editor.getLine(i).trim() === '') break;
+      paraEnd = i;
     }
 
-    // 向下找段落结束（空行分隔）
-    let endLine = cursor.line;
-    while (endLine < lineCount - 1) {
-      const nextLine = editor.getLine(endLine + 1);
-      if (nextLine.trim() === '') break;
-      endLine++;
+    // 提取整个段落的文本和各行数组
+    const paragraphLines = [];
+    let paragraphText = '';
+    for (let i = paraStart; i <= paraEnd; i++) {
+      const line = editor.getLine(i);
+      paragraphLines.push(line);
+      paragraphText += line + '\n';
+    }
+    paragraphText = paragraphText.trim();
+
+    if (!paragraphText) return '';
+
+    // ---- 模式分发 ----
+    // 按空行分隔（直接返回整个段落）
+    if (mode === 'paragraph') {
+      return paragraphText;
     }
 
-    // 拼接整个段落
-    let paragraph = '';
-    for (let i = startLine; i <= endLine; i++) {
-      paragraph += editor.getLine(i);
-      if (i < endLine) paragraph += '\n';
+    // 按换行分隔（在段落内取光标所在的行）
+    if (mode === 'line') {
+      const currentLine = editor.getLine(cursor.line);
+      // 如果当前行是 Markdown 块，在段落内找最近的普通正文行
+      if (isMarkdownBlock(currentLine)) {
+        // 在段落范围内查找
+        for (let i = cursor.line - 1; i >= paraStart; i--) {
+          const line = editor.getLine(i);
+          if (!isMarkdownBlock(line) && line.trim()) {
+            return line.trim();
+          }
+        }
+        for (let i = cursor.line + 1; i <= paraEnd; i++) {
+          const line = editor.getLine(i);
+          if (!isMarkdownBlock(line) && line.trim()) {
+            return line.trim();
+          }
+        }
+        return '';
+      }
+      return currentLine.trim();
     }
-    return paragraph.trim();
+
+    // 按句子边界（在段落内提取光标所在的句子）
+    if (mode === 'sentence') {
+      const sentences = splitIntoSentences(paragraphText);
+      if (sentences.length === 0) return '';
+
+      // 计算光标在段落文本中的字符位置
+      let charPos = 0;
+      for (let i = paraStart; i < cursor.line; i++) {
+        charPos += editor.getLine(i).length + 1;
+      }
+      charPos += cursor.ch;
+
+      // 找到光标所在的句子
+      let currentSentenceIndex = 0;
+      let accumulatedLength = 0;
+      for (let i = 0; i < sentences.length; i++) {
+        const sentence = sentences[i];
+        const sentenceStart = paragraphText.indexOf(sentence, accumulatedLength);
+        if (sentenceStart === -1) {
+          accumulatedLength += sentence.length + 1;
+          continue;
+        }
+        const sentenceEnd = sentenceStart + sentence.length;
+        if (charPos >= sentenceStart && charPos <= sentenceEnd) {
+          currentSentenceIndex = i;
+          break;
+        }
+        accumulatedLength = sentenceEnd;
+      }
+
+      const currentSentence = sentences[currentSentenceIndex] || sentences[0];
+
+      // 检查目标词
+      if (targetWord && targetWord.trim()) {
+        const lowerTarget = targetWord.toLowerCase();
+        // 当前句子包含目标词，直接返回
+        if (currentSentence.toLowerCase().includes(lowerTarget)) {
+          return currentSentence;
+        }
+        // 向前查找
+        for (let i = currentSentenceIndex - 1; i >= 0; i--) {
+          if (sentences[i].toLowerCase().includes(lowerTarget)) {
+            return sentences[i];
+          }
+        }
+        // 向后查找
+        for (let i = currentSentenceIndex + 1; i < sentences.length; i++) {
+          if (sentences[i].toLowerCase().includes(lowerTarget)) {
+            return sentences[i];
+          }
+        }
+      }
+
+      // 回退到光标所在的句子
+      return currentSentence || sentences[0] || '';
+    }
+
+    // 按列表项（在段落内提取光标所在的列表项）
+    if (mode === 'list') {
+      const currentLine = editor.getLine(cursor.line);
+      const listItemRegex = /^\s*[-*+]\s|\s*\d+\.\s/;
+
+      // 在段落内查找列表项
+      let targetLine = cursor.line;
+      let found = false;
+
+      if (listItemRegex.test(currentLine.trim())) {
+        // 当前行就是列表项
+        targetLine = cursor.line;
+        found = true;
+      } else {
+        // 在段落范围内向上查找
+        for (let i = cursor.line - 1; i >= paraStart; i--) {
+          const line = editor.getLine(i);
+          if (listItemRegex.test(line.trim())) {
+            targetLine = i;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          // 向下查找
+          for (let i = cursor.line + 1; i <= paraEnd; i++) {
+            const line = editor.getLine(i);
+            if (listItemRegex.test(line.trim())) {
+              targetLine = i;
+              found = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!found) return '';
+
+      // 提取列表项（含缩进子项）
+      const targetLineText = editor.getLine(targetLine);
+      const indent = targetLineText.match(/^\s*/)[0];
+      const currentIndent = indent.length;
+      let result = targetLineText.trim();
+
+      // 向下收集缩进更大的子项（限制在段落范围内）
+      for (let i = targetLine + 1; i <= paraEnd; i++) {
+        const line = editor.getLine(i);
+        const lineIndent = line.match(/^\s*/)[0].length;
+        if (lineIndent <= currentIndent && line.trim()) break;
+        if (lineIndent > currentIndent && line.trim()) {
+          result += '\n' + line.trim();
+        }
+      }
+
+      return result;
+    }
+
+    return '';
   }
 
   // ===== 朗读选中的文本 =====

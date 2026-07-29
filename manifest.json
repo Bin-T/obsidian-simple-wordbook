@@ -1,7 +1,7 @@
 {
   "id": "simple-wordbook",
   "name": "Simple Wordbook",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "minAppVersion": "1.0.0",
   "description": "Highlight words from custom JSON wordbooks across notes and PDFs. Sidebar tracks learning progress with mastery/ignore toggles. Supports local fuzzy search and AI-powered definitions.",
   "author": "Bryn",
