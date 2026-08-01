@@ -1,9 +1,11 @@
-const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField, SecretComponent } = require('obsidian');
+const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField, SecretComponent, Menu } = require('obsidian');
 const { EditorView, Decoration } = require('@codemirror/view');
 const { StateField, RangeSetBuilder, StateEffect } = require('@codemirror/state');
 
 const VIEW_TYPE_SIDEBAR = "simple-wordbook-sidebar";
 const VIEW_TYPE_LOOKUP = "simple-wordbook-lookup";
+const VIEW_TYPE_LIBRARY = "simple-wordbook-library";
+const VIEW_TYPE_STUDY = "simple-wordbook-study";
 
 // ========== 国际化语言包 ==========
 const locale = {
@@ -115,11 +117,11 @@ const locale = {
     export_include_source: "Include Source",
     export_include_status: "Include Status",
     export_include_lang: "Include Pronunciation Language (lang) field",
-    export_phonetic_label: "Phonetic",
-    export_aliases_label: "Aliases",
-    export_source_label: "Source",
-    export_status_label: "Status",
-    export_lang_label: "Language",
+    export_phonetic_label: "Phonetic:",
+    export_aliases_label: "Aliases:",
+    export_source_label: "Source:",
+    export_status_label: "Status:",
+    export_lang_label: "Language:",
     export_convert_html: "Convert to HTML (TXT only, recommended)",
     export_convert_hint: "Convert Markdown bold and line breaks to Anki-compatible HTML tags (<b> and <br>)",
     export_one_line_per_word: "One word per line (no quotes, convert line breaks to spaces)",
@@ -438,6 +440,116 @@ const locale = {
     example_section_title: "Examples",
     example_section_title_label: "Section Title",
 
+    library_view_title: "Library",
+    library_search_placeholder: "Search words or aliases...",
+    library_filter_color_all: "All colors",
+    library_filter_color_default: "Default",
+    library_filter_status_all: "All status",
+    library_filter_status_learning: "Learning",
+    library_filter_status_mastered: "Mastered",
+    library_filter_status_ignored: "Ignored",
+    library_filter_source_all: "All sources",
+    library_sort_field_word: "Word (A-Z)",
+    library_sort_field_status: "Status",
+    library_sort_field_color: "Color",
+    library_sort_field_source: "Source",
+    library_sort_toggle: "Toggle sort direction",
+    library_select_all_title: "Select/Deselect all visible",
+    library_batch_selected: "Selected {0} items",
+    library_batch_color: "Change color",
+    library_batch_mastered: "Mark Mastered",
+    library_batch_unmaster: "Unmark Mastered",
+    library_batch_ignore: "Mark Ignored",
+    library_batch_unignore: "Unmark Ignored",
+    library_batch_delete: "Delete Selected",
+    library_batch_clear: "Clear Selection",
+    library_stats_total: "Total: {0}",
+    library_stats_mastered: "Mastered: {0} ({1}%)",
+    library_stats_learning: "Learning: {0}",
+    library_stats_ignored: "Ignored: {0}",
+    library_table_header_select: "Select",
+    library_table_header_word: "Word",
+    library_table_header_phonetic: "Phonetic",
+    library_table_header_definition: "Definition",
+    library_table_header_source: "Source",
+    library_table_header_color: "Color",
+    library_table_header_status: "Status",
+    library_empty: "No matching words.",
+    library_status_mastered: "Mastered",
+    library_status_learning: "Learning",
+    library_status_ignored: "Ignored",
+    library_confirm_delete_batch: "Delete selected {0} words?",
+    library_batch_delete_success: "Deleted {0} words.",
+    library_batch_color_success: "Color updated for {0} words.",
+    library_batch_mastered_success: "Marked mastered for {0} words.",
+    library_batch_ignored_success: "Marked ignored for {0} words.",
+    library_batch_unmaster_success: "Unmarked mastered for {0} words.",
+    library_batch_unignored_success: "Unmarked ignored for {0} words.",
+    command_open_library: "Open Library",
+    ribbon_library_tooltip: "Library",
+    library_copy_word: "Copy Word",
+    library_copy_phonetic: "Copy Phonetic",
+    library_copy_definition: "Copy Definition",
+    library_copy_source: "Copy Source Path",
+    library_copy_all: "Copy All Info",
+    copy_all_word: "Word:",
+    copy_all_phonetic: "Phonetic:",
+    copy_all_source: "Source:",
+    copy_all_definition: "Definition:",
+
+    study_view_title: "Study Center",
+    study_ribbon_tooltip: "Study Center",
+    study_command_open: "Open Study Center",
+    study_today_goal: "Today: {0}/{1}",
+    study_stats_total: "Total",
+    study_stats_mastered_rate: "Mastered Rate",
+    study_stats_today_progress: "Today's Progress",
+    study_stats_streak: "Day Streak",
+    study_stats_streak_days: "{0} days",
+    study_tab_review: "📖 Review",
+    study_tab_mastered: "✅ Mastered",
+    study_tab_stats: "📊 Stats",
+    study_tab_settings: "⚙️ Settings",
+    study_review_title: "Review Session",
+    study_review_empty: "No words due for review today! 🎉",
+    study_review_done: "Review complete! You reviewed {0} words today.",
+    study_review_progress: "Word {0}/{1} · Level {2} · Next in {3} days",
+    study_card_hint: "Double-click or press Space to reveal",
+    study_btn_forget: "😣 Forget",
+    study_btn_remember: "😊 Remember",
+    study_btn_start: "Start Review",
+    study_mastered_list_empty: "No mastered words yet.",
+    study_stats_retention: "Retention Rate",
+    study_stats_learning_distribution: "Learning Distribution",
+    study_stats_trend: "Learning Trend (30 days)",
+    study_stats_level_distribution: "Level Distribution",
+    study_stats_source_distribution: "Source Distribution",
+    study_stats_color_distribution: "Color Distribution",
+    study_settings_title: "Study Settings",
+    study_settings_daily_goal: "Daily Goal",
+    study_settings_daily_goal_desc: "Number of words to review per day",
+    study_settings_daily_limit: "Daily Review Limit",
+    study_settings_daily_limit_desc: "Maximum words per review session",
+    study_settings_review_order: "Review Order",
+    study_settings_review_order_due: "Due First",
+    study_settings_review_order_level: "Level First",
+    study_settings_flashcard_phonetic: "Show Phonetic",
+    study_settings_flashcard_phonetic_desc: "Show phonetic transcription on the card",
+    study_settings_flashcard_autoflip: "Auto Flip (seconds)",
+    study_settings_flashcard_autoflip_desc: "Automatically flip after seconds (0=disabled)",
+    study_reset_progress: "Reset All Study Progress",
+    study_reset_confirm: "This will reset all review progress and statistics. Continue?",
+    study_reset_success: "Study progress reset.",
+    study_btn_exit: "Exit Review",
+    study_btn_prev: "Prev",
+    study_btn_next: "Next",
+    study_shortcut_hint: "← Forget ｜ Remember →",
+    study_tab_levels: "📈 Levels",
+    study_level_filter: "Filter by level",
+    study_level_all: "All levels",
+    study_level_label: "Level {0}",
+    study_no_words_for_level: "No words for this level.",
+
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
     builtin_prompt_cute_name: "Cute & Soft",
@@ -561,11 +673,11 @@ const locale = {
     export_include_source: "包含来源",
     export_include_status: "包含状态",
     export_include_lang: "包含发音语言（lang）字段",
-    export_phonetic_label: "音标",
-    export_aliases_label: "别名",
-    export_source_label: "来源",
-    export_status_label: "状态",
-    export_lang_label: "语言",
+    export_phonetic_label: "音标：",
+    export_aliases_label: "别名：",
+    export_source_label: "来源：",
+    export_status_label: "状态：",
+    export_lang_label: "语言：",
     export_convert_html: "转换为 HTML（仅 TXT 格式，推荐勾选）",
     export_convert_hint: "将 Markdown 粗体（**）和换行转为 Anki 可识别的 HTML 标签（<b> 和 <br>），导入时请勾选“允许使用 HTML”。",
     export_one_line_per_word: "每行一个单词（无引号，换行转空格）",
@@ -884,6 +996,116 @@ const locale = {
     example_section_title: "例句",
     example_section_title_label: "章节标题",
 
+    library_view_title: "词库管理",
+    library_search_placeholder: "搜索单词或别名...",
+    library_filter_color_all: "所有颜色",
+    library_filter_color_default: "默认",
+    library_filter_status_all: "所有状态",
+    library_filter_status_learning: "学习中",
+    library_filter_status_mastered: "掌握",
+    library_filter_status_ignored: "忽略",
+    library_filter_source_all: "所有来源",
+    library_sort_field_word: "单词 (A-Z)",
+    library_sort_field_status: "状态",
+    library_sort_field_color: "颜色",
+    library_sort_field_source: "来源",
+    library_sort_toggle: "切换排序方向",
+    library_select_all_title: "全选/取消全选",
+    library_batch_selected: "已选中 {0} 项",
+    library_batch_color: "修改颜色",
+    library_batch_mastered: "标记掌握",
+    library_batch_unmaster: "取消掌握",
+    library_batch_ignore: "标记忽略",
+    library_batch_unignore: "取消忽略",
+    library_batch_delete: "删除选中",
+    library_batch_clear: "清空选择",
+    library_stats_total: "总计: {0}",
+    library_stats_mastered: "掌握: {0} ({1}%)",
+    library_stats_learning: "学习: {0}",
+    library_stats_ignored: "忽略: {0}",
+    library_table_header_select: "选择",
+    library_table_header_word: "单词",
+    library_table_header_phonetic: "音标",
+    library_table_header_definition: "释义",
+    library_table_header_source: "来源",
+    library_table_header_color: "颜色",
+    library_table_header_status: "状态",
+    library_empty: "没有匹配的单词。",
+    library_status_mastered: "掌握",
+    library_status_learning: "学习",
+    library_status_ignored: "忽略",
+    library_confirm_delete_batch: "确定删除选中的 {0} 个单词吗？",
+    library_batch_delete_success: "已删除 {0} 个单词。",
+    library_batch_color_success: "已更新 {0} 个单词的颜色。",
+    library_batch_mastered_success: "已标记 {0} 个单词为掌握。",
+    library_batch_ignored_success: "已标记 {0} 个单词为忽略。",
+    library_batch_unmaster_success: "已取消 {0} 个单词的掌握。",
+    library_batch_unignored_success: "已取消 {0} 个单词的忽略。",
+    command_open_library: "打开词库管理",
+    ribbon_library_tooltip: "词库管理",
+    library_copy_word: "复制单词",
+    library_copy_phonetic: "复制音标",
+    library_copy_definition: "复制释义",
+    library_copy_source: "复制来源路径",
+    library_copy_all: "复制全部信息",
+    copy_all_word: "单词：",
+    copy_all_phonetic: "音标：",
+    copy_all_source: "来源：",
+    copy_all_definition: "释义：",
+
+    study_view_title: "学习中心",
+    study_ribbon_tooltip: "学习中心",
+    study_command_open: "打开学习中心",
+    study_today_goal: "今日：{0}/{1}",
+    study_stats_total: "总词汇",
+    study_stats_mastered_rate: "掌握率",
+    study_stats_today_progress: "今日进度",
+    study_stats_streak: "连续学习",
+    study_stats_streak_days: "{0} 天",
+    study_tab_review: "📖 复习",
+    study_tab_mastered: "✅ 已掌握",
+    study_tab_stats: "📊 统计",
+    study_tab_settings: "⚙️ 设置",
+    study_review_title: "复习模式",
+    study_review_empty: "今日没有需要复习的单词 🎉",
+    study_review_done: "复习完成！今日共复习 {0} 个单词。",
+    study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距下次 {3} 天",
+    study_card_hint: "双击或按空格显示释义",
+    study_btn_forget: "😣 忘记",
+    study_btn_remember: "😊 记得",
+    study_btn_start: "开始复习",
+    study_mastered_list_empty: "还没有已掌握的单词。",
+    study_stats_retention: "记忆保持率",
+    study_stats_learning_distribution: "学习状态分布",
+    study_stats_trend: "学习趋势（30天）",
+    study_stats_level_distribution: "等级分布",
+    study_stats_source_distribution: "来源分布",
+    study_stats_color_distribution: "颜色分布",
+    study_settings_title: "学习设置",
+    study_settings_daily_goal: "每日目标",
+    study_settings_daily_goal_desc: "每日计划复习的单词数量",
+    study_settings_daily_limit: "单次复习上限",
+    study_settings_daily_limit_desc: "每次复习最多可复习的单词数",
+    study_settings_review_order: "复习排序",
+    study_settings_review_order_due: "到期优先",
+    study_settings_review_order_level: "等级优先",
+    study_settings_flashcard_phonetic: "显示音标",
+    study_settings_flashcard_phonetic_desc: "在卡片上显示音标",
+    study_settings_flashcard_autoflip: "自动翻转（秒）",
+    study_settings_flashcard_autoflip_desc: "几秒后自动翻转卡片（0=关闭）",
+    study_reset_progress: "重置所有学习进度",
+    study_reset_confirm: "这将重置所有复习进度和统计数据，确定继续吗？",
+    study_reset_success: "学习进度已重置。",
+    study_btn_exit: "退出复习",
+    study_btn_prev: "上一个",
+    study_btn_next: "下一个",
+    study_shortcut_hint: "← 忘记 ｜ 记得 →",
+    study_tab_levels: "📈 等级列表",
+    study_level_filter: "筛选等级",
+    study_level_all: "全部等级",
+    study_level_label: "等级 {0}",
+    study_no_words_for_level: "该等级暂无单词",
+
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
     builtin_prompt_cute_name: "可爱软萌风",
@@ -1128,6 +1350,16 @@ const DEFAULT_SETTINGS = {
   defaultPrompt: "用中文解释单词 {word}的释义。",
   customPrompts: [],          // [{ name: "快速释义", content: "给出 {word} 的中文释义", system_prompt: ""  }]
   selectedPrompt: "默认",     // 当前选中的提示词名称
+
+  // ===== 学习中心设置 =====
+  study: {
+    dailyGoal: 10,
+    dailyReviewLimit: 20,
+    reviewOrder: "due_first",      // "due_first" 或 "level_first"
+    flashcardShowPhonetic: true,
+    flashcardAutoFlip: 0,          // 秒，0 表示关闭
+    enableSpacedRepetition: true,
+  },
 
   selectedSourceMap: {}
 };
@@ -1993,6 +2225,283 @@ class MasteryStore {
       console.error("Failed to set ignored:", e);
       new Notice(t("notice_ignored_failed"));
     }
+  }
+}
+
+// ========== 学习进度存储（StudyStore） ==========
+class StudyStore {
+  constructor(plugin) {
+    this.plugin = plugin;
+    this.data = null; // { reviews: {}, dailyStats: {}, dailyGoal: 10 }
+    this.filePath = "";
+  }
+
+  // ----- 获取存储文件路径（插件目录下） -----
+  getFilePath() {
+    if (!this.filePath) {
+      const pluginDir = this.plugin.app.vault.configDir + "/plugins/" + this.plugin.manifest.id + "/";
+      this.filePath = normalizePath(pluginDir + "_wordbook_study.json");
+    }
+    return this.filePath;
+  }
+
+  // ----- 加载数据 -----
+  async load() {
+    const adapter = this.plugin.app.vault.adapter;
+    const path = this.getFilePath();
+    if (await adapter.exists(path)) {
+      try {
+        const content = await adapter.read(path);
+        this.data = JSON.parse(content);
+        if (!this.data.reviews) this.data.reviews = {};
+        if (!this.data.dailyStats) this.data.dailyStats = {};
+        if (!this.data.dailyGoal) this.data.dailyGoal = this.plugin.settings.study.dailyGoal || 10;
+      } catch (e) {
+        console.warn("Failed to load study data, initializing defaults", e);
+        this.data = { reviews: {}, dailyStats: {}, dailyGoal: this.plugin.settings.study.dailyGoal || 10 };
+      }
+    } else {
+      this.data = { reviews: {}, dailyStats: {}, dailyGoal: this.plugin.settings.study.dailyGoal || 10 };
+    }
+    this.data.dailyGoal = this.plugin.settings.study.dailyGoal || 10;
+    await this.save();
+  }
+
+  // ----- 保存数据 -----
+  async save() {
+    const adapter = this.plugin.app.vault.adapter;
+    const path = this.getFilePath();
+    const dir = path.substring(0, path.lastIndexOf('/'));
+    if (dir && !(await adapter.exists(dir))) {
+      await adapter.mkdir(dir, { recursive: true });
+    }
+    await adapter.write(path, JSON.stringify(this.data, null, 2));
+  }
+
+  // ----- 获取复习记录的 key -----
+  getReviewKey(word, sourceFile) {
+    const mode = this.plugin.settings.masteryMode;
+    if (mode === "global") {
+      return normalizeWord(word);
+    } else {
+      return `${normalizeWord(word)}::${sourceFile}`;
+    }
+  }
+
+  // ----- 获取指定单词的复习记录 -----
+  getReview(word, sourceFile) {
+    const key = this.getReviewKey(word, sourceFile);
+    return this.data.reviews[key] || null;
+  }
+
+  // ----- 设置/更新复习记录 -----
+  setReview(word, sourceFile, reviewData) {
+    const key = this.getReviewKey(word, sourceFile);
+    this.data.reviews[key] = reviewData;
+    this.save();
+  }
+
+  // ----- 初始化复习记录（新词） -----
+  initReview(word, sourceFile) {
+    const key = this.getReviewKey(word, sourceFile);
+    if (!this.data.reviews[key]) {
+      this.data.reviews[key] = {
+        level: 0,
+        nextReview: this.getTodayISO(),
+        lastReview: null,
+        reviewCount: 0,
+        consecutiveCorrect: 0,
+        firstLearned: this.getTodayISO()
+      };
+      this.save();
+    }
+    return this.data.reviews[key];
+  }
+
+  // ----- 获取今天日期的 ISO 字符串 (YYYY-MM-DD) -----
+  getTodayISO() {
+    return new Date().toISOString().split('T')[0];
+  }
+
+  // ----- 获取今日统计 -----
+  getTodayStats() {
+    const today = this.getTodayISO();
+    if (!this.data.dailyStats[today]) {
+      this.data.dailyStats[today] = { reviewed: 0, mastered: 0 };
+    }
+    return this.data.dailyStats[today];
+  }
+
+  // ----- 增加今日复习计数 -----
+  incrementReviewed(today = null) {
+    const day = today || this.getTodayISO();
+    if (!this.data.dailyStats[day]) this.data.dailyStats[day] = { reviewed: 0, mastered: 0 };
+    this.data.dailyStats[day].reviewed += 1;
+    this.save();
+  }
+
+  // ----- 增加今日掌握计数 -----
+  incrementMastered(today = null) {
+    const day = today || this.getTodayISO();
+    if (!this.data.dailyStats[day]) this.data.dailyStats[day] = { reviewed: 0, mastered: 0 };
+    this.data.dailyStats[day].mastered += 1;
+    this.save();
+  }
+
+  // ----- 重置所有进度 -----
+  async resetAll() {
+    this.data = { reviews: {}, dailyStats: {}, dailyGoal: this.plugin.settings.study.dailyGoal || 10 };
+    await this.save();
+  }
+
+  // ----- 根据等级获取间隔天数（SM-2 简化版） -----
+  getInterval(level) {
+    const intervals = [1, 2, 4, 8, 16];
+    if (level >= intervals.length) return 0; // 达到最大等级 -> 掌握
+    return intervals[level];
+  }
+
+  // ----- 计算下次复习日期 -----
+  calculateNextReview(level, fromDate = null) {
+    if (level >= 5) return null; // 掌握
+    const interval = this.getInterval(level);
+    if (interval === 0) return null;
+    const date = fromDate ? new Date(fromDate) : new Date();
+    date.setDate(date.getDate() + interval);
+    return date.toISOString().split('T')[0];
+  }
+
+  // ----- 获取今日应复习的单词列表（按到期时间排序） -----
+  // 在 StudyStore 类中
+  async getDueWords(allCards, limit = 20) {
+    const today = this.getTodayISO();
+    const due = [];
+    const toInit = [];
+
+    // 第一遍：收集已存在且到期的复习记录
+    for (const card of allCards) {
+      const studyKey = this.getReviewKey(card.word, card.sourceFile);
+      // 检查掌握/忽略
+      const mastered = this.plugin.masteryStore.isMastered(studyKey);
+      const ignored = this.plugin.masteryStore.isIgnored(studyKey);
+      if (mastered || ignored) continue;
+
+      const review = this.getReview(card.word, card.sourceFile);
+      if (review) {
+        if (review.nextReview && review.nextReview <= today) {
+          due.push({ card, review });
+        }
+      } else {
+        // 无记录，记录待初始化
+        toInit.push(card);
+      }
+    }
+
+    // 如果到期单词不够 limit，从待初始化中补充
+    const need = limit - due.length;
+    if (need > 0 && toInit.length > 0) {
+      // 只取前 need 个进行初始化
+      const toInitBatch = toInit.slice(0, need);
+      for (const card of toInitBatch) {
+        const key = this.getReviewKey(card.word, card.sourceFile);
+        // 直接写入 data.reviews，避免多次 save
+        this.data.reviews[key] = {
+          level: 0,
+          nextReview: today,  // 立即到期
+          lastReview: null,
+          reviewCount: 0,
+          consecutiveCorrect: 0,
+          firstLearned: today
+        };
+        // 加入 due
+        due.push({ card, review: this.data.reviews[key] });
+      }
+      // 批量保存一次
+      await this.save();
+    }
+
+    // 按下次复习日期排序，越早越优先
+    due.sort((a, b) => (a.review.nextReview || '9999-99-99').localeCompare(b.review.nextReview || '9999-99-99'));
+    return due.slice(0, limit);
+  }
+
+  // ----- 获取统计信息 -----
+  getStats(allCards) {
+    const total = allCards.length;
+    let mastered = 0, ignored = 0, learning = 0;
+    let levelCounts = [0, 0, 0, 0, 0, 0]; // 等级0-5
+    let sourceCounts = {};
+    let colorCounts = {};
+    const masteryStore = this.plugin.masteryStore;
+
+    for (const card of allCards) {
+      const key = getStudyKey(card.word, card.sourceFile);
+      const isMastered = masteryStore.isMastered(key);
+      const isIgnored = masteryStore.isIgnored(key);
+      if (isMastered) mastered++;
+      else if (isIgnored) ignored++;
+      else learning++;
+
+      const source = card.sourceFile;
+      sourceCounts[source] = (sourceCounts[source] || 0) + 1;
+      const color = card.color || 'default';
+      colorCounts[color] = (colorCounts[color] || 0) + 1;
+    }
+
+    // 等级分布（只统计学习中【未掌握且未忽略】的单词）
+    const reviews = this.data.reviews || {};
+    for (const [key, rev] of Object.entries(reviews)) {
+      // 检查该词是否已被掌握或忽略
+      const isMastered = masteryStore.isMastered(key);
+      const isIgnored = masteryStore.isIgnored(key);
+      // 跳过已掌握和已忽略的词
+      if (isMastered || isIgnored) continue;
+
+      const level = rev.level || 0;
+      if (level >= 0 && level <= 5) levelCounts[level]++;
+    }
+
+    // 连续学习天数
+    let streak = 0;
+    const dates = Object.keys(this.data.dailyStats || {}).sort();
+    if (dates.length > 0) {
+      const today = this.getTodayISO();
+      let checkDate = new Date(today);
+      while (true) {
+        const ds = checkDate.toISOString().split('T')[0];
+        if (this.data.dailyStats[ds] && this.data.dailyStats[ds].reviewed > 0) {
+          streak++;
+          checkDate.setDate(checkDate.getDate() - 1);
+        } else {
+          break;
+        }
+      }
+    }
+
+    // 近30天每日学习活动（用 reviewed 计数作为近似）
+    const trend = [];
+    for (let i = 29; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      trend.push({
+        date: key,
+        count: this.data.dailyStats[key] ? this.data.dailyStats[key].reviewed : 0
+      });
+    }
+
+    return {
+      total,
+      mastered,
+      ignored,
+      learning,
+      levelCounts,
+      sourceCounts,
+      colorCounts,
+      streak,
+      trend,
+      masteredRate: total ? Math.round(mastered / total * 100) : 0
+    };
   }
 }
 
@@ -4392,6 +4901,1634 @@ class LookupView extends ItemView {
   }
 }
 
+// ========== 词库管理视图 ==========
+class LibraryView extends ItemView {
+  constructor(leaf, plugin) {
+    super(leaf);
+    this.plugin = plugin;
+    // 数据
+    this.allCards = [];
+    this.filteredCards = [];
+    // 状态
+    this.searchQuery = "";
+    this.filterColor = "all";
+    this.filterStatus = "all"; // "all", "learning", "mastered", "ignored"
+    this.filterSource = "all";
+    this.sortField = "word"; // "word", "status", "color", "source"
+    this.sortAsc = true;
+    this.selectedRows = new Set(); // 存储 card 的唯一标识（word+source 或 studyKey）
+    // 渲染相关
+    this.renderStart = 0;
+    this.renderCount = 50; // 每页行数
+    this.rowHeight = 36;  // 每行高度（px）
+    this.totalRows = 0;
+    this.container = null;
+    this.tableBody = null;
+    this.scrollContainer = null;
+    this._scrollListener = null;
+    this._resizeObserver = null;
+    this.rowElements = [];
+  }
+
+  getViewType() { return VIEW_TYPE_LIBRARY; }
+  getDisplayText() { return t("library_view_title"); }
+  getIcon() { return "library-big"; }
+
+  async onOpen() {
+    this.containerEl.empty();
+    this.containerEl.addClass("simple-wordbook-library");
+    this.buildUI();
+    await this.loadData();
+    this.render();
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.loadDataAndRender()));
+    this.registerEvent(this.plugin.app.vault.on("modify", (file) => {
+      if (file instanceof TFile && file.extension === "json") {
+        const isWordbook = this.plugin.settings.wordbookFiles.some(wb => wb.path === file.path);
+        if (isWordbook) this.loadDataAndRender();
+      }
+    }));
+  }
+
+  onClose() {
+    if (this._scrollListener) {
+      this.scrollContainer?.removeEventListener("scroll", this._scrollListener);
+    }
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
+  }
+
+  // ---------- UI 构建 ----------
+  buildUI() {
+    const container = this.containerEl;
+    // 顶部工具栏
+    const toolbar = container.createDiv({ cls: "library-toolbar" });
+    const searchInput = toolbar.createEl("input", { type: "text", placeholder: t("library_search_placeholder") });
+    searchInput.addEventListener("input", (e) => {
+      this.searchQuery = e.target.value.toLowerCase();
+      this.filterData();
+      this.render();
+    });
+
+    // 筛选：颜色
+    const colorFilter = toolbar.createEl("select");
+    colorFilter.add(new Option(t("library_filter_color_all"), "all"));
+    const colors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", ""];
+    for (const c of colors) {
+      const label = c ? t("color_" + c) : t("library_filter_color_default");
+      colorFilter.add(new Option(label, c || "default"));
+    }
+    colorFilter.value = this.filterColor;
+    colorFilter.addEventListener("change", (e) => {
+      this.filterColor = e.target.value;
+      this.filterData();
+      this.render();
+    });
+
+    // 筛选：状态
+    const statusFilter = toolbar.createEl("select");
+    statusFilter.add(new Option(t("library_filter_status_all"), "all"));
+    statusFilter.add(new Option(t("library_filter_status_learning"), "learning"));
+    statusFilter.add(new Option(t("library_filter_status_mastered"), "mastered"));
+    statusFilter.add(new Option(t("library_filter_status_ignored"), "ignored"));
+    statusFilter.value = this.filterStatus;
+    statusFilter.addEventListener("change", (e) => {
+      this.filterStatus = e.target.value;
+      this.filterData();
+      this.render();
+    });
+
+    // 筛选：来源
+    const sourceFilter = toolbar.createEl("select");
+    sourceFilter.add(new Option(t("library_filter_source_all"), "all"));
+    this.sourceFilter = sourceFilter;
+    sourceFilter.addEventListener("change", (e) => {
+      this.filterSource = e.target.value;
+      this.filterData();
+      this.render();
+    });
+
+    // 排序
+    const sortSelect = toolbar.createEl("select");
+    sortSelect.add(new Option(t("library_sort_field_word"), "word"));
+    sortSelect.add(new Option(t("library_sort_field_status"), "status"));
+    sortSelect.add(new Option(t("library_sort_field_color"), "color"));
+    sortSelect.add(new Option(t("library_sort_field_source"), "source"));
+    sortSelect.value = this.sortField;
+    sortSelect.addEventListener("change", (e) => {
+      this.sortField = e.target.value;
+      this.filterData();
+      this.render();
+    });
+
+    // 排序方向按钮
+    const sortDirBtn = toolbar.createEl("button", { text: "🔄", title: t("library_sort_toggle") });
+    sortDirBtn.addEventListener("click", () => {
+      this.sortAsc = !this.sortAsc;
+      this.filterData();
+      this.render();
+    });
+
+    // 全选按钮
+    const selectAllBtn = toolbar.createEl("button", {
+      text: "☑",
+      title: t("library_select_all_title")
+    });
+    selectAllBtn.addEventListener("click", () => {
+      const total = this.filteredCards.length;
+      if (total === 0) return;
+      // 如果已全选则取消全选，否则全选所有当前显示的行
+      if (this.selectedRows.size === total) {
+        this.selectedRows.clear();
+      } else {
+        for (const card of this.filteredCards) {
+          this.selectedRows.add(card._uid);
+        }
+      }
+      this.updateBatchBar();
+      this.render();
+    });
+
+    // 批量操作栏
+    const batchBar = container.createDiv({ cls: "library-batch-bar" });
+    batchBar.style.display = "none";
+    const batchInfo = batchBar.createSpan({ cls: "batch-info" });
+    const batchColor = batchBar.createEl("select");
+    batchColor.add(new Option(t("library_batch_color"), ""));
+    const colorOpts = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", "default"];
+    for (const c of colorOpts) {
+      const label = c === "default" ? t("library_filter_color_default") : t("color_" + c);
+      batchColor.add(new Option(label, c));
+    }
+    batchColor.addEventListener("change", async (e) => {
+      const val = e.target.value;
+      if (!val) return;
+      await this.batchSetColor(val);
+      batchColor.value = "";
+    });
+
+    const batchMastery = batchBar.createEl("button", { text: t("library_batch_mastered") });
+    batchMastery.addEventListener("click", () => this.batchSetMastered(true));
+    const batchUnmaster = batchBar.createEl("button", { text: t("library_batch_unmaster") });
+    batchUnmaster.addEventListener("click", () => this.batchSetMastered(false));
+    const batchIgnore = batchBar.createEl("button", { text: t("library_batch_ignore") });
+    batchIgnore.addEventListener("click", () => this.batchSetIgnored(true));
+    const batchUnignore = batchBar.createEl("button", { text: t("library_batch_unignore") });
+    batchUnignore.addEventListener("click", () => this.batchSetIgnored(false));
+    const batchDelete = batchBar.createEl("button", { text: t("library_batch_delete"), cls: "mod-warning" });
+    batchDelete.addEventListener("click", () => this.batchDelete());
+    const batchClear = batchBar.createEl("button", { text: t("library_batch_clear") });
+    batchClear.addEventListener("click", () => { this.selectedRows.clear(); this.updateBatchBar(); this.render(); });
+
+    // 统计栏
+    const statsBar = container.createDiv({ cls: "library-stats" });
+    this.statsBar = statsBar;
+
+    // 表格容器
+    const tableWrapper = container.createDiv({ cls: "library-table-wrapper" });
+    this.scrollContainer = tableWrapper;
+    const table = tableWrapper.createEl("table");
+    table.className = "library-table";
+    // 表头
+    const thead = table.createEl("thead");
+    const headerRow = thead.createEl("tr");
+    headerRow.createEl("th", { text: t("library_table_header_select") });
+    headerRow.createEl("th", { text: t("library_table_header_word") });
+    headerRow.createEl("th", { text: t("library_table_header_phonetic") });
+    headerRow.createEl("th", { text: t("library_table_header_definition") });
+    headerRow.createEl("th", { text: t("library_table_header_source") });
+    headerRow.createEl("th", { text: t("library_table_header_color") });
+    headerRow.createEl("th", { text: t("library_table_header_status") });
+    // 表体
+    const tbody = table.createEl("tbody");
+    this.tableBody = tbody;
+    // 保存引用
+    this.searchInput = searchInput;
+    this.colorFilter = colorFilter;
+    this.statusFilter = statusFilter;
+    this.sourceFilter = sourceFilter;
+    this.sortSelect = sortSelect;
+    this.batchBar = batchBar;
+    this.batchInfo = batchInfo;
+
+    this._scrollListener = () => this.onScroll();
+    tableWrapper.addEventListener("scroll", this._scrollListener);
+    this._resizeObserver = new ResizeObserver(() => this.render());
+    this._resizeObserver.observe(tableWrapper);
+  }
+
+  // ---------- 数据加载 ----------
+  async loadData() {
+    const all = this.plugin.getAllCards();
+    const mastery = this.plugin.masteryStore;
+    const mode = this.plugin.settings.masteryMode;
+    for (const card of all) {
+      const key = mode === "global" ? card.word.toLowerCase() : `${card.sourceFile}::${card.word.toLowerCase()}`;
+      card._mastered = mastery.isMastered(key);
+      card._ignored = mastery.isIgnored(key);
+      card._stateKey = key;
+      card._uid = `${card.sourceFile}::${card.word}`;
+    }
+    this.allCards = all;
+    // 更新来源下拉
+    const sources = [...new Set(all.map(c => c.sourceFile))];
+    this.sourceFilter.innerHTML = `<option value="all">${t("library_filter_source_all")}</option>`;
+    for (const s of sources) {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s.split('/').pop();
+      this.sourceFilter.appendChild(opt);
+    }
+    // 恢复选中的来源
+    if (this.filterSource && sources.includes(this.filterSource)) {
+      this.sourceFilter.value = this.filterSource;
+    } else {
+      this.sourceFilter.value = "all";
+      this.filterSource = "all";
+    }
+    this.filterData();
+  }
+
+  async loadDataAndRender() {
+    await this.loadData();
+    this.render();
+  }
+
+  // ---------- 筛选与排序 ----------
+  filterData() {
+    let filtered = this.allCards;
+    // 搜索
+    if (this.searchQuery) {
+      const q = this.searchQuery;
+      filtered = filtered.filter(c =>
+        c.word.toLowerCase().includes(q) ||
+        (c.aliases && c.aliases.some(a => a.toLowerCase().includes(q)))
+      );
+    }
+    // 颜色
+    if (this.filterColor !== "all") {
+      const col = this.filterColor === "default" ? "" : this.filterColor;
+      filtered = filtered.filter(c => (c.color || "") === col);
+    }
+    // 状态
+    if (this.filterStatus !== "all") {
+      if (this.filterStatus === "learning") {
+        filtered = filtered.filter(c => !c._mastered && !c._ignored);
+      } else if (this.filterStatus === "mastered") {
+        filtered = filtered.filter(c => c._mastered);
+      } else if (this.filterStatus === "ignored") {
+        filtered = filtered.filter(c => c._ignored);
+      }
+    }
+    // 来源
+    if (this.filterSource !== "all") {
+      filtered = filtered.filter(c => c.sourceFile === this.filterSource);
+    }
+    // 排序
+    const field = this.sortField;
+    const asc = this.sortAsc;
+    filtered.sort((a, b) => {
+      let va, vb;
+      if (field === "word") { va = a.word.toLowerCase(); vb = b.word.toLowerCase(); }
+      else if (field === "status") {
+        const getStatus = (c) => c._mastered ? 2 : (c._ignored ? 1 : 0);
+        va = getStatus(a); vb = getStatus(b);
+      }
+      else if (field === "color") { va = a.color || ""; vb = b.color || ""; }
+      else if (field === "source") { va = a.sourceFile; vb = b.sourceFile; }
+      else { va = a.word; vb = b.word; }
+      if (va < vb) return asc ? -1 : 1;
+      if (va > vb) return asc ? 1 : -1;
+      return 0;
+    });
+    this.filteredCards = filtered;
+    this.totalRows = filtered.length;
+    const validUids = new Set(filtered.map(c => c._uid));
+    for (const uid of this.selectedRows) {
+      if (!validUids.has(uid)) this.selectedRows.delete(uid);
+    }
+    this.updateBatchBar();
+    this.updateStats();
+  }
+
+  // ---------- 统计 ----------
+  updateStats() {
+    const total = this.allCards.length;
+    const mastered = this.allCards.filter(c => c._mastered).length;
+    const ignored = this.allCards.filter(c => c._ignored).length;
+    const learning = total - mastered - ignored;
+    const pct = total ? Math.round(mastered / total * 100) : 0;
+    this.statsBar.innerHTML = `
+            <span>${t("library_stats_total", total)}</span>
+            <span>${t("library_stats_mastered", mastered, pct)}</span>
+            <span>${t("library_stats_learning", learning)}</span>
+            <span>${t("library_stats_ignored", ignored)}</span>
+            <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px;">
+                <div style="width:${pct}%; height:100%; background:var(--color-green); border-radius:3px;"></div>
+            </div>
+        `;
+  }
+
+  // ---------- 渲染（虚拟滚动） ----------
+  render() {
+    if (!this.tableBody) return;
+    const total = this.totalRows;
+    const containerHeight = this.scrollContainer.clientHeight || 400;
+    const visibleRows = Math.ceil(containerHeight / this.rowHeight) + 5;
+    const start = Math.floor(this.scrollContainer.scrollTop / this.rowHeight);
+    const end = Math.min(start + visibleRows, total);
+    this.tableBody.innerHTML = '';
+    if (start > 0) {
+      const spacer = document.createElement('tr');
+      spacer.style.height = (start * this.rowHeight) + 'px';
+      spacer.style.display = 'table-row';
+      this.tableBody.appendChild(spacer);
+    }
+    for (let i = start; i < end; i++) {
+      const card = this.filteredCards[i];
+      if (!card) continue;
+      const tr = this.createRow(card);
+      this.tableBody.appendChild(tr);
+    }
+    if (end < total) {
+      const spacer = document.createElement('tr');
+      spacer.style.height = ((total - end) * this.rowHeight) + 'px';
+      spacer.style.display = 'table-row';
+      this.tableBody.appendChild(spacer);
+    }
+    if (total === 0) {
+      const tr = document.createElement('tr');
+      const td = tr.createEl('td', { colspan: 7, text: t("library_empty") });
+      td.style.textAlign = 'center';
+      td.style.padding = '20px';
+      td.style.color = 'var(--text-muted)';
+      this.tableBody.appendChild(tr);
+    }
+    this.tableBody.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      const uid = cb.dataset.uid;
+      if (uid && this.selectedRows.has(uid)) cb.checked = true;
+    });
+  }
+
+  onScroll() { this.render(); }
+
+  // ---------- 创建行 ----------
+  createRow(card) {
+    const tr = document.createElement('tr');
+    tr.dataset.uid = card._uid;
+    // 复选框
+    const tdCheck = tr.createEl('td');
+    const cb = tdCheck.createEl('input', { type: 'checkbox' });
+    cb.dataset.uid = card._uid;
+    cb.addEventListener('change', (e) => {
+      if (e.target.checked) this.selectedRows.add(card._uid);
+      else this.selectedRows.delete(card._uid);
+      this.updateBatchBar();
+    });
+
+    // 单词
+    const tdWord = tr.createEl('td');
+    tdWord.title = card.word;
+    const wordSpan = tdWord.createSpan({ text: card.word });
+    wordSpan.className = "library-word";
+    wordSpan.addEventListener("click", (e) => {
+      e.stopPropagation();
+      playPronunciation(
+        card.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        card.lang
+      );
+    });
+    // 单词列右键菜单
+    tdWord.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const menu = new Menu();
+      // 复制单词
+      menu.addItem(item => item
+        .setTitle(t("library_copy_word"))
+        .setIcon('copy')
+        .onClick(() => {
+          navigator.clipboard.writeText(card.word);
+        })
+      );
+      // 复制音标
+      menu.addItem(item => item
+        .setTitle(t("library_copy_phonetic"))
+        .setIcon('copy')
+        .onClick(() => {
+          navigator.clipboard.writeText(card.phonetic || '');
+        })
+      );
+      // 复制释义
+      menu.addItem(item => item
+        .setTitle(t("library_copy_definition"))
+        .setIcon('copy')
+        .onClick(() => {
+          navigator.clipboard.writeText(card.definition || '');
+        })
+      );
+      // 复制单词来源
+      menu.addItem(item => item
+        .setTitle(t("library_copy_source"))
+        .setIcon('copy')
+        .onClick(() => {
+          navigator.clipboard.writeText(card.sourceFile);
+        })
+      );
+      // 复制全部信息
+      menu.addItem(item => item
+        .setTitle(t("library_copy_all"))
+        .setIcon('copy')
+        .onClick(() => {
+          const allInfo = [
+            `**${t("copy_all_word")}** ${card.word}`,
+            `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
+            `**${t("copy_all_source")}** ${card.sourceFile}`,
+            `**${t("copy_all_definition")}**\n${card.definition || ''}`
+          ].join('\n');
+          navigator.clipboard.writeText(allInfo);
+        })
+      );
+
+      menu.showAtPosition({ x: e.clientX, y: e.clientY });
+    });
+
+    // 音标
+    const tdPhon = tr.createEl('td', { text: card.phonetic || '' });
+    tdPhon.title = card.phonetic || '';
+    // 释义
+    const def = card.definition || '';
+    const shortDef = def.length > 50 ? def.slice(0, 50) + '…' : def;
+    const tdDef = tr.createEl('td', { text: shortDef });
+    tdDef.title = def; // 悬停显示完整
+    // 来源
+    const tdSource = tr.createEl('td', { text: card.sourceFile.split('/').pop() });
+    tdSource.title = card.sourceFile;
+    // 颜色（色块）
+    const tdColor = tr.createEl('td');
+    const colorMap = {
+      red: 'var(--color-red)',
+      orange: 'var(--color-orange)',
+      yellow: 'var(--color-yellow)',
+      green: 'var(--color-green)',
+      blue: 'var(--color-blue)',
+      purple: 'var(--color-purple)',
+      pink: 'var(--color-pink)',
+      cyan: 'var(--color-cyan)'
+    };
+    const colorVal = colorMap[card.color] || 'var(--interactive-accent)';
+    const dot = tdColor.createSpan({ cls: 'color-dot' });
+    dot.style.backgroundColor = colorVal;
+    // 状态
+    const tdStatus = tr.createEl('td');
+    let statusText, statusColor;
+    if (card._mastered) {
+      statusText = t("library_status_mastered");
+      statusColor = 'var(--color-green)';
+    } else if (card._ignored) {
+      statusText = t("library_status_ignored");
+      statusColor = 'var(--text-muted)';
+    } else {
+      statusText = t("library_status_learning");
+      statusColor = 'var(--color-blue)';
+    }
+    tdStatus.textContent = statusText;
+    tdStatus.style.color = statusColor;
+
+    // 双击编辑
+    tr.addEventListener('dblclick', () => {
+      new WordModal(this.plugin.app, this.plugin, card).open();
+    });
+    // 右键菜单
+    tr.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
+    });
+
+    return tr;
+  }
+
+  // ---------- 批量操作 ----------
+  getSelectedCards() {
+    const uidSet = this.selectedRows;
+    return this.filteredCards.filter(c => uidSet.has(c._uid));
+  }
+
+  updateBatchBar() {
+    const count = this.selectedRows.size;
+    if (count > 0) {
+      this.batchBar.style.display = 'flex';
+      this.batchInfo.textContent = t("library_batch_selected", count);
+    } else {
+      this.batchBar.style.display = 'none';
+    }
+  }
+
+  // 批量修改颜色
+  async batchSetColor(colorVal) {
+    const cards = this.getSelectedCards();
+    if (!cards.length) return;
+    for (const card of cards) {
+      card.color = colorVal === 'default' ? '' : colorVal;
+      await WordbookParser.saveCard(this.plugin.app, card.sourceFile, card, false);
+    }
+    await this.plugin.reloadAllCards();
+    await this.plugin.highlighter.refresh();
+    this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    new Notice(t("library_batch_color_success", cards.length));
+    //this.selectedRows.clear();
+    this.loadDataAndRender();
+  }
+
+  // 批量标记/取消掌握
+  async batchSetMastered(mastered) {
+    const cards = this.getSelectedCards();
+    if (!cards.length) return;
+    const store = this.plugin.masteryStore;
+    for (const card of cards) {
+      await store.setMastered(card._stateKey, mastered);
+    }
+    //this.selectedRows.clear();
+    this.loadDataAndRender();
+    this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    new Notice(t(mastered ? "library_batch_mastered_success" : "library_batch_unmaster_success", cards.length));
+  }
+
+  // 批量标记/取消忽略
+  async batchSetIgnored(ignored) {
+    const cards = this.getSelectedCards();
+    if (!cards.length) return;
+    const store = this.plugin.masteryStore;
+    for (const card of cards) {
+      await store.setIgnored(card._stateKey, ignored);
+    }
+    //this.selectedRows.clear();
+    this.loadDataAndRender();
+    this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    new Notice(t(ignored ? "library_batch_ignored_success" : "library_batch_unignored_success", cards.length));
+  }
+
+  // 批量删除
+  async batchDelete() {
+    const cards = this.getSelectedCards();
+    if (!cards.length) return;
+    const confirmed = await new Promise((resolve) => {
+      const modal = new ConfirmModal(this.plugin.app, () => resolve(true), () => resolve(false), t("library_confirm_delete_batch", cards.length));
+      modal.open();
+    });
+    if (!confirmed) return;
+    for (const card of cards) {
+      await WordbookParser.deleteCard(this.plugin.app, card.sourceFile, card.word);
+    }
+    await this.plugin.reloadAllCards();
+    await this.plugin.highlighter.refresh();
+    this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+    new Notice(t("library_batch_delete_success", cards.length));
+    //this.selectedRows.clear();
+    this.loadDataAndRender();
+  }
+}
+
+// ========== 学习中心视图（StudyView） ==========
+class StudyView extends ItemView {
+  constructor(leaf, plugin) {
+    super(leaf);
+    this.plugin = plugin;
+    this.studyStore = new StudyStore(plugin);
+    this.currentTab = "review"; // "review", "mastered", "levels", "stats", "settings"
+    this.reviewQueue = [];
+    this.currentIndex = 0;
+    this.isFlipped = false;
+    this.reviewing = false;
+    this.totalReviewed = 0;
+    this.totalMastered = 0;
+    this.cardContainer = null;
+    this.progressEl = null;
+    this.btnForget = null;
+    this.btnRemember = null;
+    this.tabBar = null;
+    this.contentEl = null;
+    this._autoFlipTimer = null;
+    this._statsCache = null;
+    this._statsCacheTime = 0;
+    this._rendering = false;
+  }
+
+  getViewType() { return VIEW_TYPE_STUDY; }
+  getDisplayText() { return t("study_view_title"); }
+  getIcon() { return "target"; }
+
+  _keyHandler = null;
+
+  // 键盘事件统一处理
+  handleKeydown(e) {
+    if (!this.reviewing || this.reviewQueue.length === 0) return;
+    if (e.key === " " || e.key === "Space") {
+      e.preventDefault();
+      this.toggleCardFlip();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      this.handleRemember();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      this.handleForget();
+    }
+  }
+
+  // 卡片翻转方法
+  toggleCardFlip() {
+    if (!this.cardContainer) return;
+    this.isFlipped = !this.isFlipped;
+    const front = this.cardContainer.querySelector('.study-card-front');
+    const back = this.cardContainer.querySelector('.study-card-back');
+    if (front) front.style.display = this.isFlipped ? "none" : "flex";
+    if (back) back.style.display = this.isFlipped ? "block" : "none";
+    if (this._autoFlipTimer) {
+      clearTimeout(this._autoFlipTimer);
+      this._autoFlipTimer = null;
+    }
+  }
+
+  async onOpen() {
+    this.containerEl.empty();
+    this.containerEl.addClass("simple-wordbook-study");
+    await this.studyStore.load();
+    this.buildUI();
+    await this.switchTab(this.currentTab);
+
+    // 注册键盘事件（只执行一次）
+    this._keyHandler = this.handleKeydown.bind(this);
+    this.registerDomEvent(document, "keydown", this._keyHandler);
+
+    // 监听数据更新事件，刷新视图
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.refresh()));
+    this.registerEvent(this.plugin.app.vault.on("modify", (file) => {
+      if (file instanceof TFile && file.extension === "json") {
+        const isWordbook = this.plugin.settings.wordbookFiles.some(wb => wb.path === file.path);
+        if (isWordbook) this.refresh();
+      }
+    }));
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:settings-updated", () => {
+      this.studyStore.data.dailyGoal = this.plugin.settings.study.dailyGoal || 10;
+      this.studyStore.save();
+      this.updateTopBar();
+    }));
+  }
+
+  onClose() {
+    if (this._autoFlipTimer) {
+      clearTimeout(this._autoFlipTimer);
+      this._autoFlipTimer = null;
+    }
+  }
+
+  // ----- 刷新当前标签 -----
+  async refresh() {
+    if (this.currentTab === "review") this.renderReviewTab();
+    else if (this.currentTab === "mastered") this.renderMasteredTab();
+    else if (this.currentTab === "levels") this.renderLevelsTab();
+    else if (this.currentTab === "stats") this.renderStatsTab();
+    else if (this.currentTab === "settings") this.renderSettingsTab();
+    this.updateTopBar();
+  }
+
+  // ----- 构建 UI（顶部栏 + 标签栏 + 内容区） -----
+  buildUI() {
+    const container = this.containerEl;
+
+    // 顶部栏
+    const topBar = container.createDiv({ cls: "study-top-bar" });
+    topBar.createSpan({ text: t("study_view_title"), cls: "study-title" });
+    this.goalDisplay = topBar.createSpan({ cls: "study-goal" });
+    this.updateTopBar();
+
+    // 标签栏
+    const tabBar = container.createDiv({ cls: "study-tab-bar" });
+    const tabs = [
+      { id: "review", label: t("study_tab_review") },
+      { id: "mastered", label: t("study_tab_mastered") },
+      { id: "levels", label: t("study_tab_levels") },
+      { id: "stats", label: t("study_tab_stats") },
+      { id: "settings", label: t("study_tab_settings") }
+    ];
+    for (const tab of tabs) {
+      const tabEl = tabBar.createDiv({ cls: "study-tab", text: tab.label });
+      tabEl.dataset.tab = tab.id;
+      if (this.currentTab === tab.id) tabEl.addClass("active");
+      tabEl.addEventListener("click", () => this.switchTab(tab.id));
+    }
+    this.tabBar = tabBar;
+
+    // 内容容器
+    const contentContainer = container.createDiv({ cls: "study-content" });
+    this.contentEl = contentContainer;
+    this.switchTab(this.currentTab);
+  }
+
+  // ----- 更新顶部目标显示 -----
+  updateTopBar() {
+    const stats = this.studyStore.getTodayStats();
+    const reviewed = stats ? stats.reviewed : 0;
+    const goal = this.studyStore.data.dailyGoal || 10;
+    if (this.goalDisplay) {
+      this.goalDisplay.textContent = t("study_today_goal", reviewed, goal);
+    }
+  }
+
+  // ----- 切换标签 -----
+  async switchTab(tabId) {
+    this.currentTab = tabId;
+    if (this.tabBar) {
+      this.tabBar.querySelectorAll('.study-tab').forEach(el => {
+        el.toggleClass('active', el.dataset.tab === tabId);
+      });
+    }
+    await this.refresh();
+  }
+
+  // ---------- 复习标签 ----------
+  async renderReviewTab() {
+    if (this._rendering) return;
+    this._rendering = true;
+
+    try {
+      const container = this.contentEl;
+      container.empty();
+      // 如果正在复习，显示复习界面
+      if (this.reviewing) {
+        this.renderReviewSession(container);
+        return; // finally 会重置标志
+      }
+      // 否则显示准备界面
+      const allCards = this.plugin.getAllCards();
+      const due = await this.studyStore.getDueWords(allCards, this.plugin.settings.study.dailyReviewLimit || 20);
+      if (due.length === 0) {
+        container.createDiv({ cls: "study-empty", text: t("study_review_empty") });
+        return;
+      }
+      const info = container.createDiv({ cls: "study-review-info" });
+      info.createSpan({ text: `📚 ${due.length} ${t("study_review_title")}` });
+      const btn = container.createEl("button", { text: t("study_btn_start"), cls: "mod-cta" });
+      btn.addEventListener("click", () => {
+        this.reviewQueue = due;
+        this.currentIndex = 0;
+        this.totalReviewed = 0;
+        this.totalMastered = 0;
+        this.reviewing = true;
+        this.renderReviewTab(); // 此时 _rendering 已重置，可正常进入
+      });
+    } finally {
+      this._rendering = false;
+    }
+  }
+
+  async renderReviewSession(container) {
+    container.empty();
+    if (this.currentIndex >= this.reviewQueue.length) {
+      // 复习完成
+      const done = container.createDiv({ cls: "study-done" });
+      done.createEl("p", { text: t("study_review_done", this.totalReviewed) });
+      const btn = done.createEl("button", { text: "🔄 " + t("study_btn_start"), cls: "mod-cta" });
+      btn.addEventListener("click", () => {
+        this.reviewing = false;
+        this.renderReviewTab();
+      });
+      return;
+    }
+
+    const item = this.reviewQueue[this.currentIndex];
+    const card = item.card;
+    const review = item.review;
+    const level = review.level || 0;
+    const interval = this.studyStore.getInterval(level);
+    const nextDays = interval > 0 ? interval : (level >= 5 ? "∞" : "1");
+
+    // 进度信息
+    const progressRow = container.createDiv({ cls: "study-progress-row" });
+    const progress = progressRow.createDiv({ cls: "study-progress" });
+    progress.textContent = t("study_review_progress", this.currentIndex + 1, this.reviewQueue.length, level, nextDays);
+
+    // 退出按钮
+    const exitRow = container.createDiv({ cls: "study-exit-row" });
+    const exitBtn = exitRow.createEl("button", { text: "🚪 " + t("study_btn_exit"), cls: "study-exit-btn" });
+    exitBtn.addEventListener("click", () => {
+      if (this._autoFlipTimer) {
+        clearTimeout(this._autoFlipTimer);
+        this._autoFlipTimer = null;
+      }
+      this.reviewing = false;
+      this.reviewQueue = [];
+      this.currentIndex = 0;
+      this.renderReviewTab();
+    });
+
+    // 卡片
+    const cardWrapper = container.createDiv({ cls: "study-card-wrapper" });
+    const cardEl = cardWrapper.createDiv({ cls: "study-card" });
+    // 卡片颜色
+    const colorMap = {
+      red: 'var(--color-red)',
+      orange: 'var(--color-orange)',
+      yellow: 'var(--color-yellow)',
+      green: 'var(--color-green)',
+      blue: 'var(--color-blue)',
+      purple: 'var(--color-purple)',
+      pink: 'var(--color-pink)',
+      cyan: 'var(--color-cyan)'
+    };
+    cardEl.style.setProperty('--study-card-color', colorMap[card.color] || 'var(--interactive-accent)');
+
+    // 正面（单词）
+    const front = cardEl.createDiv({ cls: "study-card-front" });
+    front.createSpan({ cls: "study-card-word", text: card.word });
+    if (this.plugin.settings.study.flashcardShowPhonetic && card.phonetic) {
+      front.createSpan({ cls: "study-card-phonetic", text: card.phonetic });
+    }
+    front.createDiv({ cls: "study-card-hint", text: t("study_card_hint") });
+    const shortcutHint = front.createDiv({ cls: "study-shortcut-hint" });
+    shortcutHint.textContent = t("study_shortcut_hint");
+
+    // 背面（释义）
+    const back = cardEl.createDiv({ cls: "study-card-back" });
+    back.style.display = "none"; // 初始隐藏
+    back.style.cssText = "display: none; width: 100%; padding: 0 4px; box-sizing: border-box;";
+
+    // ---- 背面顶部：单词 + 音标 ----
+    const backTop = back.createDiv({ cls: "study-card-back-top" });
+    backTop.style.cssText = "width: 100%; text-align: center; padding-bottom: 6px; margin-bottom: 6px;";
+
+    const backWord = backTop.createSpan({ cls: "study-card-word", text: card.word });
+    backWord.style.cssText = "font-size: 1.4em; font-weight: bold; display: block;";
+
+    if (this.plugin.settings.study.flashcardShowPhonetic && card.phonetic) {
+      const backPhonetic = backTop.createSpan({ cls: "study-card-phonetic", text: card.phonetic });
+      backPhonetic.style.cssText = "font-size: 1em; color: var(--text-muted); opacity: 0.8; display: block; margin-top: 2px;";
+    }
+
+    // ---- 分隔线 ----
+    const backDivider = back.createDiv({ cls: "study-card-divider" });
+    backDivider.style.cssText = "width: 80%; margin: 0 auto 10px auto; border: none; border-top: 1px solid var(--background-modifier-border); opacity: 0.8;";
+
+    // ---- 背面内容区域：章节标签 + 释义 ----
+    // 解析定义中的章节
+    const sections = parseSections(card.definition || t("no_definition"));
+    const hasMultipleSections = sections.length > 1;
+
+    // 标签栏（仅在多章节时显示）
+    let tabBar = null;
+    if (hasMultipleSections) {
+      tabBar = back.createDiv({ cls: "study-card-tab-bar" });
+      tabBar.style.cssText = "display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; border-bottom: 1px solid var(--background-modifier-border); padding-bottom: 4px;";
+    }
+
+    // 内容容器
+    const contentDiv = back.createDiv({ cls: "study-card-content" });
+
+    // 渲染指定章节
+    const renderSection = async (index) => {
+      contentDiv.empty();
+      const section = sections[index];
+      if (section) {
+        let content = section.content;
+        const processed = processLineBreaks(content);
+        await MarkdownRenderer.render(this.plugin.app, processed, contentDiv, card.sourceFile, this.plugin);
+        fixInternalLinks(contentDiv, this.plugin.app, card.sourceFile);
+      } else {
+        contentDiv.setText(t("no_definition"));
+      }
+      contentDiv.scrollTop = 0;
+    };
+
+    // 创建标签
+    if (hasMultipleSections && tabBar) {
+      sections.forEach((section, idx) => {
+        const tab = tabBar.createDiv({ cls: "study-card-tab" });
+        tab.textContent = section.title;
+        tab.style.cssText = `cursor: pointer; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: ${idx === 0 ? "var(--text-accent)" : "var(--text-muted)"}; font-weight: ${idx === 0 ? "bold" : "normal"}; transition: color 0.2s, font-weight 0.2s;`;
+        tab.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          tabBar.querySelectorAll(".study-card-tab").forEach(t => {
+            t.style.color = "var(--text-muted)";
+            t.style.fontWeight = "normal";
+          });
+          tab.style.color = "var(--text-accent)";
+          tab.style.fontWeight = "bold";
+          await renderSection(idx);
+        });
+      });
+    }
+
+    // 默认渲染第一个章节
+    await renderSection(0);
+
+    // 翻转
+    cardEl.addEventListener("dblclick", () => this.toggleCardFlip());
+
+    // 操作按钮行
+    const btnWrapper = container.createDiv({ cls: "study-btn-wrapper" });
+
+    // 上一个按钮
+    const prevBtn = btnWrapper.createEl("button", { text: "◀ " + t("study_btn_prev"), cls: "study-nav-btn" });
+    prevBtn.addEventListener("click", () => {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this.renderReviewSession(this.contentEl);
+      }
+    });
+
+    // 忘记按钮
+    const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-warning" });
+    forgetBtn.addEventListener("click", () => this.handleForget());
+
+    // 记得按钮
+    const rememberBtn = btnWrapper.createEl("button", { text: t("study_btn_remember"), cls: "mod-cta" });
+    rememberBtn.addEventListener("click", () => this.handleRemember());
+
+    // 下一个按钮
+    const nextBtn = btnWrapper.createEl("button", { text: t("study_btn_next") + " ▶", cls: "study-nav-btn" });
+    nextBtn.addEventListener("click", () => {
+      if (this.currentIndex < this.reviewQueue.length - 1) {
+        this.currentIndex++;
+        this.renderReviewSession(this.contentEl);
+      }
+    });
+
+    // 根据索引禁用导航按钮（视觉反馈）
+    if (this.currentIndex === 0) prevBtn.disabled = true;
+    if (this.currentIndex === this.reviewQueue.length - 1) nextBtn.disabled = true;
+
+    // 保存引用
+    this.cardContainer = cardEl;
+    this.btnForget = forgetBtn;
+    this.btnRemember = rememberBtn;
+    this.progressEl = progress;
+    this.isFlipped = false;
+
+    // 自动翻转
+    const autoFlip = this.plugin.settings.study.flashcardAutoFlip || 0;
+    if (autoFlip > 0) {
+      this._autoFlipTimer = setTimeout(() => {
+        if (!this.isFlipped) this.toggleCardFlip();
+      }, autoFlip * 1000);
+    }
+  }
+
+  handleForget() {
+    if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
+      return;
+    }
+    const item = this.reviewQueue[this.currentIndex];
+    const card = item.card;
+    const review = item.review;
+    review.level = 0;
+    review.nextReview = this.studyStore.calculateNextReview(0);
+    review.consecutiveCorrect = 0;
+    review.reviewCount += 1;
+    review.lastReview = this.studyStore.getTodayISO();
+    this.studyStore.setReview(card.word, card.sourceFile, review);
+    this.studyStore.incrementReviewed();
+    this.totalReviewed++;
+    this.currentIndex++;
+    this.renderReviewTab();
+  }
+
+  handleRemember() {
+    if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
+      return;
+    }
+    const item = this.reviewQueue[this.currentIndex];
+    const card = item.card;
+    const review = item.review;
+    let newLevel = review.level + 1;
+    if (newLevel >= 5) {
+      // 达到等级5 → 自动标记为掌握
+      const key = getStudyKey(card.word, card.sourceFile);
+      this.plugin.masteryStore.setMastered(key, true);
+      this.studyStore.incrementMastered();
+      this.totalMastered++;
+      this.currentIndex++;
+      this.renderReviewTab();
+      return;
+    }
+    review.level = newLevel;
+    review.nextReview = this.studyStore.calculateNextReview(newLevel);
+    review.consecutiveCorrect += 1;
+    review.reviewCount += 1;
+    review.lastReview = this.studyStore.getTodayISO();
+    this.studyStore.setReview(card.word, card.sourceFile, review);
+    this.studyStore.incrementReviewed();
+    this.totalReviewed++;
+    this.currentIndex++;
+    this.renderReviewTab();
+  }
+
+  // ---------- 已掌握标签 ----------
+  renderMasteredTab() {
+    const container = this.contentEl;
+    container.empty();
+    const allCards = this.plugin.getAllCards();
+    const masteredCards = allCards.filter(card => {
+      const key = getStudyKey(card.word, card.sourceFile);
+      return this.plugin.masteryStore.isMastered(key);
+    });
+    if (masteredCards.length === 0) {
+      container.createDiv({ cls: "study-empty", text: t("study_mastered_list_empty") });
+      return;
+    }
+    const list = container.createDiv({ cls: "study-mastered-list" });
+    for (const card of masteredCards) {
+      const item = list.createDiv({ cls: "study-mastered-item" });
+      item.createSpan({ cls: "word", text: card.word });
+      item.createSpan({ cls: "source", text: card.sourceFile.split('/').pop() });
+      const unmasterBtn = item.createEl("button", { text: "↩️", cls: "clickable-icon" });
+      unmasterBtn.setAttribute("aria-label", t("notice_mastery_label_on"));
+      unmasterBtn.addEventListener("click", async () => {
+        const key = getStudyKey(card.word, card.sourceFile);
+        await this.plugin.masteryStore.setMastered(key, false);
+        // 同时重置复习记录到等级0
+        const review = this.studyStore.getReview(card.word, card.sourceFile);
+        if (review) {
+          review.level = 0;
+          review.nextReview = this.studyStore.calculateNextReview(0);
+          this.studyStore.setReview(card.word, card.sourceFile, review);
+        }
+        this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+        this.renderMasteredTab();
+      });
+    }
+  }
+
+  // ---------- 等级列表标签 ----------
+  renderLevelsTab() {
+    const container = this.contentEl;
+    container.empty();
+
+    const allCards = this.plugin.getAllCards();
+    // 获取所有有复习记录的单词及其等级
+    const cardLevels = [];
+    for (const card of allCards) {
+      const key = getStudyKey(card.word, card.sourceFile);
+      // 检查是否已忽略（忽略的词不显示）
+      if (this.plugin.masteryStore.isIgnored(key)) continue;
+      const review = this.studyStore.getReview(card.word, card.sourceFile);
+      if (review) {
+        let level = review.level || 0;
+        // 如果已掌握但等级小于5，修正为5
+        if (this.plugin.masteryStore.isMastered(key) && level < 5) {
+          level = 5;
+        }
+        cardLevels.push({ card, level, reviewKey: key });
+      }
+    }
+
+    if (cardLevels.length === 0) {
+      container.createDiv({ cls: "study-empty", text: t("study_mastered_list_empty") });
+      return;
+    }
+
+    // --- 下拉筛选器 ---
+    const filterRow = container.createDiv({ cls: "study-level-filter-row" });
+    filterRow.style.cssText = "display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;";
+
+    const filterLabel = filterRow.createSpan({ text: t("study_level_filter") + ":" });
+    filterLabel.style.cssText = "font-size: 0.9em; color: var(--text-muted);";
+
+    const filterSelect = filterRow.createEl("select");
+    filterSelect.style.cssText = "padding: 4px 24px 4px 10px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal); font-size: 0.9em; cursor: pointer; appearance: none; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 8px center; min-width: 100px;";
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      filterSelect.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")";
+    }
+
+    // 添加选项
+    filterSelect.createEl("option", { value: "all", text: t("study_level_all") + ` (${cardLevels.length})` });
+    for (let i = 5; i >= 0; i--) {
+      const count = cardLevels.filter(item => item.level === i).length;
+      const label = `${t("study_level_label", i)} (${count})`;
+      filterSelect.createEl("option", { value: String(i), text: label });
+    }
+
+    // 当前选中的等级
+    let selectedLevel = "all";
+
+    // --- 表格容器 ---
+    const tableWrapper = container.createDiv({ cls: "study-level-table-wrapper" });
+
+    const table = tableWrapper.createEl("table");
+    table.className = "study-level-table"; 
+
+    // 表头
+    const thead = table.createEl("thead");
+    const headerRow = thead.createEl("tr");
+    const headers = [
+      t("library_table_header_word"),
+      t("library_table_header_phonetic"),
+      t("library_table_header_definition"),
+      t("library_table_header_source"),
+      "Level"
+    ];
+    for (const h of headers) {
+      const th = headerRow.createEl("th", { text: h });
+    }
+
+    // 表体
+    const tbody = table.createEl("tbody");
+
+    // 等级颜色
+    const levelColors = [
+      "var(--color-blue)",                                                        // 等级0: 纯蓝色
+      "color-mix(in srgb, var(--color-blue) 80%, var(--color-green) 20%)",        // 等级1: 蓝80%+绿20%
+      "color-mix(in srgb, var(--color-blue) 60%, var(--color-green) 40%)",        // 等级2: 蓝60%+绿40%
+      "color-mix(in srgb, var(--color-blue) 40%, var(--color-green) 60%)",        // 等级3: 蓝40%+绿60%
+      "color-mix(in srgb, var(--color-blue) 20%, var(--color-green) 80%)",        // 等级4: 蓝20%+绿80%
+      "var(--color-green)"                                                        // 等级5: 纯绿色
+    ];
+
+    // 渲染表格函数
+    const renderTable = (level) => {
+      tbody.empty();
+      let filtered = cardLevels;
+      if (level !== "all") {
+        const lvl = parseInt(level);
+        filtered = cardLevels.filter(item => item.level === lvl);
+      } else {
+        filtered.sort((a, b) => b.level - a.level);
+      }
+
+      if (filtered.length === 0) {
+        const tr = tbody.createEl("tr");
+        const td = tr.createEl("td", { colspan: 5, text: t("study_no_words_for_level") });
+        td.style.cssText = "text-align: center; padding: 20px; color: var(--text-muted);";
+        return;
+      }
+
+      for (const item of filtered) {
+        const card = item.card;
+        const levelNum = item.level;
+        const key = item.reviewKey;
+
+        const tr = tbody.createEl("tr");
+
+        // 单词列（可点击发音）
+        const tdWord = tr.createEl("td");
+        tdWord.title = card.word;
+        const wordSpan = tdWord.createSpan({ text: card.word });
+        wordSpan.className = "library-word";
+        wordSpan.addEventListener("click", () => {
+          playPronunciation(
+            card.word,
+            this.plugin.settings.ttsUrlTemplate,
+            this.plugin.settings.pronunciationVariant,
+            card.lang
+          );
+        });
+
+        // 单词列的右键菜单
+        tdWord.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();   // 阻止冒泡到 tr 的右键菜单
+          const menu = new Menu();
+          // 复制单词
+          menu.addItem(item => item
+            .setTitle(t("library_copy_word"))
+            .setIcon('copy')
+            .onClick(() => {
+              navigator.clipboard.writeText(card.word);
+            })
+          );
+          // 复制音标
+          menu.addItem(item => item
+            .setTitle(t("library_copy_phonetic"))
+            .setIcon('copy')
+            .onClick(() => {
+              navigator.clipboard.writeText(card.phonetic || '');
+            })
+          );
+          // 复制释义
+          menu.addItem(item => item
+            .setTitle(t("library_copy_definition"))
+            .setIcon('copy')
+            .onClick(() => {
+              navigator.clipboard.writeText(card.definition || '');
+            })
+          );
+          // 复制来源
+          menu.addItem(item => item
+            .setTitle(t("library_copy_source"))
+            .setIcon('copy')
+            .onClick(() => {
+              navigator.clipboard.writeText(card.sourceFile);
+            })
+          );
+          // 复制全部信息
+          menu.addItem(item => item
+            .setTitle(t("library_copy_all"))
+            .setIcon('copy')
+            .onClick(() => {
+              const allInfo = [
+                `**${t("copy_all_word")}** ${card.word}`,
+                `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
+                `**${t("copy_all_source")}** ${card.sourceFile}`,
+                `**${t("copy_all_definition")}**\n${card.definition || ''}`
+              ].join('\n');
+              navigator.clipboard.writeText(allInfo);
+            })
+          );
+          menu.showAtPosition({ x: e.clientX, y: e.clientY });
+        });
+
+        // 音标列
+        const tdPhon = tr.createEl("td", { text: card.phonetic || '' });
+        tdPhon.title = card.phonetic || '';
+
+        // 释义列（截断）
+        const def = card.definition || '';
+        const shortDef = def.length > 80 ? def.slice(0, 80) + '…' : def;
+        const tdDef = tr.createEl("td", { text: shortDef });
+        tdDef.title = def;
+
+        // 来源列
+        const tdSource = tr.createEl("td", { text: card.sourceFile.split('/').pop() });
+        tdSource.title = card.sourceFile;
+
+        // 等级列（带颜色徽章 + 操作按钮）
+        const tdLevel = tr.createEl("td");
+
+        // 等级徽章
+        const badge = tdLevel.createSpan({ cls: "study-level-badge" });
+        badge.textContent = `${levelNum}`;
+        badge.style.cssText = `flex-shrink: 0; font-size: 0.7em; font-weight: bold; color: ${levelColors[levelNum] || 'var(--text-muted)'}; background: color-mix(in srgb, ${levelColors[levelNum] || 'var(--text-muted)'} 20%, transparent); padding: 1px 6px; border-radius: 10px; min-width: 24px; text-align: center;`;
+
+        // 操作按钮
+        const actions = tdLevel.createDiv({ cls: "study-level-actions" });
+        actions.style.cssText = "display: flex; gap: 2px; flex-shrink: 0;";
+
+        if (levelNum >= 5) {
+          const unmasterBtn = actions.createEl("button", { text: "↩️", cls: "clickable-icon" });
+          unmasterBtn.setAttribute("aria-label", t("notice_mastery_label_on"));
+          unmasterBtn.style.cssText = "padding: 0 4px; background: transparent; border: none; cursor: pointer; font-size: 1em; opacity: 0.6; transition: opacity 0.15s;";
+          unmasterBtn.addEventListener("mouseenter", () => { unmasterBtn.style.opacity = "1"; });
+          unmasterBtn.addEventListener("mouseleave", () => { unmasterBtn.style.opacity = "0.6"; });
+          unmasterBtn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            await this.plugin.masteryStore.setMastered(key, false);
+            const review = this.studyStore.getReview(card.word, card.sourceFile);
+            if (review) {
+              review.level = 0;
+              review.nextReview = this.studyStore.calculateNextReview(0);
+              this.studyStore.setReview(card.word, card.sourceFile, review);
+            }
+            this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+            renderTable(selectedLevel);
+          });
+        } else {
+          const masterBtn = actions.createEl("button", { text: "✅", cls: "clickable-icon" });
+          masterBtn.setAttribute("aria-label", t("notice_mastery_label_off"));
+          masterBtn.style.cssText = "padding: 0 4px; background: transparent; border: none; cursor: pointer; font-size: 1em; opacity: 0.6; transition: opacity 0.15s;";
+          masterBtn.addEventListener("mouseenter", () => { masterBtn.style.opacity = "1"; });
+          masterBtn.addEventListener("mouseleave", () => { masterBtn.style.opacity = "0.6"; });
+          masterBtn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            await this.plugin.masteryStore.setMastered(key, true);
+            const review = this.studyStore.getReview(card.word, card.sourceFile);
+            if (review) {
+              review.level = 5;
+              review.nextReview = null;
+              this.studyStore.setReview(card.word, card.sourceFile, review);
+            }
+            this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+            renderTable(selectedLevel);
+          });
+        }
+
+        // 右键菜单
+        tr.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
+        });
+
+        // 双击编辑
+        tr.addEventListener("dblclick", () => {
+          new WordModal(this.plugin.app, this.plugin, card).open();
+        });
+      }
+    };
+
+    // 初始渲染
+    renderTable("all");
+
+    // 下拉切换事件
+    filterSelect.addEventListener("change", (e) => {
+      selectedLevel = e.target.value;
+      renderTable(selectedLevel);
+    });
+  }
+
+  // ---------- 统计标签 ----------
+  renderStatsTab() {
+    const container = this.contentEl;
+    container.empty();
+
+    // 使用缓存，避免频繁计算（5秒缓存）
+    const now = Date.now();
+    if (!this._statsCache || now - this._statsCacheTime > 5000) {
+      const allCards = this.plugin.getAllCards();
+      this._statsCache = this.studyStore.getStats(allCards);
+      this._statsCacheTime = now;
+    }
+    const stats = this._statsCache;
+
+    // ----- 顶部概览卡片 -----
+    const overview = container.createDiv({ cls: "study-stats-overview" });
+    const items = [
+      { label: t("study_stats_total"), value: stats.total },
+      { label: t("study_stats_mastered_rate"), value: stats.masteredRate + "%" },
+      { label: t("study_stats_today_progress"), value: (this.studyStore.getTodayStats().reviewed || 0) },
+      { label: t("study_stats_streak"), value: t("study_stats_streak_days", stats.streak) }
+    ];
+    for (const item of items) {
+      const card = overview.createDiv({ cls: "stat-card" });
+      card.createDiv({ cls: "stat-value", text: String(item.value) });
+      card.createDiv({ cls: "stat-label", text: item.label });
+    }
+
+    // ----- 图表区域 -----
+    const charts = container.createDiv({ cls: "study-charts" });
+
+    // 1. 学习状态分布（环形图）
+    const dist = charts.createDiv({ cls: "chart-container" });
+    dist.createEl("h4", { text: t("study_stats_learning_distribution") });
+    const pie = dist.createDiv({ cls: "pie-chart" });
+    const mastered = stats.mastered || 0;
+    const learning = stats.learning || 0;
+    const ignored = stats.ignored || 0;
+    const total = stats.total || 1;
+    const masteredPct = mastered / total * 100;
+    const learningPct = learning / total * 100;
+    const ignoredPct = ignored / total * 100;
+    pie.style.background = `conic-gradient(var(--color-green) 0% ${masteredPct}%, var(--color-blue) ${masteredPct}% ${masteredPct + learningPct}%, var(--text-muted) ${masteredPct + learningPct}% 100%)`;
+    pie.style.width = "120px";
+    pie.style.height = "120px";
+    pie.style.borderRadius = "50%";
+    pie.style.margin = "0 auto 10px";
+
+    const legend = dist.createDiv({ cls: "chart-legend" });
+
+    // 已掌握 - 绿色色块
+    const masteredItem = legend.createSpan();
+    const masteredDot = masteredItem.createSpan({ cls: "color-dot" });
+    masteredDot.style.backgroundColor = "var(--color-green)";
+    masteredDot.style.display = "inline-block";
+    masteredDot.style.width = "12px";
+    masteredDot.style.height = "12px";
+    masteredDot.style.borderRadius = "3px";
+    masteredDot.style.marginRight = "4px";
+    masteredItem.append(` ${t("library_status_mastered")} (${mastered})`);
+
+    // 学习中 - 蓝色色块
+    const learningItem = legend.createSpan();
+    const learningDot = learningItem.createSpan({ cls: "color-dot" });
+    learningDot.style.backgroundColor = "var(--color-blue)";
+    learningDot.style.display = "inline-block";
+    learningDot.style.width = "12px";
+    learningDot.style.height = "12px";
+    learningDot.style.borderRadius = "3px";
+    learningDot.style.marginRight = "4px";
+    learningItem.append(` ${t("library_status_learning")} (${learning})`);
+
+    // 已忽略 - 灰色色块
+    const ignoredItem = legend.createSpan();
+    const ignoredDot = ignoredItem.createSpan({ cls: "color-dot" });
+    ignoredDot.style.backgroundColor = "var(--text-muted)";
+    ignoredDot.style.display = "inline-block";
+    ignoredDot.style.width = "12px";
+    ignoredDot.style.height = "12px";
+    ignoredDot.style.borderRadius = "3px";
+    ignoredDot.style.marginRight = "4px";
+    ignoredItem.append(` ${t("library_status_ignored")} (${ignored})`);
+
+    // 2. 学习趋势（折线图）
+    const trend = charts.createDiv({ cls: "chart-container" });
+    trend.createEl("h4", { text: t("study_stats_trend") });
+    const trendData = stats.trend || [];
+    const maxCount = Math.max(1, ...trendData.map(d => d.count));
+    const svg = trend.createEl("svg", { cls: "trend-svg" });
+    svg.setAttribute("viewBox", "0 0 300 100");
+    svg.style.width = "100%";
+    svg.style.height = "100px";
+    const points = trendData.map((d, i) => {
+      const x = (i / (trendData.length - 1 || 1)) * 290 + 5;
+      const y = 95 - (d.count / maxCount) * 80;
+      return `${x},${y}`;
+    }).join(" ");
+    // 使用 document.createElementNS 替代 svg.createElementNS
+    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+    polyline.setAttribute("points", points);
+    polyline.setAttribute("stroke", "var(--interactive-accent)");
+    polyline.setAttribute("stroke-width", "2");
+    polyline.setAttribute("fill", "none");
+    svg.appendChild(polyline);
+    for (let i = 0; i < trendData.length; i++) {
+      const d = trendData[i];
+      const cx = (i / (trendData.length - 1 || 1)) * 290 + 5;
+      const cy = 95 - (d.count / maxCount) * 80;
+      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      circle.setAttribute("cx", cx);
+      circle.setAttribute("cy", cy);
+      circle.setAttribute("r", "3");
+      circle.setAttribute("fill", "var(--interactive-accent)");
+      svg.appendChild(circle);
+    }
+
+    // 3. 等级分布（条形图）
+    const level = charts.createDiv({ cls: "chart-container" });
+    level.createEl("h4", { text: t("study_stats_level_distribution") });
+    const levelData = stats.levelCounts || [0, 0, 0, 0, 0, 0];
+    const levelLabels = ["0", "1", "2", "3", "4", "5"];
+    const maxLevel = Math.max(1, ...levelData);
+    const barContainer = level.createDiv({ cls: "bar-chart" });
+
+    // 等级0: 蓝色 → 等级1-4: 过渡色 → 等级5: 绿色
+    const levelColors = [
+      "var(--color-blue)",                                    // 等级0: 纯蓝色
+      "color-mix(in srgb, var(--color-blue) 80%, var(--color-green) 20%)",  // 等级1: 蓝多绿少
+      "color-mix(in srgb, var(--color-blue) 60%, var(--color-green) 40%)",  // 等级2: 蓝绿平衡偏蓝
+      "color-mix(in srgb, var(--color-blue) 40%, var(--color-green) 60%)",  // 等级3: 蓝绿平衡偏绿
+      "color-mix(in srgb, var(--color-blue) 20%, var(--color-green) 80%)",  // 等级4: 绿多蓝少
+      "var(--color-green)"                                    // 等级5: 纯绿色
+    ];
+
+    for (let i = 0; i < levelData.length; i++) {
+      const row = barContainer.createDiv({ cls: "bar-row" });
+      row.createSpan({ cls: "bar-label", text: levelLabels[i] });
+      const barWrap = row.createDiv({ cls: "bar-wrap" });
+      const bar = barWrap.createDiv({ cls: "bar-fill" });
+      const pct = levelData[i] / maxLevel * 100;
+      bar.style.width = pct + "%";
+      bar.style.backgroundColor = levelColors[i];
+      barWrap.createSpan({ cls: "bar-value", text: levelData[i] });
+    }
+
+    // 4. 来源分布（列表）
+    const source = charts.createDiv({ cls: "chart-container" });
+    source.createEl("h4", { text: t("study_stats_source_distribution") });
+    const sourceData = stats.sourceCounts || {};
+    const sourceList = source.createDiv({ cls: "source-list" });
+    for (const [path, count] of Object.entries(sourceData)) {
+      const row = sourceList.createDiv({ cls: "source-item" });
+      row.createSpan({ text: path.split('/').pop() });
+      row.createSpan({ cls: "count", text: count });
+    }
+
+    // 5. 颜色分布
+    const color = charts.createDiv({ cls: "chart-container" });
+    color.createEl("h4", { text: t("study_stats_color_distribution") });
+    const colorData = stats.colorCounts || {};
+    const colorList = color.createDiv({ cls: "color-list" });
+    const colorMap = {
+      red: 'var(--color-red)',
+      orange: 'var(--color-orange)',
+      yellow: 'var(--color-yellow)',
+      green: 'var(--color-green)',
+      blue: 'var(--color-blue)',
+      purple: 'var(--color-purple)',
+      pink: 'var(--color-pink)',
+      cyan: 'var(--color-cyan)'
+    };
+    for (const [col, count] of Object.entries(colorData)) {
+      const row = colorList.createDiv({ cls: "color-item" });
+      const dot = row.createSpan({ cls: "color-dot" });
+      const colVal = colorMap[col] || 'var(--interactive-accent)';
+      dot.style.backgroundColor = colVal;
+
+      let colorName;
+      if (col === 'default' || col === '') {
+        colorName = t("color_default");
+      } else {
+        const translated = t("color_" + col);
+        colorName = (translated !== "color_" + col) ? translated : col;
+      }
+      row.createSpan({ text: `${colorName}: ${count}` });
+    }
+  }
+
+  // ---------- 设置标签 ----------
+  renderSettingsTab() {
+    const container = this.contentEl;
+    container.empty();
+    const settings = this.plugin.settings.study;
+
+    container.createEl("h3", { text: "⚙️ " + t("study_settings_title") });
+
+    // 每日目标
+    const goalSetting = container.createDiv({ cls: "study-setting-item" });
+    goalSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_daily_goal") });
+    goalSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_daily_goal_desc") });
+    const goalControl = goalSetting.createDiv({ cls: "study-setting-control" });
+    const goalInput = goalControl.createEl("input", { type: "number" });
+    goalInput.value = settings.dailyGoal;
+    goalInput.min = 1;
+    goalInput.max = 999;
+    goalInput.step = 1;
+    goalInput.style.width = "80px";
+    goalInput.addEventListener("change", async (e) => {
+      let val = parseInt(e.target.value);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 999) val = 999;
+      settings.dailyGoal = val;
+      this.plugin.settings.study.dailyGoal = val;
+      await this.plugin.saveSettings();
+      this.studyStore.data.dailyGoal = val;
+      await this.studyStore.save();
+      this.updateTopBar();
+      this.plugin.app.workspace.trigger("simple-wordbook:settings-updated");
+    });
+
+    // 单次复习上限
+    const limitSetting = container.createDiv({ cls: "study-setting-item" });
+    limitSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_daily_limit") });
+    limitSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_daily_limit_desc") });
+    const limitControl = limitSetting.createDiv({ cls: "study-setting-control" });
+    const limitInput = limitControl.createEl("input", { type: "number" });
+    limitInput.value = settings.dailyReviewLimit;
+    limitInput.min = 1;
+    limitInput.max = 999;
+    limitInput.step = 1;
+    limitInput.style.width = "80px";
+    limitInput.addEventListener("change", async (e) => {
+      let val = parseInt(e.target.value);
+      if (isNaN(val) || val < 1) val = 1;
+      if (val > 999) val = 999;
+      settings.dailyReviewLimit = val;
+      this.plugin.settings.study.dailyReviewLimit = val;
+      await this.plugin.saveSettings();
+    });
+
+    // 复习排序
+    const orderSetting = container.createDiv({ cls: "study-setting-item" });
+    orderSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_review_order") });
+    const orderControl = orderSetting.createDiv({ cls: "study-setting-control" });
+    const orderSelect = orderControl.createEl("select");
+    orderSelect.createEl("option", { value: "due_first", text: t("study_settings_review_order_due") });
+    orderSelect.createEl("option", { value: "level_first", text: t("study_settings_review_order_level") });
+    orderSelect.value = settings.reviewOrder || "due_first";
+    orderSelect.addEventListener("change", async (e) => {
+      settings.reviewOrder = e.target.value;
+      this.plugin.settings.study.reviewOrder = settings.reviewOrder;
+      await this.plugin.saveSettings();
+    });
+
+    // 显示音标（开关）
+    const phoneticSetting = container.createDiv({ cls: "study-setting-item" });
+    phoneticSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_phonetic") });
+    phoneticSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_phonetic_desc") });
+    const phoneticControl = phoneticSetting.createDiv({ cls: "study-setting-control" });
+    const phoneticToggle = phoneticControl.createDiv({ cls: "checkbox-container" });
+    if (settings.flashcardShowPhonetic !== false) phoneticToggle.addClass("is-enabled");
+    phoneticToggle.createDiv({ cls: "checkbox-handle" });
+    phoneticToggle.addEventListener("click", async () => {
+      const newVal = !settings.flashcardShowPhonetic;
+      settings.flashcardShowPhonetic = newVal;
+      this.plugin.settings.study.flashcardShowPhonetic = newVal;
+      await this.plugin.saveSettings();
+      phoneticToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 自动翻转（秒）
+    const autoFlipSetting = container.createDiv({ cls: "study-setting-item" });
+    autoFlipSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_autoflip") });
+    autoFlipSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_autoflip_desc") });
+    const autoFlipControl = autoFlipSetting.createDiv({ cls: "study-setting-control" });
+    const autoFlipSelect = autoFlipControl.createEl("select");
+    const autoOptions = [0, 1, 2, 3, 5];
+    for (const v of autoOptions) {
+      const label = String(v);
+      const opt = autoFlipSelect.createEl("option", { value: String(v), text: label });
+      if (v === settings.flashcardAutoFlip) opt.selected = true;
+    }
+    autoFlipSelect.addEventListener("change", async (e) => {
+      settings.flashcardAutoFlip = parseInt(e.target.value);
+      this.plugin.settings.study.flashcardAutoFlip = settings.flashcardAutoFlip;
+      await this.plugin.saveSettings();
+    });
+
+    // 重置进度
+    const resetSetting = container.createDiv({ cls: "study-setting-item" });
+    resetSetting.createDiv({ cls: "study-setting-label", text: t("study_reset_progress") });
+    resetSetting.createDiv({ cls: "study-setting-desc", text: t("study_reset_confirm") });
+    const resetControl = resetSetting.createDiv({ cls: "study-setting-control" });
+    const resetBtn = resetControl.createEl("button", { text: t("study_reset_progress"), cls: "mod-warning" });
+    resetBtn.addEventListener("click", async () => {
+      if (confirm(t("study_reset_confirm"))) {
+        await this.studyStore.resetAll();
+        new Notice(t("study_reset_success"));
+        this.refresh();
+      }
+    });
+  }
+}
+
 // ========== 辅助类 ==========
 class ConfirmModal extends Modal {
   constructor(app, onConfirm, onCancel, message = null) {
@@ -4485,26 +6622,26 @@ function generateMarkdownContent(cards, fileName, options, plugin) {
     lines.push(`## ${card.word}`, '');
 
     if (options.includePhonetic) {
-      lines.push(`**${t("export_phonetic_label")}**: ${card.phonetic || ''}`, '');
+      lines.push(`**${t("export_phonetic_label")}** ${card.phonetic || ''}`, '');
     }
 
     if (options.includeAliases && card.aliases && card.aliases.length > 0) {
-      lines.push(`**${t("export_aliases_label")}**: ${card.aliases.join(', ')}`, '');
+      lines.push(`**${t("export_aliases_label")}** ${card.aliases.join(', ')}`, '');
     }
 
     if (options.includeSource) {
       const source = card.sourceFile?.split('/').pop() || '';
-      lines.push(`**${t("export_source_label")}**: ${source}`, '');
+      lines.push(`**${t("export_source_label")}** ${source}`, '');
     }
 
     if (options.includeStatus) {
       const status = getStatusLabel(card, plugin);
-      lines.push(`**${t("export_status_label")}**: ${status}`, '');
+      lines.push(`**${t("export_status_label")}** ${status}`, '');
     }
 
     // 导出 lang 字段（仅当有值时才输出）
     if (options.includeLang && card.lang) {
-      lines.push(`**${t("export_lang_label")}**: ${card.lang}`, '');
+      lines.push(`**${t("export_lang_label")}** ${card.lang}`, '');
     }
 
     // 解析并输出定义章节
@@ -8426,17 +10563,17 @@ class ExportSingleWordModal extends Modal {
     const lines = [`## ${card.word}`, ''];
 
     // 音标
-    lines.push(`**${t("export_phonetic_label")}**: ${card.phonetic || ''}`, '');
+    lines.push(`**${t("export_phonetic_label")}** ${card.phonetic || ''}`, '');
     // 别名
     if (card.aliases && card.aliases.length > 0) {
-      lines.push(`**${t("export_aliases_label")}**: ${card.aliases.join(', ')}`, '');
+      lines.push(`**${t("export_aliases_label")}** ${card.aliases.join(', ')}`, '');
     }
     // 来源
     const source = card.sourceFile?.split('/').pop() || '';
-    lines.push(`**${t("export_source_label")}**: ${source}`, '');
+    lines.push(`**${t("export_source_label")}** ${source}`, '');
     // 状态（复用全局函数）
     const status = getStatusLabel(card, this.plugin);
-    lines.push(`**${t("export_status_label")}**: ${status}`, '');
+    lines.push(`**${t("export_status_label")}** ${status}`, '');
 
     // 定义章节（复用全局函数）
     const sections = parseSectionsForExport(card.definition || '');
@@ -8939,6 +11076,9 @@ class SimpleWordbookPlugin extends Plugin {
 
     this.masteryStore = new MasteryStore(this);
     await this.masteryStore.load();
+    // 初始化学习进度存储
+    this.studyStore = new StudyStore(this);
+    await this.studyStore.load();
     this.highlighter = new Highlighter(this);
     this.hoverPreview = new HoverPreview(this);
 
@@ -8946,11 +11086,22 @@ class SimpleWordbookPlugin extends Plugin {
 
     this.registerView(VIEW_TYPE_SIDEBAR, (leaf) => new SidebarView(leaf, this));
     this.registerView(VIEW_TYPE_LOOKUP, (leaf) => new LookupView(leaf, this));
+    this.registerView(VIEW_TYPE_LIBRARY, (leaf) => new LibraryView(leaf, this)); // 注册词库管理视图
     this.addRibbonIcon("book", t("sidebar_title"), () => this.activateSidebar());
     this.addRibbonIcon("search-code", t("lookup_view_title"), () => {
       const leaf = this.getLookupLeaf();
       this.app.workspace.revealLeaf(leaf);
     });
+    this.addRibbonIcon("library-big", t("ribbon_library_tooltip"), () => this.activateLibrary());
+    // 注册学习中心视图
+    this.registerView(VIEW_TYPE_STUDY, (leaf) => new StudyView(leaf, this));
+    this.addRibbonIcon("target", t("study_ribbon_tooltip"), () => this.activateStudy());
+    this.addCommand({
+      id: "open-study",
+      name: t("study_command_open"),
+      callback: () => this.activateStudy()
+    });
+
     this.addCommand({ id: "open-sidebar", name: t("sidebar_title"), callback: () => this.activateSidebar() });
     this.addCommand({
       id: "add-word",
@@ -8985,7 +11136,7 @@ class SimpleWordbookPlugin extends Plugin {
         }
       }
     });
-    // ===== 添加命令：打开查词面板 =====
+    // ===== 打开查词面板 =====
     this.addCommand({
       id: "open-lookup-panel",
       name: t("command_open_lookup"),
@@ -8999,7 +11150,14 @@ class SimpleWordbookPlugin extends Plugin {
       }
     });
 
-    // ===== 添加命令：朗读选中的文本 =====
+    // ===== 打开词库管理 =====
+    this.addCommand({
+      id: "open-library",
+      name: t("command_open_library"),
+      callback: () => this.activateLibrary()
+    });
+
+    // ===== 朗读选中的文本 =====
     this.addCommand({
       id: 'pronounce-selected-text',
       name: t("command_pronounce_selected"),
@@ -9297,6 +11455,27 @@ class SimpleWordbookPlugin extends Plugin {
     if (!leaf) {
       leaf = workspace.getRightLeaf(false);
       await leaf.setViewState({ type: VIEW_TYPE_SIDEBAR, active: true });
+    }
+    workspace.revealLeaf(leaf);
+  }
+
+  async activateLibrary() {
+    const { workspace } = this.app;
+    let leaf = workspace.getLeavesOfType(VIEW_TYPE_LIBRARY)[0];
+    if (!leaf) {
+      leaf = workspace.getLeaf('tab');
+      await leaf.setViewState({ type: VIEW_TYPE_LIBRARY, active: true });
+    }
+    workspace.revealLeaf(leaf);
+  }
+
+  // ----- 激活学习中心视图 -----
+  async activateStudy() {
+    const { workspace } = this.app;
+    let leaf = workspace.getLeavesOfType(VIEW_TYPE_STUDY)[0];
+    if (!leaf) {
+      leaf = workspace.getLeaf('tab');
+      await leaf.setViewState({ type: VIEW_TYPE_STUDY, active: true });
     }
     workspace.revealLeaf(leaf);
   }
@@ -9693,58 +11872,12 @@ class SimpleWordbookPlugin extends Plugin {
 
   // ===== 打开快捷键设置并过滤本插件命令 =====
   async openHotkeysSettings() {
-    // 打开设置面板
     await this.app.setting.open();
-    // 切换到快捷键标签页
-    await this.app.setting.openTabById('hotkeys');
-
-    // 定义搜索框查找函数
-    const findSearchInput = () => {
-      // 尝试多种选择器
-      const selectors = [
-        'input[type="search"]',
-        '.setting-search-input input[type="search"]',
-        '.search-input-container input[type="search"]',
-        '.setting-hotkeys-search input[type="search"]'
-      ];
-      for (const sel of selectors) {
-        const el = document.querySelector(sel);
-        if (el) return el;
-      }
-      return null;
-    };
-
-    // 重试机制：延迟执行，最多尝试 5 次，每次间隔 200ms
-    let attempts = 0;
-    const maxAttempts = 5;
-
-    const tryFill = () => {
-      attempts++;
-      const searchInput = findSearchInput();
-      if (searchInput) {
-        // 聚焦输入框
-        searchInput.focus();
-        // 设置值
-        searchInput.value = this.manifest.id; // 例如 'simple-wordbook'
-        // 触发多种事件以模拟真实输入
-        searchInput.dispatchEvent(new Event('focus', { bubbles: true }));
-        searchInput.dispatchEvent(new Event('keydown', { bubbles: true }));
-        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-        searchInput.dispatchEvent(new Event('keyup', { bubbles: true }));
-        searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-        // 确保输入框保持聚焦（可选）
-        searchInput.blur();
-        searchInput.focus();
-      } else if (attempts < maxAttempts) {
-        // 如果未找到且未超过尝试次数，继续尝试
-        setTimeout(tryFill, 200);
-      } else {
-        console.warn('Simple Wordbook: 未找到快捷键搜索框');
-      }
-    };
-
-    // 首次尝试：等待 300ms 后执行
-    setTimeout(tryFill, 300);
+    const hotkeysTab = await this.app.setting.openTabById('hotkeys');
+    // 尝试这个设置查询参数是否支持
+    if (hotkeysTab && typeof hotkeysTab.setQuery === 'function') {
+      hotkeysTab.setQuery(this.manifest.id);
+    }
   }
 
   async loadSettings() { 
