@@ -24,19 +24,38 @@
 /* 部件：顶部标签栏 */
 .sidebar-tabs {
   display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--background-modifier-border);
+  gap: 4px;
   margin-bottom: 12px;
+  background: var(--background-secondary);
+  padding: 4px;
+  border-radius: 10px;
+  border: 1px solid var(--background-modifier-border);
 }
+
 .sidebar-tab {
-  padding: 4px 8px;
+  flex: 1;
+  padding: 6px 8px;
   cursor: pointer;
-  border-radius: 4px 4px 0 0;
-  font-size: 0.9em;
+  border-radius: 6px;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  color: var(--text-muted);
+  background: transparent;
+  user-select: none;
 }
+
+.sidebar-tab:hover:not(.active) {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
 .sidebar-tab.active {
   background: var(--interactive-accent);
   color: white;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* 部件：卡片列表滚动容器 */
@@ -75,6 +94,25 @@
   border-color: var(--card-color, var(--interactive-accent));
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 0 0 1px color-mix(in srgb, var(--card-color) 20%, transparent);
   transform: translateY(-1px);
+}
+
+/* 部件：单词卡片折叠按钮 */
+.fold-btn {
+    cursor: pointer;
+    margin-right: 4px;
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    opacity: 0.6;
+    transition: opacity 0.15s, transform 0.15s;
+    flex-shrink: 0;
+}
+.fold-btn:hover {
+    opacity: 1;
+}
+.fold-btn .lucide {
+    width: 16px;
+    height: 16px;
 }
 
 /* 部件：卡片操作按钮组 */
@@ -140,6 +178,9 @@
 
 /* 部件：卡片单词行 */
 .word-line {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-bottom: 6px;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--background-modifier-border);
@@ -158,12 +199,12 @@
   word-break: break-word;
 }
 .word-line .word:hover {
-  text-decoration: none;
+  /*text-decoration: none;*/
   color: var(--text-accent);
-  background-color: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));
-  border-radius: 6px;
-  padding: 2px 6px;
-  transition: background-color 0.15s, color 0.15s;
+  /*background-color: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));*/
+  /*border-radius: 6px;*/
+  /*padding: 2px 6px;*/
+  /*transition: background-color 0.15s, color 0.15s;*/
 }
 
 /* 部件：卡片释义正文 */
@@ -385,12 +426,13 @@
   align-items: center;
 }
 .simple-wordbook-tooltip .tooltip-title .word:hover {
-  text-decoration: none;
+  /*text-decoration: none;*/
   color: var(--text-accent);
-  background-color: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));
-  border-radius: 6px;
-  padding: 2px 6px;
-  transition: background-color 0.15s;
+  transition: color 0.15s;
+  /*background-color: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));*/
+  /*border-radius: 6px;*/
+  /*padding: 2px 6px;*/
+  /*transition: background-color 0.15s;*/
 }
 
 /* 部件：弹窗标题按钮组 */
@@ -1103,6 +1145,7 @@
     font-weight: bold;
     cursor: pointer;
     color: var(--text-normal);
+    transition: color 0.15s;
 }
 .library-word:hover {
     color: var(--text-accent);
@@ -1213,8 +1256,22 @@
     text-align: center;
     margin: 20px 0;
 }
-.study-review-info button {
-    margin-top: 10px;
+/* 开始复习按钮 */
+.study-review-info + .mod-cta {
+    display: block;
+    width: fit-content;      /* 宽度自适应文字 */
+    margin: 25px auto 0;     /* 水平居中 + 上边距 */
+    background-color: color-mix(in srgb, var(--interactive-accent) 90%, var(--background-primary) 10%);
+    color: var(--text-on-accent);
+    border: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+}
+
+.study-review-info + .mod-cta:hover {
+    background-color: color-mix(in srgb, var(--interactive-accent) 95%, var(--background-primary) 5%);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 /* 部件：复习进度行 */
@@ -1546,8 +1603,8 @@
 /* 部件：学习中心内的设置项 */
 .study-setting-item {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
     padding: 10px 0;
     border-bottom: 1px solid var(--background-modifier-border);
 }
@@ -1557,17 +1614,21 @@
 .study-setting-item .study-setting-label {
     font-weight: 500;
     flex: 1;
+    min-width: 0;
 }
 .study-setting-item .study-setting-desc {
     color: var(--text-muted);
     font-size: 0.8em;
-    flex: 1;
-    margin-left: 10px;
+    width: 100%;           /* 独占一行 */
+    order: 2;              /* 放在标题和控件下方 */
+    margin-top: 2px;
+    padding-right: 4px;
 }
 .study-setting-item .study-setting-control {
     flex-shrink: 0;
     display: flex;
     align-items: center;
+    order: 1;              /* 与标题同行 */
 }
 .study-setting-item select {
     padding: 4px 24px 4px 10px;
@@ -1637,6 +1698,13 @@
     background: var(--background-primary);
 }
 
+/* 部件：等级列表搜索框 */
+.study-level-filter-row input[type="text"]:focus {
+    border-color: var(--interactive-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 30%, transparent);
+}
+
 /* 部件：等级列表表格主体 */
 .study-level-table {
     width: 100%;
@@ -1682,14 +1750,23 @@
     text-overflow: ellipsis;
 }
 
-/* 部件：等级列表等级列 */
-.study-level-table tbody td:last-child {
-    max-width: none;
+/* 部件：等级列 */
+.study-level-table tbody td:nth-last-child(2) {
+    /*text-align: center;*/
     white-space: nowrap;
-    overflow: visible;
+}
+
+/* 部件：操作列 */
+.study-level-table tbody td:last-child {
+    white-space: nowrap;
+    /*text-align: center;*/
+}
+/* 部件：操作按钮组 */
+.study-level-actions {
     display: flex;
+    gap: 4px;
     align-items: center;
-    gap: 6px;
+    /*justify-content: center;*/
 }
 
 
@@ -1805,12 +1882,12 @@
   }
 
   .wordbook-setting-ai-container .custom-prompt-item textarea {
-    flex: 0 0 auto;
     min-height: 60px;          /* 移动端稍高，方便触控 */
     height: 60px;
-    width: 100%;
     box-sizing: border-box;
     resize: vertical;          /* 右下角拖拽调整高度 */
+    flex: 1;
+    min-width: 0;
   }
 
   /* ---- 自定义提示词的系统提示词下拉选择器样式 ---- */

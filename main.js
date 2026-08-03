@@ -169,6 +169,10 @@ const locale = {
     settings_enable_hover: "Enable hover preview",
     settings_blur_definitions: "Blur definitions",
     settings_blur_desc: "Blur definition content, reveal on hover",
+    settings_enable_fold: "Enable Fold Definition",
+    settings_enable_fold_desc: "Collapse definition area by default on word cards. Click the ▶ button to expand.",
+    settings_enable_mastery: "Enable Mastery/Ignore Buttons",
+    settings_enable_mastery_desc: "Show or hide mastery (😊/😐) and ignore (👁️/👁️‍🗨️) buttons on word cards in sidebar and lookup panel.",
     settings_highlight_styles: "Highlight styles",
     settings_style_underline_type: "Underline style",
     settings_style_none: "None",
@@ -510,14 +514,15 @@ const locale = {
     study_tab_mastered: "✅ Mastered",
     study_tab_stats: "📊 Stats",
     study_tab_settings: "⚙️ Settings",
-    study_review_title: "Review Session",
+    study_review_motivation: "🚀 {0} words ready, let's go go go!",
     study_review_empty: "No words due for review today! 🎉",
     study_review_done: "Review complete! You reviewed {0} words today.",
     study_review_progress: "Word {0}/{1} · Level {2} · Next in {3} days",
     study_card_hint: "Double-click or press Space to reveal",
     study_btn_forget: "😣 Forget",
     study_btn_remember: "😊 Remember",
-    study_btn_start: "Start Review",
+    study_btn_start: "Let's do this! 💪",
+    study_btn_again: "One more round! 🔥",
     study_mastered_list_empty: "No mastered words yet.",
     study_stats_retention: "Retention Rate",
     study_stats_learning_distribution: "Learning Distribution",
@@ -538,7 +543,8 @@ const locale = {
     study_settings_flashcard_autoflip: "Auto Flip (seconds)",
     study_settings_flashcard_autoflip_desc: "Automatically flip after seconds (0=disabled)",
     study_reset_progress: "Reset All Study Progress",
-    study_reset_confirm: "This will reset all review progress and statistics. Continue?",
+    study_reset_desc: "Reset all review progress and statistics. This action cannot be undone.",
+    study_reset_confirm: "Are you sure you want to reset all progress? This will clear all review records and statistics.",
     study_reset_success: "Study progress reset.",
     study_btn_exit: "Exit Review",
     study_btn_prev: "Prev",
@@ -549,6 +555,12 @@ const locale = {
     study_level_all: "All levels",
     study_level_label: "Level {0}",
     study_no_words_for_level: "No words for this level.",
+    trend_today_label: "📌 Today: {0} words",
+    trend_summary_label: "📊 Total {0} · Avg {1} · Peak {2}",
+    study_table_header_level: "Level",
+    study_table_header_actions: "Actions",
+    study_level_search_placeholder: "Search words...",
+    study_level_search_empty: "No words found for \"{0}\"",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -723,8 +735,12 @@ const locale = {
     settings_underline_color_desc: "若设置，下划线将使用此颜色（覆盖高亮颜色）。",
     underline_color_default: "默认（跟随高亮颜色）",
     settings_enable_hover: "启用悬停预览",
-    settings_blur_definitions: "模糊释义",
+    settings_blur_definitions: "启用模糊释义",
     settings_blur_desc: "默认模糊显示释义，悬停时清晰显示",
+    settings_enable_fold: "启用折叠释义",
+    settings_enable_fold_desc: "在单词卡片上默认折叠释义区域，点击 ▶ 按钮展开查看。",
+    settings_enable_mastery: "启用掌握/忽略按钮",
+    settings_enable_mastery_desc: "在侧边栏和查词面板的单词卡片上显示或隐藏掌握（😊/😐）和忽略（👁️/👁️‍🗨️）操作按钮。",
     settings_highlight_styles: "高亮样式",
     settings_style_underline_type: "下划线样式",
     settings_style_none: "无",
@@ -1066,14 +1082,15 @@ const locale = {
     study_tab_mastered: "✅ 已掌握",
     study_tab_stats: "📊 统计",
     study_tab_settings: "⚙️ 设置",
-    study_review_title: "复习模式",
+    study_review_motivation: "🚀 今日{0}个词，冲鸭，go go go！",
     study_review_empty: "今日没有需要复习的单词 🎉",
-    study_review_done: "复习完成！今日共复习 {0} 个单词。",
+    study_review_done: "复习完成！今日共复习了 {0} 个单词。",
     study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距下次 {3} 天",
     study_card_hint: "双击或按空格显示释义",
     study_btn_forget: "😣 忘记",
     study_btn_remember: "😊 记得",
-    study_btn_start: "开始复习",
+    study_btn_start: "开干！💪",
+    study_btn_again: "再来一轮！🔥",
     study_mastered_list_empty: "还没有已掌握的单词。",
     study_stats_retention: "记忆保持率",
     study_stats_learning_distribution: "学习状态分布",
@@ -1094,7 +1111,8 @@ const locale = {
     study_settings_flashcard_autoflip: "自动翻转（秒）",
     study_settings_flashcard_autoflip_desc: "几秒后自动翻转卡片（0=关闭）",
     study_reset_progress: "重置所有学习进度",
-    study_reset_confirm: "这将重置所有复习进度和统计数据，确定继续吗？",
+    study_reset_desc: "重置所有复习进度和统计数据，此操作不可撤销。",
+    study_reset_confirm: "确定要重置所有学习进度吗？这将清除所有复习记录和统计数据。",
     study_reset_success: "学习进度已重置。",
     study_btn_exit: "退出复习",
     study_btn_prev: "上一个",
@@ -1105,6 +1123,12 @@ const locale = {
     study_level_all: "全部等级",
     study_level_label: "等级 {0}",
     study_no_words_for_level: "该等级暂无单词",
+    trend_today_label: "📌 今日复习：{0} 个单词",
+    trend_summary_label: "📊 总计 {0} · 日均 {1} · 峰值 {2}",
+    study_table_header_level: "等级",
+    study_table_header_actions: "操作",
+    study_level_search_placeholder: "搜索单词...",
+    study_level_search_empty: '没有找到 "{0}" 的单词',
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1297,6 +1321,7 @@ const DEFAULT_SETTINGS = {
   enableHighlight: true,
   enableHoverPreview: true,
   enableBlurDefinition: false,
+  enableFoldDefinition: false,
   enableMastery: true,
   highlightColor: "",
   customHighlightColor: "",
@@ -3576,7 +3601,7 @@ class HoverPreview {
       sections = parseSections(currentCard?.definition || "");
     }
     if (sections.length === 0) {
-      sections = [{ title: "释义", content: currentCard?.definition || "" }];
+      sections = [{ title: t("section_default_title"), content: currentCard?.definition || "" }];
     }
 
     const tooltip = document.createElement("div");
@@ -3663,7 +3688,7 @@ class HoverPreview {
       const section = sections[index];
       if (section) {
         let content = section.content;
-        if (section.title === "释义" && currentCard?.phonetic) {
+        if (index === 0 && currentCard?.phonetic) {
           const phoneticHtml = `<span class="tooltip-phonetic">${currentCard.phonetic}</span>`;
           content = `${phoneticHtml}\n\n${content}`;
         }
@@ -3806,7 +3831,7 @@ class SidebarView extends ItemView {
   }
   getViewType() { return VIEW_TYPE_SIDEBAR; }
   getDisplayText() { return t("sidebar_title"); }
-  getIcon() { return "book"; }
+  getIcon() { return "notepad-text"; }
   async onOpen() {
     this.containerEl.empty();
     this.containerEl.addClass("simple-wordbook-sidebar");
@@ -4104,20 +4129,45 @@ class SidebarView extends ItemView {
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
         await this.refresh();
       });
+
+      const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
+      setIcon(ignoreBtn, wordObj.ignored ? "eye-off" : "eye");
+      ignoreBtn.classList.add(wordObj.ignored ? "icon-eye-off" : "icon-eye");
+      ignoreBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const newIgnore = !wordObj.ignored;
+        await this.plugin.masteryStore.setIgnored(wordObj._stateKey, newIgnore);
+        await this.plugin.highlighter.refresh();
+        this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+        await this.refresh();
+      });
     }
-    const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
-    setIcon(ignoreBtn, wordObj.ignored ? "eye-off" : "eye");
-    ignoreBtn.classList.add(wordObj.ignored ? "icon-eye-off" : "icon-eye");
-    ignoreBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      const newIgnore = !wordObj.ignored;
-      await this.plugin.masteryStore.setIgnored(wordObj._stateKey, newIgnore);
-      await this.plugin.highlighter.refresh();
-      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-      await this.refresh();
-    });
 
     const wordLine = cardDiv.createDiv({ cls: "word-line" });
+
+    // ---- 折叠按钮（在单词前面） ----
+    const foldBtn = wordLine.createSpan({ cls: "fold-btn" });
+    foldBtn.addEventListener("mouseenter", () => { foldBtn.style.opacity = "1"; });
+    foldBtn.addEventListener("mouseleave", () => { foldBtn.style.opacity = "0.6"; });
+
+    // 根据设置决定是否显示折叠按钮及初始状态
+    const foldEnabled = this.plugin.settings.enableFoldDefinition;
+    let isFolded = foldEnabled; // 启用时默认折叠
+
+    if (foldEnabled) {
+      setIcon(foldBtn, "chevron-right");
+    } else {
+      foldBtn.style.display = "none";
+    }
+
+    // 点击折叠按钮切换
+    foldBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isFolded = !isFolded;
+      setIcon(foldBtn, isFolded ? "chevron-right" : "chevron-down");
+      defDiv.style.display = isFolded ? "none" : "block";
+    });
+
     const wordSpan = wordLine.createSpan({ cls: "word", text: wordObj.word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -4129,10 +4179,15 @@ class SidebarView extends ItemView {
       );
     });
 
+    // 释义区域
     const defDiv = cardDiv.createDiv({ cls: "definition" });
+    // 如果启用折叠且当前为折叠状态，隐藏 defDiv
+    if (foldEnabled && isFolded) {
+      defDiv.style.display = "none";
+    }
     if (this.plugin.settings.enableBlurDefinition) defDiv.classList.add("blur");
 
-    const sections = wordObj.sections || [{ title: "释义", content: wordObj.definition || "" }];
+    const sections = wordObj.sections || [{ title: t("section_default_title"), content: wordObj.definition || "" }];
     const hasMultipleSections = sections.length > 1;
     let tabBar = null;
     if (hasMultipleSections) {
@@ -4212,7 +4267,7 @@ class SidebarView extends ItemView {
       const section = sections[index];
       if (section) {
         let content = section.content;
-        if (section.title === "释义" && wordObj.phonetic) {
+        if (index === 0 && wordObj.phonetic) {
           const phoneticHtml = `<span class="card-phonetic">${wordObj.phonetic}</span>`;
           content = `${phoneticHtml}\n\n${content}`;
         }
@@ -4328,7 +4383,7 @@ class LookupView extends ItemView {
 
   getViewType() { return VIEW_TYPE_LOOKUP; }
   getDisplayText() { return t("lookup_view_title"); }
-  getIcon() { return "search-code"; }
+  getIcon() { return "book-search"; }
 
   async onOpen() {
     this.containerEl.empty();
@@ -4477,22 +4532,45 @@ class LookupView extends ItemView {
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
         this.doLocalLookup(this.currentWord);
       });
+
+      const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
+      const isIgnored = this.plugin.masteryStore.isIgnored(card._stateKey || card.word);
+      setIcon(ignoreBtn, isIgnored ? "eye-off" : "eye");
+      ignoreBtn.classList.add(isIgnored ? "icon-eye-off" : "icon-eye");
+      ignoreBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const newIgnore = !isIgnored;
+        await this.plugin.masteryStore.setIgnored(card._stateKey || card.word, newIgnore);
+        await this.plugin.highlighter.refresh();
+        this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+        this.doLocalLookup(this.currentWord);
+      });
     }
-    const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
-    const isIgnored = this.plugin.masteryStore.isIgnored(card._stateKey || card.word);
-    setIcon(ignoreBtn, isIgnored ? "eye-off" : "eye");
-    ignoreBtn.classList.add(isIgnored ? "icon-eye-off" : "icon-eye");
-    ignoreBtn.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      const newIgnore = !isIgnored;
-      await this.plugin.masteryStore.setIgnored(card._stateKey || card.word, newIgnore);
-      await this.plugin.highlighter.refresh();
-      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-      this.doLocalLookup(this.currentWord);
-    });
 
     // 单词行
     const wordLine = cardDiv.createDiv({ cls: "word-line" });
+
+    // ---- 折叠按钮（在单词前面） ----
+    const foldBtn = wordLine.createSpan({ cls: "fold-btn" });
+    foldBtn.addEventListener("mouseenter", () => { foldBtn.style.opacity = "1"; });
+    foldBtn.addEventListener("mouseleave", () => { foldBtn.style.opacity = "0.6"; });
+
+    const foldEnabled = this.plugin.settings.enableFoldDefinition;
+    let isFolded = foldEnabled;
+
+    if (foldEnabled) {
+      setIcon(foldBtn, "chevron-right");
+    } else {
+      foldBtn.style.display = "none";
+    }
+
+    foldBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isFolded = !isFolded;
+      setIcon(foldBtn, isFolded ? "chevron-right" : "chevron-down");
+      defDiv.style.display = isFolded ? "none" : "block";
+    });
+
     const wordSpan = wordLine.createSpan({ cls: "word", text: card.word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -4531,9 +4609,13 @@ class LookupView extends ItemView {
 
     // 释义区域
     const defDiv = cardDiv.createDiv({ cls: "definition" });
+    // 如果启用折叠且当前为折叠状态，隐藏 defDiv
+    if (foldEnabled && isFolded) {
+      defDiv.style.display = "none";
+    }
     if (this.plugin.settings.enableBlurDefinition) defDiv.classList.add("blur");
 
-    const sections = card.sections || [{ title: "释义", content: card.definition || "" }];
+    const sections = card.sections || [{ title: t("section_default_title"), content: card.definition || "" }];
     const hasMultipleSections = sections.length > 1;
     let tabBar = null;
     if (hasMultipleSections) {
@@ -4584,7 +4666,7 @@ class LookupView extends ItemView {
       const section = sections[index];
       if (section) {
         let content = section.content;
-        if (section.title === "释义" && wordObj.phonetic) {
+        if (index === 0 && wordObj.phonetic) {
           const phoneticHtml = `<span class="card-phonetic">${wordObj.phonetic}</span>`;
           content = `${phoneticHtml}\n\n${content}`;
         }
@@ -5113,7 +5195,16 @@ class LibraryView extends ItemView {
 
     this._scrollListener = () => this.onScroll();
     tableWrapper.addEventListener("scroll", this._scrollListener);
-    this._resizeObserver = new ResizeObserver(() => this.render());
+
+    // 防抖版 ResizeObserver
+    let resizeTimer = null;
+    this._resizeObserver = new ResizeObserver(() => {
+      if (resizeTimer) cancelAnimationFrame(resizeTimer);
+      resizeTimer = requestAnimationFrame(() => {
+        this.render();
+        resizeTimer = null;
+      });
+    });
     this._resizeObserver.observe(tableWrapper);
   }
 
@@ -5669,7 +5760,7 @@ class StudyView extends ItemView {
         return;
       }
       const info = container.createDiv({ cls: "study-review-info" });
-      info.createSpan({ text: `📚 ${due.length} ${t("study_review_title")}` });
+      info.createSpan({ text: t("study_review_motivation", due.length) });
       const btn = container.createEl("button", { text: t("study_btn_start"), cls: "mod-cta" });
       btn.addEventListener("click", () => {
         this.reviewQueue = due;
@@ -5690,7 +5781,7 @@ class StudyView extends ItemView {
       // 复习完成
       const done = container.createDiv({ cls: "study-done" });
       done.createEl("p", { text: t("study_review_done", this.totalReviewed) });
-      const btn = done.createEl("button", { text: "🔄 " + t("study_btn_start"), cls: "mod-cta" });
+      const btn = done.createEl("button", { text: t("study_btn_again"), cls: "mod-cta" });
       btn.addEventListener("click", () => {
         this.reviewing = false;
         this.renderReviewTab();
@@ -5988,13 +6079,20 @@ class StudyView extends ItemView {
       return;
     }
 
-    // --- 下拉筛选器 ---
+    // --- 搜索框 + 下拉筛选器 ---
     const filterRow = container.createDiv({ cls: "study-level-filter-row" });
     filterRow.style.cssText = "display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;";
 
+    // ---- 搜索框 ----
+    const searchInput = filterRow.createEl("input", { type: "text" });
+    searchInput.setAttribute("placeholder", t("study_level_search_placeholder"));
+    searchInput.style.cssText = "flex: 1; min-width: 120px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);";
+
+    // ---- 筛选标签 ----
     const filterLabel = filterRow.createSpan({ text: t("study_level_filter") + ":" });
     filterLabel.style.cssText = "font-size: 0.9em; color: var(--text-muted);";
 
+    // ---- 下拉筛选器 ----
     const filterSelect = filterRow.createEl("select");
     filterSelect.style.cssText = "padding: 4px 24px 4px 10px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal); font-size: 0.9em; cursor: pointer; appearance: none; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 8px center; min-width: 100px;";
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -6016,7 +6114,7 @@ class StudyView extends ItemView {
     const tableWrapper = container.createDiv({ cls: "study-level-table-wrapper" });
 
     const table = tableWrapper.createEl("table");
-    table.className = "study-level-table"; 
+    table.className = "study-level-table";
 
     // 表头
     const thead = table.createEl("thead");
@@ -6026,7 +6124,8 @@ class StudyView extends ItemView {
       t("library_table_header_phonetic"),
       t("library_table_header_definition"),
       t("library_table_header_source"),
-      "Level"
+      t("study_table_header_level"),
+      t("study_table_header_actions")
     ];
     for (const h of headers) {
       const th = headerRow.createEl("th", { text: h });
@@ -6048,21 +6147,51 @@ class StudyView extends ItemView {
     // 渲染表格函数
     const renderTable = (level) => {
       tbody.empty();
+
+      // 获取搜索词
+      const searchQuery = searchInput.value.trim().toLowerCase();
+
       let filtered = cardLevels;
+
+      // 1. 按等级过滤
       if (level !== "all") {
         const lvl = parseInt(level);
-        filtered = cardLevels.filter(item => item.level === lvl);
-      } else {
-        filtered.sort((a, b) => b.level - a.level);
+        filtered = filtered.filter(item => item.level === lvl);
       }
 
+      // 2. 按搜索词过滤（搜索单词 + 音标 + 释义 + 来源文件名）
+      if (searchQuery) {
+        filtered = filtered.filter(item => {
+          const card = item.card;
+          const word = card.word.toLowerCase();
+          const phonetic = (card.phonetic || "").toLowerCase();
+          const definition = (card.definition || "").toLowerCase();
+          const source = card.sourceFile.split('/').pop().toLowerCase();
+          return word.includes(searchQuery) ||
+            phonetic.includes(searchQuery) ||
+            definition.includes(searchQuery) ||
+            source.includes(searchQuery);
+        });
+      }
+
+      // 排序（按等级从高到低）
+      filtered.sort((a, b) => b.level - a.level);
+
+      // 空状态
       if (filtered.length === 0) {
         const tr = tbody.createEl("tr");
-        const td = tr.createEl("td", { colspan: 5, text: t("study_no_words_for_level") });
+        let emptyText;
+        if (searchQuery) {
+          emptyText = t("study_level_search_empty", searchQuery);
+        } else {
+          emptyText = t("study_no_words_for_level");
+        }
+        const td = tr.createEl("td", { colspan: 6, text: emptyText });
         td.style.cssText = "text-align: center; padding: 20px; color: var(--text-muted);";
         return;
       }
 
+      // 渲染数据行
       for (const item of filtered) {
         const card = item.card;
         const levelNum = item.level;
@@ -6152,19 +6281,18 @@ class StudyView extends ItemView {
         const tdSource = tr.createEl("td", { text: card.sourceFile.split('/').pop() });
         tdSource.title = card.sourceFile;
 
-        // 等级列（带颜色徽章 + 操作按钮）
+        // 等级列
         const tdLevel = tr.createEl("td");
-
-        // 等级徽章
         const badge = tdLevel.createSpan({ cls: "study-level-badge" });
         badge.textContent = `${levelNum}`;
-        badge.style.cssText = `flex-shrink: 0; font-size: 0.7em; font-weight: bold; color: ${levelColors[levelNum] || 'var(--text-muted)'}; background: color-mix(in srgb, ${levelColors[levelNum] || 'var(--text-muted)'} 20%, transparent); padding: 1px 6px; border-radius: 10px; min-width: 24px; text-align: center;`;
+        badge.style.cssText = `font-size: 0.7em; font-weight: bold; color: ${levelColors[levelNum] || 'var(--text-muted)'}; background: color-mix(in srgb, ${levelColors[levelNum] || 'var(--text-muted)'} 20%, transparent); padding: 1px 6px; border-radius: 10px; min-width: 24px; text-align: center;`;
 
-        // 操作按钮
-        const actions = tdLevel.createDiv({ cls: "study-level-actions" });
-        actions.style.cssText = "display: flex; gap: 2px; flex-shrink: 0;";
+        // 操作列
+        const tdActions = tr.createEl("td");
+        const actions = tdActions.createDiv({ cls: "study-level-actions" });
 
         if (levelNum >= 5) {
+          // 取消掌握按钮
           const unmasterBtn = actions.createEl("button", { text: "↩️", cls: "clickable-icon" });
           unmasterBtn.setAttribute("aria-label", t("notice_mastery_label_on"));
           unmasterBtn.style.cssText = "padding: 0 4px; background: transparent; border: none; cursor: pointer; font-size: 1em; opacity: 0.6; transition: opacity 0.15s;";
@@ -6183,6 +6311,7 @@ class StudyView extends ItemView {
             renderTable(selectedLevel);
           });
         } else {
+          // 标记掌握按钮
           const masterBtn = actions.createEl("button", { text: "✅", cls: "clickable-icon" });
           masterBtn.setAttribute("aria-label", t("notice_mastery_label_off"));
           masterBtn.style.cssText = "padding: 0 4px; background: transparent; border: none; cursor: pointer; font-size: 1em; opacity: 0.6; transition: opacity 0.15s;";
@@ -6217,6 +6346,11 @@ class StudyView extends ItemView {
 
     // 初始渲染
     renderTable("all");
+
+    // 搜索框输入事件
+    searchInput.addEventListener("input", () => {
+      renderTable(selectedLevel);
+    });
 
     // 下拉切换事件
     filterSelect.addEventListener("change", (e) => {
@@ -6267,7 +6401,11 @@ class StudyView extends ItemView {
     const masteredPct = mastered / total * 100;
     const learningPct = learning / total * 100;
     const ignoredPct = ignored / total * 100;
-    pie.style.background = `conic-gradient(var(--color-green) 0% ${masteredPct}%, var(--color-blue) ${masteredPct}% ${masteredPct + learningPct}%, var(--text-muted) ${masteredPct + learningPct}% 100%)`;
+    pie.style.background = `conic-gradient(
+    var(--color-green) 0% ${masteredPct}%,
+    var(--color-blue) ${masteredPct}% ${masteredPct + learningPct}%,
+    var(--text-muted) ${masteredPct + learningPct}% 100%
+)`;
     pie.style.width = "120px";
     pie.style.height = "120px";
     pie.style.borderRadius = "50%";
@@ -6312,34 +6450,164 @@ class StudyView extends ItemView {
     const trend = charts.createDiv({ cls: "chart-container" });
     trend.createEl("h4", { text: t("study_stats_trend") });
     const trendData = stats.trend || [];
+
+    // 计算最大值（至少为 1，避免除以 0）
     const maxCount = Math.max(1, ...trendData.map(d => d.count));
-    const svg = trend.createEl("svg", { cls: "trend-svg" });
-    svg.setAttribute("viewBox", "0 0 300 100");
-    svg.style.width = "100%";
-    svg.style.height = "100px";
-    const points = trendData.map((d, i) => {
-      const x = (i / (trendData.length - 1 || 1)) * 290 + 5;
-      const y = 95 - (d.count / maxCount) * 80;
-      return `${x},${y}`;
-    }).join(" ");
-    // 使用 document.createElementNS 替代 svg.createElementNS
-    const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-    polyline.setAttribute("points", points);
-    polyline.setAttribute("stroke", "var(--interactive-accent)");
-    polyline.setAttribute("stroke-width", "2");
-    polyline.setAttribute("fill", "none");
-    svg.appendChild(polyline);
-    for (let i = 0; i < trendData.length; i++) {
-      const d = trendData[i];
-      const cx = (i / (trendData.length - 1 || 1)) * 290 + 5;
-      const cy = 95 - (d.count / maxCount) * 80;
-      const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", cx);
-      circle.setAttribute("cy", cy);
-      circle.setAttribute("r", "3");
-      circle.setAttribute("fill", "var(--interactive-accent)");
-      svg.appendChild(circle);
+
+    // ---------- 绘制函数 ----------
+    function drawTrend(container, data, max) {
+      // 移除旧的 SVG（如果有）
+      const oldSvg = container.querySelector('svg');
+      if (oldSvg) oldSvg.remove();
+
+      const width = 600;
+      const height = 120;
+      const padding = { top: 12, bottom: 12 };
+      const chartH = height - padding.top - padding.bottom;
+
+      // 创建 SVG
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "trend-svg");
+      svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      svg.style.width = "100%";
+      svg.style.height = `${height}px`;
+      svg.style.background = "var(--background-secondary)";
+      svg.style.borderRadius = "8px";
+      svg.style.padding = "4px 0";
+      container.appendChild(svg);
+
+      // 网格线
+      const gridY = [20, 40, 60, 80, 100];
+      for (const y of gridY) {
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", "0");
+        line.setAttribute("y1", y);
+        line.setAttribute("x2", width);
+        line.setAttribute("y2", y);
+        line.setAttribute("stroke", "var(--background-modifier-border)");
+        line.setAttribute("stroke-width", "0.5");
+        line.setAttribute("stroke-dasharray", "4,4");
+        svg.appendChild(line);
+      }
+
+      // 计算折线坐标
+      const points = data.map((d, i) => {
+        const x = (i / (data.length - 1 || 1)) * (width - 10) + 5;
+        const y = padding.top + chartH - (d.count / max) * chartH * 0.9;
+        return `${x.toFixed(2)},${y.toFixed(2)}`;
+      }).join(" ");
+
+      // 面积渐变
+      const gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+      gradient.setAttribute("id", "trendGradient");
+      gradient.setAttribute("x1", "0%");
+      gradient.setAttribute("y1", "0%");
+      gradient.setAttribute("x2", "0%");
+      gradient.setAttribute("y2", "100%");
+      const stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop1.setAttribute("offset", "0%");
+      stop1.setAttribute("stop-color", "var(--interactive-accent)");
+      stop1.setAttribute("stop-opacity", "0.25");
+      const stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop2.setAttribute("offset", "100%");
+      stop2.setAttribute("stop-color", "var(--interactive-accent)");
+      stop2.setAttribute("stop-opacity", "0.02");
+      gradient.appendChild(stop1);
+      gradient.appendChild(stop2);
+      svg.appendChild(gradient);
+
+      // 面积填充
+      const firstPoint = points.split(" ")[0];
+      const lastPoint = points.split(" ")[points.split(" ").length - 1];
+      const areaPoints = points + ` ${lastPoint.split(",")[0]},${padding.top + chartH + 5} ${firstPoint.split(",")[0]},${padding.top + chartH + 5}`;
+      const area = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      area.setAttribute("points", areaPoints);
+      area.setAttribute("fill", "url(#trendGradient)");
+      area.setAttribute("stroke", "none");
+      svg.appendChild(area);
+
+      // 主折线
+      const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      polyline.setAttribute("points", points);
+      polyline.setAttribute("stroke", "var(--interactive-accent)");
+      polyline.setAttribute("stroke-width", "3");
+      polyline.setAttribute("stroke-linecap", "round");
+      polyline.setAttribute("stroke-linejoin", "round");
+      polyline.setAttribute("fill", "none");
+      svg.appendChild(polyline);
+
+      // 数据点
+      data.forEach((d, i) => {
+        const x = (i / (data.length - 1 || 1)) * (width - 10) + 5;
+        const y = padding.top + chartH - (d.count / max) * chartH * 0.9;
+
+        // 外发光
+        const glow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        glow.setAttribute("cx", x.toFixed(2));
+        glow.setAttribute("cy", y.toFixed(2));
+        glow.setAttribute("r", "4");
+        glow.setAttribute("fill", "var(--interactive-accent)");
+        glow.setAttribute("opacity", "0.15");
+        svg.appendChild(glow);
+
+        // 主圆点
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x.toFixed(2));
+        circle.setAttribute("cy", y.toFixed(2));
+        circle.setAttribute("r", "2.5");
+        circle.setAttribute("fill", "var(--background-primary)");
+        circle.setAttribute("stroke", "var(--interactive-accent)");
+        circle.setAttribute("stroke-width", "2");
+        svg.appendChild(circle);
+
+        // 今天高亮
+        if (i === data.length - 1) {
+          const highlight = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          highlight.setAttribute("cx", x.toFixed(2));
+          highlight.setAttribute("cy", y.toFixed(2));
+          highlight.setAttribute("r", "8");
+          highlight.setAttribute("fill", "none");
+          highlight.setAttribute("stroke", "var(--interactive-accent)");
+          highlight.setAttribute("stroke-width", "1.5");
+          highlight.setAttribute("stroke-dasharray", "3,3");
+          highlight.setAttribute("opacity", "0.6");
+          svg.appendChild(highlight);
+        }
+      });
     }
+
+    // 绘制
+    drawTrend(trend, trendData, maxCount);
+
+    // ----- 趋势图底部说明 -----
+    const noteContainer = trend.createDiv({ cls: "trend-note" });
+    noteContainer.style.cssText = `
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px 2px 10px;
+    font-size: 0.75em;
+    color: var(--text-muted);
+    border-top: 1px solid var(--background-modifier-border);
+    margin-top: 6px;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+`;
+
+    const todayCount = trendData.length > 0 ? trendData[trendData.length - 1].count : 0;
+    const todayLabel = noteContainer.createSpan();
+    todayLabel.innerHTML = t("trend_today_label", todayCount).replace(/\{0\}/g, `<strong style="color: var(--text-normal);">${todayCount}</strong>`);
+
+    const totalCount = trendData.reduce((sum, d) => sum + d.count, 0);
+    const avgCount = trendData.length > 0 ? Math.round(totalCount / trendData.length) : 0;
+    const maxCountDisplay = Math.max(...trendData.map(d => d.count), 0);
+
+    const statsLabel = noteContainer.createSpan();
+    statsLabel.innerHTML = t("trend_summary_label", totalCount, avgCount, maxCountDisplay)
+      .replace(/\{0\}/g, `<strong style="color: var(--text-normal);">${totalCount}</strong>`)
+      .replace(/\{1\}/g, `<strong style="color: var(--text-normal);">${avgCount}</strong>`)
+      .replace(/\{2\}/g, `<strong style="color: var(--text-normal);">${maxCountDisplay}</strong>`);
+
 
     // 3. 等级分布（条形图）
     const level = charts.createDiv({ cls: "chart-container" });
@@ -6398,10 +6666,8 @@ class StudyView extends ItemView {
     };
     for (const [col, count] of Object.entries(colorData)) {
       const row = colorList.createDiv({ cls: "color-item" });
-      const dot = row.createSpan({ cls: "color-dot" });
-      const colVal = colorMap[col] || 'var(--interactive-accent)';
-      dot.style.backgroundColor = colVal;
 
+      // 文字
       let colorName;
       if (col === 'default' || col === '') {
         colorName = t("color_default");
@@ -6409,7 +6675,12 @@ class StudyView extends ItemView {
         const translated = t("color_" + col);
         colorName = (translated !== "color_" + col) ? translated : col;
       }
-      row.createSpan({ text: `${colorName}: ${count}` });
+      const textSpan = row.createSpan({ text: `${colorName}: ${count}` });
+
+      // 色块
+      const dot = row.createSpan({ cls: "color-dot" });
+      const colVal = colorMap[col] || 'var(--interactive-accent)';
+      dot.style.backgroundColor = colVal;
     }
   }
 
@@ -6516,7 +6787,7 @@ class StudyView extends ItemView {
     // 重置进度
     const resetSetting = container.createDiv({ cls: "study-setting-item" });
     resetSetting.createDiv({ cls: "study-setting-label", text: t("study_reset_progress") });
-    resetSetting.createDiv({ cls: "study-setting-desc", text: t("study_reset_confirm") });
+    resetSetting.createDiv({ cls: "study-setting-desc", text: t("study_reset_desc") });
     const resetControl = resetSetting.createDiv({ cls: "study-setting-control" });
     const resetBtn = resetControl.createEl("button", { text: t("study_reset_progress"), cls: "mod-warning" });
     resetBtn.addEventListener("click", async () => {
@@ -7763,6 +8034,54 @@ class WordbookSettingTab extends PluginSettingTab {
       await this.plugin.saveSettings();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
     }));
+    // ===== 启用折叠释义 =====
+    new Setting(container)
+      .setName(t("settings_enable_fold"))
+      .setDesc(t("settings_enable_fold_desc"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableFoldDefinition)
+        .onChange(async (val) => {
+          this.plugin.settings.enableFoldDefinition = val;
+          await this.plugin.saveSettings();
+
+          // 触发数据更新事件，刷新侧边栏
+          this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+
+          // 手动刷新查词面板
+          const lookupLeaves = this.plugin.app.workspace.getLeavesOfType(VIEW_TYPE_LOOKUP);
+          for (const leaf of lookupLeaves) {
+            const view = leaf.view;
+            if (view && view.currentWord) {
+              await view.doLocalLookup(view.currentWord);
+            }
+          }
+        })
+      );
+    // 启用/禁用 掌握/忽略 按钮
+    new Setting(container)
+      .setName(t("settings_enable_mastery"))
+      .setDesc(t("settings_enable_mastery_desc"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableMastery)
+        .onChange(async (val) => {
+          this.plugin.settings.enableMastery = val;
+          await this.plugin.saveSettings();
+
+          // 触发数据更新事件，刷新侧边栏
+          this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+
+          // 手动刷新查词面板
+          const lookupLeaves = this.plugin.app.workspace.getLeavesOfType(VIEW_TYPE_LOOKUP);
+          for (const leaf of lookupLeaves) {
+            const view = leaf.view;
+            if (view && view.currentWord) {
+              // 用当前单词重新执行本地查询，重建卡片
+              await view.doLocalLookup(view.currentWord);
+            }
+          }
+        })
+      );
+
 
     // ===== 高亮样式 =====
     container.createEl("h3", { text: t("settings_highlight_styles") });
@@ -11087,8 +11406,8 @@ class SimpleWordbookPlugin extends Plugin {
     this.registerView(VIEW_TYPE_SIDEBAR, (leaf) => new SidebarView(leaf, this));
     this.registerView(VIEW_TYPE_LOOKUP, (leaf) => new LookupView(leaf, this));
     this.registerView(VIEW_TYPE_LIBRARY, (leaf) => new LibraryView(leaf, this)); // 注册词库管理视图
-    this.addRibbonIcon("book", t("sidebar_title"), () => this.activateSidebar());
-    this.addRibbonIcon("search-code", t("lookup_view_title"), () => {
+    this.addRibbonIcon("notepad-text", t("sidebar_title"), () => this.activateSidebar());
+    this.addRibbonIcon("book-search", t("lookup_view_title"), () => {
       const leaf = this.getLookupLeaf();
       this.app.workspace.revealLeaf(leaf);
     });
@@ -11175,7 +11494,7 @@ class SimpleWordbookPlugin extends Plugin {
         // 截断显示：超过20个字符截断并加 …
         const displayText = selected.length > 20 ? selected.slice(0, 20) + '…' : selected;
         const submenu = menu.addItem(item => {
-          item.setTitle(t("editor_menu_lookup", displayText)).setIcon("search-code");
+          item.setTitle(t("editor_menu_lookup", displayText)).setIcon("book-search");
           // 子菜单
           const sub = item.setSubmenu();
           // 添加“默认”选项
