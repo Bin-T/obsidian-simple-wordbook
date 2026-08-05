@@ -167,7 +167,7 @@ const locale = {
     settings_underline_color_desc: "If set, underlines use this color (overrides highlight color).",
     underline_color_default: "Default (follow highlight color)",
     settings_enable_hover: "Enable hover preview",
-    settings_blur_definitions: "Blur definitions",
+    settings_blur_definitions: "Enable blur definitions",
     settings_blur_desc: "Blur definition content, reveal on hover",
     settings_enable_fold: "Enable Fold Definition",
     settings_enable_fold_desc: "Collapse definition area by default on word cards. Click the ▶ button to expand.",
@@ -507,6 +507,7 @@ const locale = {
     study_today_goal: "Today: {0}/{1}",
     study_stats_total: "Total",
     study_stats_mastered_rate: "Mastered Rate",
+    study_stats_ignored_rate: "Ignored Rate",
     study_stats_today_progress: "Today's Progress",
     study_stats_streak: "Day Streak",
     study_stats_streak_days: "{0} days",
@@ -514,15 +515,16 @@ const locale = {
     study_tab_mastered: "✅ Mastered",
     study_tab_stats: "📊 Stats",
     study_tab_settings: "⚙️ Settings",
-    study_review_motivation: "🚀 {0} words ready, let's go go go!",
+    study_review_motivation: "🚀 {0} words for this round, let's go go go!",
     study_review_empty: "No words due for review today! 🎉",
-    study_review_done: "Review complete! You reviewed {0} words today.",
+    study_review_done: "Review complete! {0} words this round, {1} words total today.",
     study_review_progress: "Word {0}/{1} · Level {2} · Next in {3} days",
     study_card_hint: "Double-click or press Space to reveal",
     study_btn_forget: "😣 Forget",
     study_btn_remember: "😊 Remember",
     study_btn_start: "Let's do this! 💪",
-    study_btn_again: "One more round! 🔥",
+    study_btn_again: "One more round",
+    study_btn_back: "Back to start",
     study_mastered_list_empty: "No mastered words yet.",
     study_stats_retention: "Retention Rate",
     study_stats_learning_distribution: "Learning Distribution",
@@ -537,7 +539,8 @@ const locale = {
     study_settings_daily_limit_desc: "Maximum words per review session",
     study_settings_review_order: "Review Order",
     study_settings_review_order_due: "Due First",
-    study_settings_review_order_level: "Level First",
+    study_settings_review_order_high_level: "High Level First",
+    study_settings_review_order_low_level: "Low Level First",
     study_settings_flashcard_phonetic: "Show Phonetic",
     study_settings_flashcard_phonetic_desc: "Show phonetic transcription on the card",
     study_settings_flashcard_autoflip: "Auto Flip (seconds)",
@@ -561,6 +564,8 @@ const locale = {
     study_table_header_actions: "Actions",
     study_level_search_placeholder: "Search words...",
     study_level_search_empty: "No words found for \"{0}\"",
+    study_goal_cannot_exceed_limit: "Daily goal cannot exceed review limit ({0}).",
+    study_goal_adjusted_to_limit: "Daily goal adjusted to match review limit ({0}).",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -1075,6 +1080,7 @@ const locale = {
     study_today_goal: "今日：{0}/{1}",
     study_stats_total: "总词汇",
     study_stats_mastered_rate: "掌握率",
+    study_stats_ignored_rate: "忽略率",
     study_stats_today_progress: "今日进度",
     study_stats_streak: "连续学习",
     study_stats_streak_days: "{0} 天",
@@ -1082,15 +1088,16 @@ const locale = {
     study_tab_mastered: "✅ 已掌握",
     study_tab_stats: "📊 统计",
     study_tab_settings: "⚙️ 设置",
-    study_review_motivation: "🚀 今日{0}个词，冲鸭，go go go！",
+    study_review_motivation: "🚀 本轮{0}个词，冲鸭，go go go！",
     study_review_empty: "今日没有需要复习的单词 🎉",
-    study_review_done: "复习完成！今日共复习了 {0} 个单词。",
+    study_review_done: "复习完成！本轮复习了 {0} 个单词，今日累计复习了 {1} 个单词。",
     study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距下次 {3} 天",
     study_card_hint: "双击或按空格显示释义",
     study_btn_forget: "😣 忘记",
     study_btn_remember: "😊 记得",
     study_btn_start: "开干！💪",
-    study_btn_again: "再来一轮！🔥",
+    study_btn_again: "再来一轮",
+    study_btn_back: "返回准备",
     study_mastered_list_empty: "还没有已掌握的单词。",
     study_stats_retention: "记忆保持率",
     study_stats_learning_distribution: "学习状态分布",
@@ -1105,7 +1112,8 @@ const locale = {
     study_settings_daily_limit_desc: "每次复习最多可复习的单词数",
     study_settings_review_order: "复习排序",
     study_settings_review_order_due: "到期优先",
-    study_settings_review_order_level: "等级优先",
+    study_settings_review_order_high_level: "高等级优先",
+    study_settings_review_order_low_level: "低等级优先",
     study_settings_flashcard_phonetic: "显示音标",
     study_settings_flashcard_phonetic_desc: "在卡片上显示音标",
     study_settings_flashcard_autoflip: "自动翻转（秒）",
@@ -1129,6 +1137,8 @@ const locale = {
     study_table_header_actions: "操作",
     study_level_search_placeholder: "搜索单词...",
     study_level_search_empty: '没有找到 "{0}" 的单词',
+    study_goal_cannot_exceed_limit: "每日目标不能超过单次复习上限（{0}）。",
+    study_goal_adjusted_to_limit: "每日目标已自动调整为 {0} 以匹配复习上限。",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1380,7 +1390,7 @@ const DEFAULT_SETTINGS = {
   study: {
     dailyGoal: 10,
     dailyReviewLimit: 20,
-    reviewOrder: "due_first",      // "due_first" 或 "level_first"
+    reviewOrder: "due_first",
     flashcardShowPhonetic: true,
     flashcardAutoFlip: 0,          // 秒，0 表示关闭
     enableSpacedRepetition: true,
@@ -2072,13 +2082,13 @@ class MasteryStore {
       if (!mergedIgnored[word]) {
         if (!this.masteryData[word]) this.masteryData[word] = {};
         this.masteryData[word].mastered = true;
-        this.masteryData[word].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        this.masteryData[word].updatedAt = this.getLocalDateTimeString();
       }
     }
     for (const word of Object.keys(mergedIgnored)) {
       if (!this.ignoredData[word]) this.ignoredData[word] = {};
       this.ignoredData[word].ignored = true;
-      this.ignoredData[word].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+      this.ignoredData[word].updatedAt = this.getLocalDateTimeString();
       // 同时清除可能存在的掌握 key
       if (this.masteryData[word]) delete this.masteryData[word];
     }
@@ -2133,11 +2143,11 @@ class MasteryStore {
           if (isIgnored) {
             if (!this.ignoredData[sourceKey]) this.ignoredData[sourceKey] = {};
             this.ignoredData[sourceKey].ignored = true;
-            this.ignoredData[sourceKey].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+            this.ignoredData[sourceKey].updatedAt = this.getLocalDateTimeString();
           } else if (isMastered) {
             if (!this.masteryData[sourceKey]) this.masteryData[sourceKey] = {};
             this.masteryData[sourceKey].mastered = true;
-            this.masteryData[sourceKey].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+            this.masteryData[sourceKey].updatedAt = this.getLocalDateTimeString();
           }
         }
       }
@@ -2216,6 +2226,18 @@ class MasteryStore {
   isMastered(key) { return this.masteryData[key]?.mastered === true; }
   isIgnored(key) { return this.ignoredData[key]?.ignored === true; }
 
+  // ----- 获取本地时间戳字符串（YYYY-MM-DD HH:MM:SS）-----
+  getLocalDateTimeString(date) {
+    if (!date) date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
   // ----- 标记掌握（带错误处理） -----
   async setMastered(key, mastered) {
     try {
@@ -2223,9 +2245,11 @@ class MasteryStore {
         await this.setIgnored(key, false);
         if (!this.masteryData[key]) this.masteryData[key] = {};
         this.masteryData[key].mastered = true;
-        this.masteryData[key].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        this.masteryData[key].updatedAt = this.getLocalDateTimeString();
+        await this.plugin.studyStore.setReviewLevel(key, 5);  // 同步复习等级为5
       } else {
         if (this.masteryData[key]) delete this.masteryData[key];
+        await this.plugin.studyStore.setReviewLevel(key, 0);  // 取消掌握时重置复习记录等级到 0
       }
       await this.saveMastery();
     } catch (e) {
@@ -2241,7 +2265,7 @@ class MasteryStore {
         await this.setMastered(key, false);
         if (!this.ignoredData[key]) this.ignoredData[key] = {};
         this.ignoredData[key].ignored = true;
-        this.ignoredData[key].updatedAt = new Date().toISOString().replace('T', ' ').slice(0, 19);
+        this.ignoredData[key].updatedAt = this.getLocalDateTimeString();
       } else {
         if (this.ignoredData[key]) delete this.ignoredData[key];
       }
@@ -2343,9 +2367,27 @@ class StudyStore {
     return this.data.reviews[key];
   }
 
+  // ----- 本地日期工具方法 -----
+  // 获取任意日期的本地日期字符串（YYYY-MM-DD）
+  getLocalDateString(date) {
+    if (!date) date = new Date();
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  // 将 "YYYY-MM-DD" 解析为本地时间的 Date 对象（避免 UTC 偏移）
+  parseLocalDate(str) {
+    if (!str) return new Date();
+    const parts = str.split('-').map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+
   // ----- 获取今天日期的 ISO 字符串 (YYYY-MM-DD) -----
   getTodayISO() {
-    return new Date().toISOString().split('T')[0];
+    return this.getLocalDateString(new Date());
   }
 
   // ----- 获取今日统计 -----
@@ -2379,6 +2421,114 @@ class StudyStore {
     await this.save();
   }
 
+  // ----- 设置指定单词的复习等级 -----
+  async setReviewLevel(key, level) {
+    if (!this.data.reviews[key]) {
+      // 若不存在记录，创建默认
+      this.data.reviews[key] = {
+        level: 0,
+        nextReview: this.getTodayISO(),
+        lastReview: null,
+        reviewCount: 0,
+        consecutiveCorrect: 0,
+        firstLearned: this.getTodayISO()
+      };
+    }
+    this.data.reviews[key].level = level;
+
+    // 当等级重置为 0 或达到 5（掌握）时，连续正确计数应清零
+    if (level === 0 || level >= 5) {
+      this.data.reviews[key].consecutiveCorrect = 0;
+    }
+
+    if (level >= 5) {
+      this.data.reviews[key].nextReview = null;
+    } else {
+      this.data.reviews[key].nextReview = this.calculateNextReview(level);
+    }
+    await this.save();
+  }
+
+  // ----- 从词源独立迁移到全局（合并复习记录，保留最高等级） -----
+  async migrateFromPerSourceToGlobal() {
+    const allBooks = this.plugin.settings.wordbookFiles
+      .filter(b => b.enabled)
+      .map(b => b.path);
+
+    // 收集所有词源独立 key 的复习记录
+    const globalMerged = {};
+    for (const [key, review] of Object.entries(this.data.reviews)) {
+      if (key.includes('::')) {
+        const word = key.split('::')[1];
+        // 如果全局还没有该单词的记录，或者当前记录的等级更高，则保留最高等级
+        if (!globalMerged[word] || (review.level || 0) > (globalMerged[word].level || 0)) {
+          globalMerged[word] = { ...review };
+          // 如果等级达到5，nextReview 应为 null
+          if (globalMerged[word].level >= 5) {
+            globalMerged[word].nextReview = null;
+          }
+        }
+      }
+    }
+
+    // 保留原有的全局 key（不包含 :: 的 key）
+    for (const [key, review] of Object.entries(this.data.reviews)) {
+      if (!key.includes('::')) {
+        // 如果已存在，但新合并的等级更高，则覆盖
+        if (globalMerged[key] && (review.level || 0) > (globalMerged[key].level || 0)) {
+          globalMerged[key] = { ...review };
+        } else if (!globalMerged[key]) {
+          globalMerged[key] = { ...review };
+        }
+      }
+    }
+
+    // 替换 reviews 数据
+    this.data.reviews = globalMerged;
+    await this.save();
+  }
+
+  // ----- 从全局迁移到词源独立（复制全局记录到所有词源） -----
+  async migrateFromGlobalToPerSource() {
+    const allBooks = this.plugin.settings.wordbookFiles
+      .filter(b => b.enabled)
+      .map(b => b.path);
+
+    if (allBooks.length === 0) return;
+
+    const newReviews = {};
+    // 先保留所有不包含 :: 的 key（全局记录）
+    for (const [key, review] of Object.entries(this.data.reviews)) {
+      if (!key.includes('::')) {
+        newReviews[key] = { ...review };
+      }
+    }
+
+    // 遍历所有全局 key（不包含 ::）
+    const globalKeys = Object.keys(this.data.reviews).filter(k => !k.includes('::'));
+    for (const word of globalKeys) {
+      const review = this.data.reviews[word];
+      if (!review) continue;
+      for (const bookPath of allBooks) {
+        const sourceKey = `${word}::${bookPath}`;
+        // 只有目标词源不存在该记录时才创建（不覆盖已有的词源独立记录）
+        if (!this.data.reviews[sourceKey]) {
+          newReviews[sourceKey] = { ...review };
+        }
+      }
+    }
+
+    // 保留所有现有的词源独立记录
+    for (const [key, review] of Object.entries(this.data.reviews)) {
+      if (key.includes('::')) {
+        newReviews[key] = { ...review };
+      }
+    }
+
+    this.data.reviews = newReviews;
+    await this.save();
+  }
+
   // ----- 根据等级获取间隔天数（SM-2 简化版） -----
   getInterval(level) {
     const intervals = [1, 2, 4, 8, 16];
@@ -2391,13 +2541,13 @@ class StudyStore {
     if (level >= 5) return null; // 掌握
     const interval = this.getInterval(level);
     if (interval === 0) return null;
-    const date = fromDate ? new Date(fromDate) : new Date();
+    // 使用 parseLocalDate 安全解析日期字符串
+    const date = fromDate ? this.parseLocalDate(fromDate) : new Date();
     date.setDate(date.getDate() + interval);
-    return date.toISOString().split('T')[0];
+    return this.getLocalDateString(date);
   }
 
-  // ----- 获取今日应复习的单词列表（按到期时间排序） -----
-  // 在 StudyStore 类中
+  // ----- 获取今日应复习的单词列表 -----
   async getDueWords(allCards, limit = 20) {
     const today = this.getTodayISO();
     const due = [];
@@ -2445,11 +2595,21 @@ class StudyStore {
       await this.save();
     }
 
-    // 按下次复习日期排序，越早越优先
-    due.sort((a, b) => (a.review.nextReview || '9999-99-99').localeCompare(b.review.nextReview || '9999-99-99'));
+    // 根据复习排序设置排序
+    const reviewOrder = this.plugin.settings.study.reviewOrder || "due_first";
+    if (reviewOrder === "level_low_first") {
+      // 低等级优先：等级低的排在前面（升序）
+      due.sort((a, b) => (a.review.level || 0) - (b.review.level || 0));
+    } else if (reviewOrder === "level_high_first") {
+      // 高等级优先：等级高的排在前面（降序）
+      due.sort((a, b) => (b.review.level || 0) - (a.review.level || 0));
+    } else {
+      // 到期优先：下次复习日期越早越优先
+      due.sort((a, b) => (a.review.nextReview || '9999-99-99').localeCompare(b.review.nextReview || '9999-99-99'));
+    }
+
     return due.slice(0, limit);
   }
-
   // ----- 获取统计信息 -----
   getStats(allCards) {
     const total = allCards.length;
@@ -2488,19 +2648,25 @@ class StudyStore {
 
     // 连续学习天数
     let streak = 0;
-    const dates = Object.keys(this.data.dailyStats || {}).sort();
-    if (dates.length > 0) {
-      const today = this.getTodayISO();
-      let checkDate = new Date(today);
-      while (true) {
-        const ds = checkDate.toISOString().split('T')[0];
-        if (this.data.dailyStats[ds] && this.data.dailyStats[ds].reviewed > 0) {
-          streak++;
-          checkDate.setDate(checkDate.getDate() - 1);
-        } else {
-          break;
-        }
+    const today = this.getTodayISO();
+    const todayDate = this.parseLocalDate(today);
+    let checkDate = new Date(todayDate);
+    checkDate.setDate(checkDate.getDate() - 1); // 从昨天开始
+
+    while (true) {
+      const ds = this.getLocalDateString(checkDate);
+      if (this.data.dailyStats[ds] && this.data.dailyStats[ds].reviewed > 0) {
+        streak++;
+        checkDate.setDate(checkDate.getDate() - 1);
+      } else {
+        break;
       }
+    }
+    // 检查今天是否学习
+    const todayStats = this.data.dailyStats[today];
+    const hasStudiedToday = todayStats && todayStats.reviewed > 0;
+    if (hasStudiedToday) {
+      streak = streak + 1;
     }
 
     // 近30天每日学习活动（用 reviewed 计数作为近似）
@@ -2508,7 +2674,7 @@ class StudyStore {
     for (let i = 29; i >= 0; i--) {
       const d = new Date();
       d.setDate(d.getDate() - i);
-      const key = d.toISOString().split('T')[0];
+      const key = this.getLocalDateString(d);
       trend.push({
         date: key,
         count: this.data.dailyStats[key] ? this.data.dailyStats[key].reviewed : 0
@@ -2525,7 +2691,8 @@ class StudyStore {
       colorCounts,
       streak,
       trend,
-      masteredRate: total ? Math.round(mastered / total * 100) : 0
+      masteredRate: total ? (mastered / total * 100) : 0,
+      ignoredRate: total ? (ignored / total * 100) : 0
     };
   }
 }
@@ -5615,6 +5782,11 @@ class StudyView extends ItemView {
 
   // 键盘事件统一处理
   handleKeydown(e) {
+    // 如果焦点在输入框、文本域或下拉选择框中，不处理键盘事件
+    if (e.target.closest('input, textarea, select')) {
+      return;
+    }
+
     if (!this.reviewing || this.reviewQueue.length === 0) return;
     if (e.key === " " || e.key === "Space") {
       e.preventDefault();
@@ -5654,11 +5826,18 @@ class StudyView extends ItemView {
     this.registerDomEvent(document, "keydown", this._keyHandler);
 
     // 监听数据更新事件，刷新视图
-    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.refresh()));
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => {
+      // 清除统计缓存，确保下次渲染时重新计算
+      this._statsCacheTime = 0;
+      this.refresh();
+    }));
     this.registerEvent(this.plugin.app.vault.on("modify", (file) => {
       if (file instanceof TFile && file.extension === "json") {
         const isWordbook = this.plugin.settings.wordbookFiles.some(wb => wb.path === file.path);
-        if (isWordbook) this.refresh();
+        if (isWordbook) {
+          this._statsCacheTime = 0;
+          this.refresh();
+        }
       }
     }));
     this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:settings-updated", () => {
@@ -5723,13 +5902,28 @@ class StudyView extends ItemView {
     const stats = this.studyStore.getTodayStats();
     const reviewed = stats ? stats.reviewed : 0;
     const goal = this.studyStore.data.dailyGoal || 10;
+
     if (this.goalDisplay) {
-      this.goalDisplay.textContent = t("study_today_goal", reviewed, goal);
+      // 显示 "今日：X/Y"
+      let text = t("study_today_goal", reviewed, goal);
+      // 如果达成目标，追加对勾
+      if (goal > 0 && reviewed >= goal) {
+        text += " ✅";
+      }
+      this.goalDisplay.textContent = text;
     }
   }
 
   // ----- 切换标签 -----
   async switchTab(tabId) {
+    // 如果离开 review 标签，清理自动翻转定时器
+    if (this.currentTab === "review" && tabId !== "review") {
+      if (this._autoFlipTimer) {
+        clearTimeout(this._autoFlipTimer);
+        this._autoFlipTimer = null;
+      }
+    }
+
     this.currentTab = tabId;
     if (this.tabBar) {
       this.tabBar.querySelectorAll('.study-tab').forEach(el => {
@@ -5742,6 +5936,7 @@ class StudyView extends ItemView {
   // ---------- 复习标签 ----------
   async renderReviewTab() {
     if (this._rendering) return;
+    this.updateTopBar();
     this._rendering = true;
 
     try {
@@ -5763,12 +5958,7 @@ class StudyView extends ItemView {
       info.createSpan({ text: t("study_review_motivation", due.length) });
       const btn = container.createEl("button", { text: t("study_btn_start"), cls: "mod-cta" });
       btn.addEventListener("click", () => {
-        this.reviewQueue = due;
-        this.currentIndex = 0;
-        this.totalReviewed = 0;
-        this.totalMastered = 0;
-        this.reviewing = true;
-        this.renderReviewTab(); // 此时 _rendering 已重置，可正常进入
+        this.startReviewWithWords(due);
       });
     } finally {
       this._rendering = false;
@@ -5780,12 +5970,32 @@ class StudyView extends ItemView {
     if (this.currentIndex >= this.reviewQueue.length) {
       // 复习完成
       const done = container.createDiv({ cls: "study-done" });
-      done.createEl("p", { text: t("study_review_done", this.totalReviewed) });
-      const btn = done.createEl("button", { text: t("study_btn_again"), cls: "mod-cta" });
-      btn.addEventListener("click", () => {
+      const todayTotal = this.studyStore.getTodayStats().reviewed || 0; // 获取今日累计数
+      done.createEl("p", { text: t("study_review_done", this.totalReviewed, todayTotal) });
+
+      // 按钮容器
+      const buttonGroup = done.createDiv({ cls: "study-done-buttons" });
+
+      // 再来一轮按钮
+      const againBtn = buttonGroup.createEl("button", { text: t("study_btn_again"), cls: "mod-cta" });
+      againBtn.addEventListener("click", async () => {
+        const allCards = this.plugin.getAllCards();
+        const due = await this.studyStore.getDueWords(allCards, this.plugin.settings.study.dailyReviewLimit || 20);
+        if (due.length === 0) {
+          this.reviewing = false;
+          this.renderReviewTab();
+          return;
+        }
+        this.startReviewWithWords(due);
+      });
+
+      // 返回准备界面按钮
+      const backBtn = buttonGroup.createEl("button", { text: t("study_btn_back") });
+      backBtn.addEventListener("click", () => {
         this.reviewing = false;
         this.renderReviewTab();
       });
+
       return;
     }
 
@@ -5966,6 +6176,7 @@ class StudyView extends ItemView {
     }
   }
 
+  // ----- 复习忘记按钮 -----
   handleForget() {
     if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
       return;
@@ -5973,6 +6184,15 @@ class StudyView extends ItemView {
     const item = this.reviewQueue[this.currentIndex];
     const card = item.card;
     const review = item.review;
+
+    // 如果单词已掌握，直接跳过
+    const key = getStudyKey(card.word, card.sourceFile);
+    if (this.plugin.masteryStore.isMastered(key)) {
+      this.currentIndex++;
+      this.renderReviewTab();
+      return;
+    }
+
     review.level = 0;
     review.nextReview = this.studyStore.calculateNextReview(0);
     review.consecutiveCorrect = 0;
@@ -5985,6 +6205,7 @@ class StudyView extends ItemView {
     this.renderReviewTab();
   }
 
+  // ----- 复习记得按钮 -----
   handleRemember() {
     if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
       return;
@@ -5992,15 +6213,34 @@ class StudyView extends ItemView {
     const item = this.reviewQueue[this.currentIndex];
     const card = item.card;
     const review = item.review;
+
+    // 如果单词已掌握，直接跳过
+    const key = getStudyKey(card.word, card.sourceFile);
+    if (this.plugin.masteryStore.isMastered(key)) {
+      this.currentIndex++;
+      this.renderReviewTab();
+      return;
+    }
+
     let newLevel = review.level + 1;
     if (newLevel >= 5) {
       // 达到等级5 → 自动标记为掌握
       const key = getStudyKey(card.word, card.sourceFile);
+
+      // 等级5 → 直接修改当前 review 对象，使界面立即更新
+      review.level = 5;
+      review.nextReview = null;
+      review.consecutiveCorrect = 0;
+
+      // 异步保存到持久存储
       this.plugin.masteryStore.setMastered(key, true);
       this.studyStore.incrementMastered();
+      this.studyStore.incrementReviewed();
+      this.totalReviewed++;
       this.totalMastered++;
       this.currentIndex++;
-      this.renderReviewTab();
+      // 触发全局数据更新
+      this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
       return;
     }
     review.level = newLevel;
@@ -6015,40 +6255,213 @@ class StudyView extends ItemView {
     this.renderReviewTab();
   }
 
-  // ---------- 已掌握标签 ----------
+  // ----- 开始复习 -----
+  startReviewWithWords(dueWords) {
+    this.reviewQueue = dueWords;
+    this.currentIndex = 0;
+    this.totalReviewed = 0;
+    this.totalMastered = 0;
+    this.reviewing = true;
+    this.renderReviewTab();
+  }
+
+  // ---------- 已掌握标签（部分与等级列表共用 CSS 类） ----------
   renderMasteredTab() {
     const container = this.contentEl;
     container.empty();
+
     const allCards = this.plugin.getAllCards();
-    const masteredCards = allCards.filter(card => {
+    const masteredCards = [];
+    for (const card of allCards) {
       const key = getStudyKey(card.word, card.sourceFile);
-      return this.plugin.masteryStore.isMastered(key);
-    });
+      if (this.plugin.masteryStore.isMastered(key)) {
+        masteredCards.push({
+          card: card,
+          reviewKey: key
+        });
+      }
+    }
+
     if (masteredCards.length === 0) {
       container.createDiv({ cls: "study-empty", text: t("study_mastered_list_empty") });
       return;
     }
-    const list = container.createDiv({ cls: "study-mastered-list" });
-    for (const card of masteredCards) {
-      const item = list.createDiv({ cls: "study-mastered-item" });
-      item.createSpan({ cls: "word", text: card.word });
-      item.createSpan({ cls: "source", text: card.sourceFile.split('/').pop() });
-      const unmasterBtn = item.createEl("button", { text: "↩️", cls: "clickable-icon" });
-      unmasterBtn.setAttribute("aria-label", t("notice_mastery_label_on"));
-      unmasterBtn.addEventListener("click", async () => {
-        const key = getStudyKey(card.word, card.sourceFile);
-        await this.plugin.masteryStore.setMastered(key, false);
-        // 同时重置复习记录到等级0
-        const review = this.studyStore.getReview(card.word, card.sourceFile);
-        if (review) {
-          review.level = 0;
-          review.nextReview = this.studyStore.calculateNextReview(0);
-          this.studyStore.setReview(card.word, card.sourceFile, review);
-        }
-        this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-        this.renderMasteredTab();
-      });
+
+    // ---- 搜索行 ----
+    const filterRow = container.createDiv({ cls: "study-level-filter-row" });
+    const searchInput = filterRow.createEl("input", { type: "text" });
+    searchInput.setAttribute("placeholder", t("study_level_search_placeholder"));
+
+    const countLabel = filterRow.createSpan({ text: `${t("study_tab_mastered")} ${masteredCards.length}` });
+    countLabel.addClass("study-mastered-count");
+
+    // ---- 表格容器 ----
+    const tableWrapper = container.createDiv({ cls: "study-level-table-wrapper" });
+    const table = tableWrapper.createEl("table");
+    table.addClass("study-level-table");
+
+    // ---- 表头（5 列） ----
+    const thead = table.createEl("thead");
+    const headerRow = thead.createEl("tr");
+    const headers = [
+      t("library_table_header_word"),
+      t("library_table_header_phonetic"),
+      t("library_table_header_definition"),
+      t("library_table_header_source"),
+      t("study_table_header_actions")
+    ];
+    for (const h of headers) {
+      headerRow.createEl("th", { text: h });
     }
+
+    // ---- 表体 ----
+    const tbody = table.createEl("tbody");
+
+    // ---- 渲染函数 ----
+    const renderTable = (query) => {
+      tbody.empty();
+
+      let filtered = masteredCards;
+      if (query) {
+        const q = query.toLowerCase();
+        filtered = filtered.filter(item => {
+          const card = item.card;
+          const word = card.word.toLowerCase();
+          const phonetic = (card.phonetic || "").toLowerCase();
+          const definition = (card.definition || "").toLowerCase();
+          const source = card.sourceFile.split('/').pop().toLowerCase();
+          return word.includes(q) ||
+            phonetic.includes(q) ||
+            definition.includes(q) ||
+            source.includes(q);
+        });
+      }
+
+      // 空状态
+      if (filtered.length === 0) {
+        const tr = tbody.createEl("tr");
+        const emptyText = query
+          ? t("study_level_search_empty", query)
+          : t("study_no_words_for_level");
+        const td = tr.createEl("td", { colspan: 5, text: emptyText });
+        td.style.cssText = "text-align: center; padding: 20px; color: var(--text-muted)";
+        return;
+      }
+
+      filtered.sort((a, b) => a.card.word.localeCompare(b.card.word));
+
+      for (const item of filtered) {
+        const card = item.card;
+        const key = item.reviewKey;
+        const tr = tbody.createEl("tr");
+
+        // ---- 单词列 ----
+        const tdWord = tr.createEl("td");
+        tdWord.title = card.word;
+        const wordSpan = tdWord.createSpan({ text: card.word });
+        wordSpan.addClass("library-word");
+        wordSpan.addEventListener("click", () => {
+          playPronunciation(
+            card.word,
+            this.plugin.settings.ttsUrlTemplate,
+            this.plugin.settings.pronunciationVariant,
+            card.lang
+          );
+        });
+        // 单词列右键菜单（复制）
+        tdWord.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const menu = new Menu();
+          menu.addItem(item => item
+            .setTitle(t("library_copy_word"))
+            .setIcon('copy')
+            .onClick(() => navigator.clipboard.writeText(card.word))
+          );
+          menu.addItem(item => item
+            .setTitle(t("library_copy_phonetic"))
+            .setIcon('copy')
+            .onClick(() => navigator.clipboard.writeText(card.phonetic || ''))
+          );
+          menu.addItem(item => item
+            .setTitle(t("library_copy_definition"))
+            .setIcon('copy')
+            .onClick(() => navigator.clipboard.writeText(card.definition || ''))
+          );
+          menu.addItem(item => item
+            .setTitle(t("library_copy_source"))
+            .setIcon('copy')
+            .onClick(() => navigator.clipboard.writeText(card.sourceFile))
+          );
+          menu.addItem(item => item
+            .setTitle(t("library_copy_all"))
+            .setIcon('copy')
+            .onClick(() => {
+              const allInfo = [
+                `**${t("copy_all_word")}** ${card.word}`,
+                `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
+                `**${t("copy_all_source")}** ${card.sourceFile}`,
+                `**${t("copy_all_definition")}**\n${card.definition || ''}`
+              ].join('\n');
+              navigator.clipboard.writeText(allInfo);
+            })
+          );
+          menu.showAtPosition({ x: e.clientX, y: e.clientY });
+        });
+
+        // ---- 音标列 ----
+        const tdPhon = tr.createEl("td", { text: card.phonetic || '' });
+        tdPhon.title = card.phonetic || '';
+
+        // ---- 释义列 ----
+        const def = card.definition || '';
+        const shortDef = def.length > 80 ? def.slice(0, 80) + '…' : def;
+        const tdDef = tr.createEl("td", { text: shortDef });
+        tdDef.title = def;
+
+        // ---- 来源列 ----
+        const tdSource = tr.createEl("td", { text: card.sourceFile.split('/').pop() });
+        tdSource.title = card.sourceFile;
+
+        // ---- 操作列（取消掌握按钮） ----
+        const tdActions = tr.createEl("td");
+        const actions = tdActions.createDiv({ cls: "study-level-actions" });
+
+        const unmasterBtn = actions.createEl("button", { text: "↩️", cls: "clickable-icon" });
+        unmasterBtn.setAttribute("aria-label", t("notice_mastery_label_on"));
+        unmasterBtn.style.cssText = "padding: 0 4px; background: transparent; border: none; cursor: pointer; font-size: 1em; opacity: 0.6; transition: opacity 0.15s;";
+        unmasterBtn.addEventListener("mouseenter", () => { unmasterBtn.style.opacity = "1"; });
+        unmasterBtn.addEventListener("mouseleave", () => { unmasterBtn.style.opacity = "0.6"; });
+        unmasterBtn.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await this.plugin.masteryStore.setMastered(key, false);
+          const review = this.studyStore.getReview(card.word, card.sourceFile);
+          if (review) {
+            review.level = 0;
+            review.nextReview = this.studyStore.calculateNextReview(0);
+            this.studyStore.setReview(card.word, card.sourceFile, review);
+          }
+          this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
+          this.renderMasteredTab();
+        });
+
+        // ---- 右键和双击事件 ----
+        tr.addEventListener("contextmenu", (e) => {
+          e.preventDefault();
+          new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
+        });
+        tr.addEventListener("dblclick", () => {
+          new WordModal(this.plugin.app, this.plugin, card).open();
+        });
+      }
+    };
+
+    renderTable("");
+
+    // ---- 搜索监听 ----
+    searchInput.addEventListener("input", (e) => {
+      renderTable(e.target.value);
+    });
   }
 
   // ---------- 等级列表标签 ----------
@@ -6081,23 +6494,17 @@ class StudyView extends ItemView {
 
     // --- 搜索框 + 下拉筛选器 ---
     const filterRow = container.createDiv({ cls: "study-level-filter-row" });
-    filterRow.style.cssText = "display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;";
+
 
     // ---- 搜索框 ----
     const searchInput = filterRow.createEl("input", { type: "text" });
     searchInput.setAttribute("placeholder", t("study_level_search_placeholder"));
-    searchInput.style.cssText = "flex: 1; min-width: 120px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal);";
-
+   
     // ---- 筛选标签 ----
     const filterLabel = filterRow.createSpan({ text: t("study_level_filter") + ":" });
-    filterLabel.style.cssText = "font-size: 0.9em; color: var(--text-muted);";
-
+  
     // ---- 下拉筛选器 ----
     const filterSelect = filterRow.createEl("select");
-    filterSelect.style.cssText = "padding: 4px 24px 4px 10px; border-radius: 4px; border: 1px solid var(--background-modifier-border); background: var(--background-primary); color: var(--text-normal); font-size: 0.9em; cursor: pointer; appearance: none; background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\"); background-repeat: no-repeat; background-position: right 8px center; min-width: 100px;";
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      filterSelect.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E\")";
-    }
 
     // 添加选项
     filterSelect.createEl("option", { value: "all", text: t("study_level_all") + ` (${cardLevels.length})` });
@@ -6377,7 +6784,8 @@ class StudyView extends ItemView {
     const overview = container.createDiv({ cls: "study-stats-overview" });
     const items = [
       { label: t("study_stats_total"), value: stats.total },
-      { label: t("study_stats_mastered_rate"), value: stats.masteredRate + "%" },
+      { label: t("study_stats_mastered_rate"), value: stats.masteredRate.toFixed(1) + "%" },
+      { label: t("study_stats_ignored_rate"), value: stats.ignoredRate.toFixed(1) + "%" },
       { label: t("study_stats_today_progress"), value: (this.studyStore.getTodayStats().reviewed || 0) },
       { label: t("study_stats_streak"), value: t("study_stats_streak_days", stats.streak) }
     ];
@@ -6461,8 +6869,8 @@ class StudyView extends ItemView {
       if (oldSvg) oldSvg.remove();
 
       const width = 600;
-      const height = 120;
-      const padding = { top: 12, bottom: 12 };
+      const height = 130;
+      const padding = { top: 12, bottom: 18 };
       const chartH = height - padding.top - padding.bottom;
 
       // 创建 SVG
@@ -6485,9 +6893,70 @@ class StudyView extends ItemView {
         line.setAttribute("x2", width);
         line.setAttribute("y2", y);
         line.setAttribute("stroke", "var(--background-modifier-border)");
-        line.setAttribute("stroke-width", "0.5");
+        line.setAttribute("stroke-width", "1");
         line.setAttribute("stroke-dasharray", "4,4");
         svg.appendChild(line);
+      }
+
+      // X 轴刻度与日期标签
+      const xLabelStep = 7; // 每 7 天显示一个标签
+      const dataLen = data.length;
+
+      for (let i = 0; i < dataLen; i++) {
+        // 只在步长点或最后一天（今天）显示标签
+        if (i % xLabelStep === 0 || i === dataLen - 1) {
+          const x = (i / (dataLen - 1 || 1)) * (width - 10) + 5;
+          const yBase = padding.top + chartH; // 网格线底部Y坐标
+          const dataY = padding.top + chartH - (data[i].count / max) * chartH * 0.9; // 数据点Y坐标
+
+          // 1. 垂直网格线（浅色虚线）
+          const vLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          vLine.setAttribute("x1", x);
+          vLine.setAttribute("y1", dataY);
+          vLine.setAttribute("x2", x);
+          vLine.setAttribute("y2", yBase);
+          vLine.setAttribute("stroke", "var(--background-modifier-border)");
+          vLine.setAttribute("stroke-width", "1.5");
+          vLine.setAttribute("stroke-dasharray", "2,2");
+          svg.appendChild(vLine);
+
+          // 2. 日期标签（格式：MM-DD）
+          const dateStr = data[i].date;
+          const month = parseInt(dateStr.slice(5, 7));
+          const day = parseInt(dateStr.slice(8, 10));
+          const label = `${month}/${day}`;
+
+          const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          text.setAttribute("x", x);
+          text.setAttribute("y", height - padding.bottom + 16); // 日期标签y坐标位置
+          text.setAttribute("text-anchor", "middle");
+          text.setAttribute("font-size", "10px");
+          text.setAttribute("fill", "var(--text-muted)");
+          text.textContent = label;
+
+          // 今天的日期特殊高亮（加粗或改色）
+          if (i === dataLen - 1) {
+            text.setAttribute("font-weight", "bold");
+            text.setAttribute("fill", "var(--text-accent)");
+          }
+
+          svg.appendChild(text);
+
+          // 3. 显示复习数量
+          const countText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          countText.setAttribute("x", x);
+          countText.setAttribute("y", dataY - 10);        // 向上偏移 8px，可调
+          countText.setAttribute("text-anchor", "middle");
+          countText.setAttribute("font-size", "8px");
+          countText.setAttribute("fill", "var(--text-muted)");
+          countText.setAttribute("opacity", "0.8");
+          countText.textContent = data[i].count;
+          if (i === dataLen - 1) {
+            countText.setAttribute("font-weight", "bold");
+            countText.setAttribute("fill", "var(--text-accent)");
+          }
+          svg.appendChild(countText);
+        }
       }
 
       // 计算折线坐标
@@ -6706,7 +7175,17 @@ class StudyView extends ItemView {
     goalInput.addEventListener("change", async (e) => {
       let val = parseInt(e.target.value);
       if (isNaN(val) || val < 1) val = 1;
+
+      // 获取单次复习上限
+      const limit = settings.dailyReviewLimit || 20;
+      // 如果每日目标 > 单次复习上限，强制限制并提示
+      if (val > limit) {
+        val = limit;
+        new Notice(t("study_goal_cannot_exceed_limit", limit));
+        goalInput.value = val;
+      }
       if (val > 999) val = 999;
+
       settings.dailyGoal = val;
       this.plugin.settings.study.dailyGoal = val;
       await this.plugin.saveSettings();
@@ -6731,9 +7210,23 @@ class StudyView extends ItemView {
       let val = parseInt(e.target.value);
       if (isNaN(val) || val < 1) val = 1;
       if (val > 999) val = 999;
+
       settings.dailyReviewLimit = val;
       this.plugin.settings.study.dailyReviewLimit = val;
       await this.plugin.saveSettings();
+
+      // 如果每日目标大于新的单次复习上限，自动调低每日目标
+      const goal = settings.dailyGoal || 10;
+      if (goal > val) {
+        settings.dailyGoal = val;
+        this.plugin.settings.study.dailyGoal = val;
+        this.studyStore.data.dailyGoal = val;
+        await this.plugin.saveSettings();
+        await this.studyStore.save();
+        goalInput.value = val;
+        this.updateTopBar();
+        new Notice(t("study_goal_adjusted_to_limit", val));
+      }
     });
 
     // 复习排序
@@ -6742,7 +7235,8 @@ class StudyView extends ItemView {
     const orderControl = orderSetting.createDiv({ cls: "study-setting-control" });
     const orderSelect = orderControl.createEl("select");
     orderSelect.createEl("option", { value: "due_first", text: t("study_settings_review_order_due") });
-    orderSelect.createEl("option", { value: "level_first", text: t("study_settings_review_order_level") });
+    orderSelect.createEl("option", { value: "level_high_first", text: t("study_settings_review_order_high_level") });
+    orderSelect.createEl("option", { value: "level_low_first", text: t("study_settings_review_order_low_level") });
     orderSelect.value = settings.reviewOrder || "due_first";
     orderSelect.addEventListener("change", async (e) => {
       settings.reviewOrder = e.target.value;
@@ -6802,19 +7296,26 @@ class StudyView extends ItemView {
 
 // ========== 辅助类 ==========
 class ConfirmModal extends Modal {
-  constructor(app, onConfirm, onCancel, message = null) {
+  constructor(app, onConfirm, onCancel, message = null, confirmText = null, cancelText = null, title = null) {
     super(app);
     this.onConfirm = onConfirm;
     this.onCancel = onCancel;
     this.message = message;
+    this.confirmText = confirmText || t("confirm");
+    this.cancelText = cancelText || t("cancel");
+    this.title = title;
   }
   onOpen() {
-    const { contentEl } = this;
+    const { contentEl, titleEl } = this;
+    // 如果传入了标题，则设置标题
+    if (this.title) {
+      titleEl.setText(this.title);
+    }
     const msg = this.message || t("delete_confirm");
     contentEl.createEl("p", { text: msg });
     const buttonDiv = contentEl.createDiv({ cls: "modal-button-container" });
-    const confirmBtn = buttonDiv.createEl("button", { text: t("confirm"), cls: "mod-cta" });
-    const cancelBtn = buttonDiv.createEl("button", { text: t("cancel") });
+    const confirmBtn = buttonDiv.createEl("button", { text: this.confirmText, cls: "mod-cta" });
+    const cancelBtn = buttonDiv.createEl("button", { text: this.cancelText });
     confirmBtn.addEventListener("click", () => { this.close(); this.onConfirm(); });
     cancelBtn.addEventListener("click", () => { this.close(); this.onCancel(); });
   }
@@ -7844,11 +8345,18 @@ class WordbookSettingTab extends PluginSettingTab {
             const oldMode = this.plugin.settings.masteryMode;
             this.plugin.settings.masteryMode = val;
             await this.plugin.saveSettings();
+
+            // 迁移掌握/忽略状态
             if (oldMode === "per-source" && val === "global") {
               await this.plugin.masteryStore.migrateFromPerSourceToGlobal();
+              // 同时迁移复习记录
+              await this.plugin.studyStore.migrateFromPerSourceToGlobal();
             } else if (oldMode === "global" && val === "per-source") {
               await this.plugin.masteryStore.migrateFromGlobalToPerSource();
+              // 同时迁移复习记录
+              await this.plugin.studyStore.migrateFromGlobalToPerSource();
             }
+
             await this.plugin.reloadAllCards(true);
             await this.plugin.highlighter.refresh();
             this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
@@ -10327,15 +10835,28 @@ class WordbookSettingTab extends PluginSettingTab {
 
     if (mode === "global") {
       for (const word of toAdd) {
-        store.masteryData[word] = { mastered: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+        store.masteryData[word] = { mastered: true, updatedAt: store.getLocalDateTimeString() };
       }
     } else {
       for (const item of toAdd) {
-        store.masteryData[item.key] = { mastered: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+        store.masteryData[item.key] = { mastered: true, updatedAt: store.getLocalDateTimeString() };
       }
     }
 
     await store.saveMastery();
+
+    // ----- 同步复习等级为 5 -----
+    const studyStore = this.plugin.studyStore;
+    if (mode === "global") {
+      for (const word of toAdd) {
+        await studyStore.setReviewLevel(word, 5);
+      }
+    } else {
+      for (const item of toAdd) {
+        await studyStore.setReviewLevel(item.key, 5);
+      }
+    }
+
     const label = t("import_mastered");
     new Notice(t("import_success", addedCount, label));
   }
@@ -10384,15 +10905,28 @@ class WordbookSettingTab extends PluginSettingTab {
 
     if (mode === "global") {
       for (const word of toAdd) {
-        store.ignoredData[word] = { ignored: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+        store.ignoredData[word] = { ignored: true, updatedAt: store.getLocalDateTimeString() };
       }
     } else {
       for (const item of toAdd) {
-        store.ignoredData[item.key] = { ignored: true, updatedAt: new Date().toISOString().replace('T', ' ').slice(0, 19) };
+        store.ignoredData[item.key] = { ignored: true, updatedAt: store.getLocalDateTimeString() };
       }
     }
 
     await store.saveIgnored();
+
+    // ----- 同步复习等级为 0 -----
+    const studyStore = this.plugin.studyStore;
+    if (mode === "global") {
+      for (const word of toAdd) {
+        await studyStore.setReviewLevel(word, 0);
+      }
+    } else {
+      for (const item of toAdd) {
+        await studyStore.setReviewLevel(item.key, 0);
+      }
+    }
+
     const label = t("import_ignored");
     new Notice(t("import_success", addedCount, label));
   }
@@ -12202,7 +12736,15 @@ class SimpleWordbookPlugin extends Plugin {
   async loadSettings() { 
     const rawData = await this.loadData();  // 先获取原始数据
     this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
+    let needsSave = false;  // 添加保存标志
 
+    // 迁移复习排序设置：将旧的 "level_first" 映射到 "level_high_first"
+    if (this.settings.study && this.settings.study.reviewOrder === 'level_first') {
+      this.settings.study.reviewOrder = 'level_high_first';
+      needsSave = true;
+    }
+
+    // 兼容旧设置
     if (!this.settings.highlightStyles) this.settings.highlightStyles = { underlineType: "none", bold: false };
     if (this.settings.highlightStyles.underlineType === undefined) this.settings.highlightStyles.underlineType = "none";
     if (this.settings.highlightStyles.bold === undefined) this.settings.highlightStyles.bold = false;
@@ -12326,6 +12868,11 @@ class SimpleWordbookPlugin extends Plugin {
     if (!this.settings.api.mode ||
       (this.settings.api.mode !== "secret_storage" && this.settings.api.mode !== "local_encrypted")) {
       this.settings.api.mode = "secret_storage";
+    }
+
+    // 如果有需要保存的迁移，执行保存
+    if (needsSave) {
+      await this.saveSettings();
     }
   }
 

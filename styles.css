@@ -1419,7 +1419,12 @@
     color: var(--text-muted);
     font-size: 1.1em;
 }
-.study-done button {
+
+/* 部件：复习完成按钮组 */
+.study-done-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
     margin-top: 16px;
 }
 
@@ -1698,11 +1703,62 @@
     background: var(--background-primary);
 }
 
-/* 部件：等级列表搜索框 */
+/* 部件：等级列表搜索行容器 */
+.study-level-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  padding: 0 4px 0 4px;
+}
+
+/* 部件：搜索框 */
+.study-level-filter-row input[type="text"] {
+  flex: 1;
+  min-width: 120px;
+  margin: 0 10px 0 0;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  color: var(--text-normal);
+}
+
+/* 部件：等级列表搜索框获得焦点 */
 .study-level-filter-row input[type="text"]:focus {
-    border-color: var(--interactive-accent);
     outline: none;
     box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 30%, transparent);
+}
+
+/* 部件：筛选标签 */
+.study-level-filter-row .filter-label {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+/* 部件：下拉筛选器 */
+.study-level-filter-row select {
+  padding: 4px 24px 4px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--background-modifier-border);
+  background: var(--background-primary);
+  color: var(--text-normal);
+  font-size: 0.9em;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  min-width: 100px;
+}
+
+/* 暗色主题下拉箭头 */
+@media (prefers-color-scheme: dark) {
+  .study-level-filter-row select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  }
 }
 
 /* 部件：等级列表表格主体 */
@@ -1767,6 +1823,13 @@
     gap: 4px;
     align-items: center;
     /*justify-content: center;*/
+}
+
+/* 部件：已掌握表格计数标签 */
+.study-mastered-count {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 
