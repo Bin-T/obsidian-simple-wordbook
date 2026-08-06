@@ -6199,6 +6199,18 @@ class StudyView extends ItemView {
       }
     });
 
+    // 已掌握单词禁用忘记/记得按钮
+    const key = getStudyKey(card.word, card.sourceFile);
+    const isMastered = this.plugin.masteryStore.isMastered(key);
+    if (isMastered) {
+      forgetBtn.disabled = true;
+      rememberBtn.disabled = true;
+      forgetBtn.style.opacity = '0.4';
+      rememberBtn.style.opacity = '0.4';
+      forgetBtn.style.cursor = 'not-allowed';
+      rememberBtn.style.cursor = 'not-allowed';
+    }
+
     // 根据索引禁用导航按钮（视觉反馈）
     if (this.currentIndex === 0) prevBtn.disabled = true;
     if (this.currentIndex === this.reviewQueue.length - 1) nextBtn.disabled = true;
