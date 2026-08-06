@@ -2238,37 +2238,70 @@ class MasteryStore {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
-  // ----- 标记掌握（带错误处理） -----
+  // ----- 标记掌握 -----
   async setMastered(key, mastered) {
     try {
       if (mastered) {
-        await this.setIgnored(key, false);
+        // 1. 清除忽略状态（直接删除，不创建记录）
+        if (this.ignoredData[key]) {
+          delete this.ignoredData[key];
+        }
+
+        // 2. 写入掌握状态
         if (!this.masteryData[key]) this.masteryData[key] = {};
         this.masteryData[key].mastered = true;
         this.masteryData[key].updatedAt = this.getLocalDateTimeString();
-        await this.plugin.studyStore.setReviewLevel(key, 5);  // 同步复习等级为5
+
+        // 3. 仅当复习记录存在时才更新等级为5（终止复习）
+        const review = this.plugin.studyStore.getReviewByKey(key);
+        if (review) {
+          await this.plugin.studyStore.setReviewLevel(key, 5);
+        }
+        // 无记录：不创建，仅保存 masteryData
+
       } else {
+        // 取消掌握
         if (this.masteryData[key]) delete this.masteryData[key];
-        await this.plugin.studyStore.setReviewLevel(key, 0);  // 取消掌握时重置复习记录等级到 0
+        await this.plugin.studyStore.setReviewLevel(key, 0);
       }
+
+      // 保存两个文件（若未修改，内部会跳过）
       await this.saveMastery();
+      await this.saveIgnored();
     } catch (e) {
       console.error("Failed to set mastered:", e);
       new Notice(t("notice_mastery_failed"));
     }
   }
 
-  // ----- 标记忽略（带错误处理） -----
+  // ----- 标记忽略 -----
   async setIgnored(key, ignored) {
     try {
       if (ignored) {
-        await this.setMastered(key, false);
+        // 1. 清除掌握状态（直接删除，不创建记录）
+        if (this.masteryData[key]) {
+          delete this.masteryData[key];
+        }
+
+        // 2. 写入忽略状态
         if (!this.ignoredData[key]) this.ignoredData[key] = {};
         this.ignoredData[key].ignored = true;
         this.ignoredData[key].updatedAt = this.getLocalDateTimeString();
+
+        // 3. 仅当复习记录存在时才更新等级为5（终止复习）
+        const review = this.plugin.studyStore.getReviewByKey(key);
+        if (review) {
+          await this.plugin.studyStore.setReviewLevel(key, 5);
+        }
+        // 无记录：不创建，仅保存 ignoredData
+
       } else {
+        // 取消忽略
         if (this.ignoredData[key]) delete this.ignoredData[key];
+        await this.plugin.studyStore.setReviewLevel(key, 0);
       }
+
+      await this.saveMastery();
       await this.saveIgnored();
     } catch (e) {
       console.error("Failed to set ignored:", e);
@@ -2340,6 +2373,9 @@ class StudyStore {
   // ----- 获取指定单词的复习记录 -----
   getReview(word, sourceFile) {
     const key = this.getReviewKey(word, sourceFile);
+    return this.data.reviews[key] || null;
+  }
+  getReviewByKey(key) {
     return this.data.reviews[key] || null;
   }
 
@@ -4346,6 +4382,13 @@ class SidebarView extends ItemView {
       );
     });
 
+    // 添加右键复制菜单
+    wordSpan.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      new WordCopyMenu(this.plugin, wordObj).showAtMouseEvent(e);
+    });
+
     // 释义区域
     const defDiv = cardDiv.createDiv({ cls: "definition" });
     // 如果启用折叠且当前为折叠状态，隐藏 defDiv
@@ -4747,6 +4790,13 @@ class LookupView extends ItemView {
         this.plugin.settings.pronunciationVariant,
         card.lang
       );
+    });
+
+    // 添加右键复制菜单
+    wordSpan.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
     });
 
     // 显示匹配程度标签
@@ -5562,55 +5612,7 @@ class LibraryView extends ItemView {
     tdWord.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const menu = new Menu();
-      // 复制单词
-      menu.addItem(item => item
-        .setTitle(t("library_copy_word"))
-        .setIcon('copy')
-        .onClick(() => {
-          navigator.clipboard.writeText(card.word);
-        })
-      );
-      // 复制音标
-      menu.addItem(item => item
-        .setTitle(t("library_copy_phonetic"))
-        .setIcon('copy')
-        .onClick(() => {
-          navigator.clipboard.writeText(card.phonetic || '');
-        })
-      );
-      // 复制释义
-      menu.addItem(item => item
-        .setTitle(t("library_copy_definition"))
-        .setIcon('copy')
-        .onClick(() => {
-          navigator.clipboard.writeText(card.definition || '');
-        })
-      );
-      // 复制单词来源
-      menu.addItem(item => item
-        .setTitle(t("library_copy_source"))
-        .setIcon('copy')
-        .onClick(() => {
-          navigator.clipboard.writeText(card.sourceFile);
-        })
-      );
-      // 复制全部信息
-      menu.addItem(item => item
-        .setTitle(t("library_copy_all"))
-        .setIcon('copy')
-        .onClick(() => {
-          const allInfo = [
-            `**${t("copy_all_word")}** ${card.word}`,
-            `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
-            `**${t("copy_all_source")}** ${card.sourceFile}`,
-            `**${t("copy_all_definition")}**\n${card.definition || ''}`
-          ].join('\n');
-          navigator.clipboard.writeText(allInfo);
-        })
-      );
-
-      menu.showAtPosition({ x: e.clientX, y: e.clientY });
+      new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
     });
 
     // 音标
@@ -6043,7 +6045,24 @@ class StudyView extends ItemView {
 
     // 正面（单词）
     const front = cardEl.createDiv({ cls: "study-card-front" });
-    front.createSpan({ cls: "study-card-word", text: card.word });
+
+    const frontWord = front.createSpan({ cls: "study-card-word library-word", text: card.word });
+    frontWord.addEventListener("click", (e) => {
+      e.stopPropagation();
+      playPronunciation(
+        card.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        card.lang
+      );
+    });
+    // 添加右键复制菜单
+    frontWord.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
+    });
+
     if (this.plugin.settings.study.flashcardShowPhonetic && card.phonetic) {
       front.createSpan({ cls: "study-card-phonetic", text: card.phonetic });
     }
@@ -6060,8 +6079,23 @@ class StudyView extends ItemView {
     const backTop = back.createDiv({ cls: "study-card-back-top" });
     backTop.style.cssText = "width: 100%; text-align: center; padding-bottom: 6px; margin-bottom: 6px;";
 
-    const backWord = backTop.createSpan({ cls: "study-card-word", text: card.word });
-    backWord.style.cssText = "font-size: 1.4em; font-weight: bold; display: block;";
+    const backWord = backTop.createSpan({ cls: "study-card-word library-word", text: card.word });
+    backWord.style.cssText = "font-size: 1.4em; font-weight: bold;";
+    backWord.addEventListener("click", (e) => {
+      e.stopPropagation();
+      playPronunciation(
+        card.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        card.lang
+      );
+    });
+    // 添加右键复制菜单
+    backWord.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
+    });
 
     if (this.plugin.settings.study.flashcardShowPhonetic && card.phonetic) {
       const backPhonetic = backTop.createSpan({ cls: "study-card-phonetic", text: card.phonetic });
@@ -6126,6 +6160,15 @@ class StudyView extends ItemView {
 
     // 翻转
     cardEl.addEventListener("dblclick", () => this.toggleCardFlip());
+
+    // 卡片右键菜单（除单词区域外）
+    cardEl.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      if (e.target.closest && e.target.closest('.library-word')) {
+        return;
+      }
+      new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
+    });
 
     // 操作按钮行
     const btnWrapper = container.createDiv({ cls: "study-btn-wrapper" });
@@ -6372,41 +6415,7 @@ class StudyView extends ItemView {
         tdWord.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const menu = new Menu();
-          menu.addItem(item => item
-            .setTitle(t("library_copy_word"))
-            .setIcon('copy')
-            .onClick(() => navigator.clipboard.writeText(card.word))
-          );
-          menu.addItem(item => item
-            .setTitle(t("library_copy_phonetic"))
-            .setIcon('copy')
-            .onClick(() => navigator.clipboard.writeText(card.phonetic || ''))
-          );
-          menu.addItem(item => item
-            .setTitle(t("library_copy_definition"))
-            .setIcon('copy')
-            .onClick(() => navigator.clipboard.writeText(card.definition || ''))
-          );
-          menu.addItem(item => item
-            .setTitle(t("library_copy_source"))
-            .setIcon('copy')
-            .onClick(() => navigator.clipboard.writeText(card.sourceFile))
-          );
-          menu.addItem(item => item
-            .setTitle(t("library_copy_all"))
-            .setIcon('copy')
-            .onClick(() => {
-              const allInfo = [
-                `**${t("copy_all_word")}** ${card.word}`,
-                `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
-                `**${t("copy_all_source")}** ${card.sourceFile}`,
-                `**${t("copy_all_definition")}**\n${card.definition || ''}`
-              ].join('\n');
-              navigator.clipboard.writeText(allInfo);
-            })
-          );
-          menu.showAtPosition({ x: e.clientX, y: e.clientY });
+          new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
         });
 
         // ---- 音标列 ----
@@ -6623,55 +6632,8 @@ class StudyView extends ItemView {
         // 单词列的右键菜单
         tdWord.addEventListener('contextmenu', (e) => {
           e.preventDefault();
-          e.stopPropagation();   // 阻止冒泡到 tr 的右键菜单
-          const menu = new Menu();
-          // 复制单词
-          menu.addItem(item => item
-            .setTitle(t("library_copy_word"))
-            .setIcon('copy')
-            .onClick(() => {
-              navigator.clipboard.writeText(card.word);
-            })
-          );
-          // 复制音标
-          menu.addItem(item => item
-            .setTitle(t("library_copy_phonetic"))
-            .setIcon('copy')
-            .onClick(() => {
-              navigator.clipboard.writeText(card.phonetic || '');
-            })
-          );
-          // 复制释义
-          menu.addItem(item => item
-            .setTitle(t("library_copy_definition"))
-            .setIcon('copy')
-            .onClick(() => {
-              navigator.clipboard.writeText(card.definition || '');
-            })
-          );
-          // 复制来源
-          menu.addItem(item => item
-            .setTitle(t("library_copy_source"))
-            .setIcon('copy')
-            .onClick(() => {
-              navigator.clipboard.writeText(card.sourceFile);
-            })
-          );
-          // 复制全部信息
-          menu.addItem(item => item
-            .setTitle(t("library_copy_all"))
-            .setIcon('copy')
-            .onClick(() => {
-              const allInfo = [
-                `**${t("copy_all_word")}** ${card.word}`,
-                `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
-                `**${t("copy_all_source")}** ${card.sourceFile}`,
-                `**${t("copy_all_definition")}**\n${card.definition || ''}`
-              ].join('\n');
-              navigator.clipboard.writeText(allInfo);
-            })
-          );
-          menu.showAtPosition({ x: e.clientX, y: e.clientY });
+          e.stopPropagation();
+          new WordCopyMenu(this.plugin, card).showAtMouseEvent(e);
         });
 
         // 音标列
@@ -7855,6 +7817,13 @@ class WordModal extends Modal {
     };
     try {
       await WordbookParser.saveCard(this.app, this.selectedFile, card, !this.existingCard);
+
+      // 如果是新建单词，创建复习记录（等级0，明天复习）
+      if (!this.existingCard || !this.existingCard.sourceFile) {
+        const studyKey = getStudyKey(this.word, this.selectedFile);
+        await this.plugin.studyStore.setReviewLevel(studyKey, 0);
+      }
+
       const action = this.existingCard ? t("word_updated") : t("word_added");
       new Notice(t("word_saved", action));
 
@@ -10845,15 +10814,23 @@ class WordbookSettingTab extends PluginSettingTab {
 
     await store.saveMastery();
 
-    // ----- 同步复习等级为 5 -----
+    // ----- 同步复习等级为 5（仅当复习记录存在时才更新） -----
     const studyStore = this.plugin.studyStore;
     if (mode === "global") {
       for (const word of toAdd) {
-        await studyStore.setReviewLevel(word, 5);
+        // 先检查是否存在复习记录
+        if (studyStore.getReviewByKey(word)) {
+          await studyStore.setReviewLevel(word, 5);
+        }
+        // 无记录：不创建，仅保持 masteryData 中的掌握状态
       }
     } else {
       for (const item of toAdd) {
-        await studyStore.setReviewLevel(item.key, 5);
+        // 先检查是否存在复习记录
+        if (studyStore.getReviewByKey(item.key)) {
+          await studyStore.setReviewLevel(item.key, 5);
+        }
+        // 无记录：不创建，仅保持 masteryData 中的掌握状态
       }
     }
 
@@ -10915,15 +10892,23 @@ class WordbookSettingTab extends PluginSettingTab {
 
     await store.saveIgnored();
 
-    // ----- 同步复习等级为 0 -----
+    // ----- 同步复习等级为 5（仅当复习记录存在时才更新） -----
     const studyStore = this.plugin.studyStore;
     if (mode === "global") {
       for (const word of toAdd) {
-        await studyStore.setReviewLevel(word, 0);
+        // 先检查是否存在复习记录
+        if (studyStore.getReviewByKey(word)) {
+          await studyStore.setReviewLevel(word, 5);
+        }
+        // 无记录：不创建，仅保持 ignoredData 中的忽略状态
       }
     } else {
       for (const item of toAdd) {
-        await studyStore.setReviewLevel(item.key, 0);
+        // 先检查是否存在复习记录
+        if (studyStore.getReviewByKey(item.key)) {
+          await studyStore.setReviewLevel(item.key, 5);
+        }
+        // 无记录：不创建，仅保持 ignoredData 中的忽略状态
       }
     }
 
@@ -11847,6 +11832,72 @@ class WordContextMenu {
       await this.plugin.highlighter.refresh();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
     } else new Notice(t("delete_failed"));
+  }
+}
+
+// ========== 单词右键复制菜单 ==========
+class WordCopyMenu {
+  constructor(plugin, wordObj) {
+    this.plugin = plugin;
+    this.wordObj = wordObj;
+  }
+
+  showAtMouseEvent(e) {
+    const menu = new (require('obsidian').Menu)();
+    const card = this.wordObj;
+
+    // 复制单词
+    menu.addItem(item => item
+      .setTitle(t("library_copy_word"))
+      .setIcon('copy')
+      .onClick(() => {
+        navigator.clipboard.writeText(card.word);
+      })
+    );
+
+    // 复制音标
+    menu.addItem(item => item
+      .setTitle(t("library_copy_phonetic"))
+      .setIcon('copy')
+      .onClick(() => {
+        navigator.clipboard.writeText(card.phonetic || '');
+      })
+    );
+
+    // 复制释义
+    menu.addItem(item => item
+      .setTitle(t("library_copy_definition"))
+      .setIcon('copy')
+      .onClick(() => {
+        navigator.clipboard.writeText(card.definition || '');
+      })
+    );
+
+    // 复制来源
+    menu.addItem(item => item
+      .setTitle(t("library_copy_source"))
+      .setIcon('copy')
+      .onClick(() => {
+        navigator.clipboard.writeText(card.sourceFile);
+      })
+    );
+
+    // 复制全部信息
+    menu.addItem(item => item
+      .setTitle(t("library_copy_all"))
+      .setIcon('copy')
+      .onClick(() => {
+        const allInfo = [
+          `**${t("copy_all_word")}** ${card.word}`,
+          `**${t("copy_all_phonetic")}** ${card.phonetic || ''}`,
+          `**${t("copy_all_source")}** ${card.sourceFile}`,
+          `**${t("copy_all_definition")}**\n${card.definition || ''}`
+        ].join('\n');
+        navigator.clipboard.writeText(allInfo);
+      })
+    );
+
+    menu.showAtPosition({ x: e.clientX, y: e.clientY });
   }
 }
 
