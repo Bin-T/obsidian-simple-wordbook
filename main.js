@@ -500,6 +500,10 @@ const locale = {
     copy_all_phonetic: "Phonetic:",
     copy_all_source: "Source:",
     copy_all_definition: "Definition:",
+    library_batch_delete_success: "All {0} words deleted successfully.",
+    library_batch_delete_failed: "Deleted {0} words, {1} failed: {2}",
+    library_batch_delete_and_more: "... and {0} more",
+    library_batch_delete_see_console: "Check console for details.",
 
     study_view_title: "Study Center",
     study_ribbon_tooltip: "Study Center",
@@ -566,6 +570,8 @@ const locale = {
     study_level_search_empty: "No words found for \"{0}\"",
     study_goal_cannot_exceed_limit: "Daily goal cannot exceed review limit ({0}).",
     study_goal_adjusted_to_limit: "Daily goal adjusted to match review limit ({0}).",
+    study_settings_flashcard_tabs: "Show Tabs for Definition",
+    study_settings_flashcard_tabs_desc: "Display multiple definition sections as tabs on the review card",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -1073,6 +1079,10 @@ const locale = {
     copy_all_phonetic: "音标：",
     copy_all_source: "来源：",
     copy_all_definition: "释义：",
+    library_batch_delete_success: "已全部成功删除，共 {0} 个单词。",
+    library_batch_delete_failed: "已删除 {0} 个单词，{1} 个失败：{2}",
+    library_batch_delete_and_more: "… 还有 {0} 个",
+    library_batch_delete_see_console: "详情请查看控制台。",
 
     study_view_title: "学习中心",
     study_ribbon_tooltip: "学习中心",
@@ -1139,6 +1149,8 @@ const locale = {
     study_level_search_empty: '没有找到 "{0}" 的单词',
     study_goal_cannot_exceed_limit: "每日目标不能超过单次复习上限（{0}）。",
     study_goal_adjusted_to_limit: "每日目标已自动调整为 {0} 以匹配复习上限。",
+    study_settings_flashcard_tabs: "释义以标签页显示",
+    study_settings_flashcard_tabs_desc: "在复习卡片上将多段释义显示为标签页形式",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1392,6 +1404,7 @@ const DEFAULT_SETTINGS = {
     dailyReviewLimit: 20,
     reviewOrder: "due_first",
     flashcardShowPhonetic: true,
+    flashcardShowTabs: true,
     flashcardAutoFlip: 0,          // 秒，0 表示关闭
     enableSpacedRepetition: true,
   },
@@ -5734,19 +5747,148 @@ class LibraryView extends ItemView {
   async batchDelete() {
     const cards = this.getSelectedCards();
     if (!cards.length) return;
+
+    // 弹出确认对话框
     const confirmed = await new Promise((resolve) => {
-      const modal = new ConfirmModal(this.plugin.app, () => resolve(true), () => resolve(false), t("library_confirm_delete_batch", cards.length));
+      const modal = new ConfirmModal(
+        this.plugin.app,
+        () => resolve(true),
+        () => resolve(false),
+        t("library_confirm_delete_batch", cards.length)
+      );
       modal.open();
     });
     if (!confirmed) return;
+
+    let failed = 0;
+    let success = 0;
+    const failedWords = [];
+
+    // 按错误类型分类存储（用于控制台详细输出）
+    const errors = {
+      readonly: [],      // 文件只读
+      jsonCorrupt: [],   // JSON 损坏
+      notFound: [],      // 卡片不存在
+      other: []          // 其他异常
+    };
+
+    // 逐个删除
     for (const card of cards) {
-      await WordbookParser.deleteCard(this.plugin.app, card.sourceFile, card.word);
+      // 检查词库是否只读
+      const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === card.sourceFile);
+      if (fileSetting?.readonly) {
+        failed++;
+        failedWords.push(card.word);
+        errors.readonly.push({ word: card.word, file: card.sourceFile });
+        continue;
+      }
+
+      try {
+        const result = await WordbookParser.deleteCard(
+          this.plugin.app,
+          card.sourceFile,
+          card.word
+        );
+        if (result) {
+          success++;
+        } else {
+          // 卡片不存在（可能已被手动删除）
+          failed++;
+          failedWords.push(card.word);
+          errors.notFound.push({ word: card.word, file: card.sourceFile });
+        }
+      } catch (e) {
+        failed++;
+        failedWords.push(card.word);
+
+        // 按错误类型分类
+        const errorInfo = { word: card.word, file: card.sourceFile, error: e };
+
+        if (e.code === 'EPERM' || e.code === 'EACCES') {
+          // 文件只读 / 权限不足
+          errors.readonly.push(errorInfo);
+        } else if (e instanceof SyntaxError) {
+          // JSON 格式损坏
+          errors.jsonCorrupt.push(errorInfo);
+        } else {
+          // 其他异常（磁盘空间不足、文件不存在等）
+          errors.other.push(errorInfo);
+        }
+
+        // 始终输出单条错误日志到控制台（便于实时调试）
+        console.error(`Failed to delete "${card.word}" from "${card.sourceFile}":`, e);
+      }
     }
+
+    // 控制台批量输出分类汇总
+    if (failed > 0) {
+      console.group(`📋 Batch Delete Summary: ${success} succeeded, ${failed} failed`);
+
+      if (errors.readonly.length > 0) {
+        console.group(`🔒 Read-only / Permission (${errors.readonly.length} words):`);
+        errors.readonly.forEach(({ word, file }) => {
+          console.log(`  • ${word} (${file})`);
+        });
+        console.groupEnd();
+      }
+
+      if (errors.jsonCorrupt.length > 0) {
+        console.group(`📄 JSON Corrupted (${errors.jsonCorrupt.length} words):`);
+        errors.jsonCorrupt.forEach(({ word, file }) => {
+          console.log(`  • ${word} (${file})`);
+        });
+        console.groupEnd();
+      }
+
+      if (errors.notFound.length > 0) {
+        console.group(`❓ Not Found (${errors.notFound.length} words):`);
+        errors.notFound.forEach(({ word, file }) => {
+          console.log(`  • ${word} (${file})`);
+        });
+        console.groupEnd();
+      }
+
+      if (errors.other.length > 0) {
+        console.group(`⚠️ Other Errors (${errors.other.length} words):`);
+        errors.other.forEach(({ word, file, error }) => {
+          console.log(`  • ${word} (${file})`);
+          console.log(`    → ${error.message || error}`);
+        });
+        console.groupEnd();
+      }
+
+      console.groupEnd();
+    }
+
+    // 刷新数据
     await this.plugin.reloadAllCards();
     await this.plugin.highlighter.refresh();
     this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-    new Notice(t("library_batch_delete_success", cards.length));
-    //this.selectedRows.clear();
+
+    //显示结果通知
+    if (failed === 0) {
+      // 全部成功
+      new Notice(t("library_batch_delete_success", success));
+    } else {
+      // 构建失败列表字符串（截断过长列表）
+      let wordList;
+      if (failedWords.length <= 5) {
+        wordList = failedWords.join(', ');
+      } else {
+        const firstFive = failedWords.slice(0, 5).join(', ');
+        const remaining = failedWords.length - 5;
+        wordList = firstFive + t("library_batch_delete_and_more", remaining);
+      }
+
+      // 构建通知消息 + 控制台提示
+      let message = t("library_batch_delete_failed", success, failed, wordList);
+      message += " " + t("library_batch_delete_see_console");
+
+      new Notice(message);
+      // 完整分类错误信息已输出到控制台
+    }
+
+    // 重新渲染表格
     this.loadDataAndRender();
   }
 }
@@ -5782,14 +5924,25 @@ class StudyView extends ItemView {
 
   _keyHandler = null;
 
-  // 键盘事件统一处理
+  // 键盘事件
   handleKeydown(e) {
-    // 如果焦点在输入框、文本域或下拉选择框中，不处理键盘事件
-    if (e.target.closest('input, textarea, select')) {
+    // 确保当前视图是激活状态
+    if (this.app.workspace.activeLeaf?.view !== this) {
       return;
     }
 
+    // 不在复习中直接忽略
     if (!this.reviewing || this.reviewQueue.length === 0) return;
+
+    // 排除所有输入/文本区域
+    if (e.target.closest('input, textarea, select')) return;
+
+    // 排除 Obsidian 编辑器（编辑模式 & 阅读模式）
+    if (e.target.closest('.cm-editor, .markdown-source-view, .markdown-preview-view')) {
+      return;
+    }
+
+    // 处理按键
     if (e.key === " " || e.key === "Space") {
       e.preventDefault();
       this.toggleCardFlip();
@@ -5823,7 +5976,7 @@ class StudyView extends ItemView {
     this.buildUI();
     await this.switchTab(this.currentTab);
 
-    // 注册键盘事件（只执行一次）
+    // 注册键盘事件
     this._keyHandler = this.handleKeydown.bind(this);
     this.registerDomEvent(document, "keydown", this._keyHandler);
 
@@ -5854,6 +6007,8 @@ class StudyView extends ItemView {
       clearTimeout(this._autoFlipTimer);
       this._autoFlipTimer = null;
     }
+    // 清除键盘事件引用
+    this._keyHandler = null;
   }
 
   // ----- 刷新当前标签 -----
@@ -5937,6 +6092,12 @@ class StudyView extends ItemView {
 
   // ---------- 复习标签 ----------
   async renderReviewTab() {
+    // 清理旧定时器（当用户回到准备界面时，停止任何正在运行的自动翻转）
+    if (this._autoFlipTimer) {
+      clearTimeout(this._autoFlipTimer);
+      this._autoFlipTimer = null;
+    }
+
     if (this._rendering) return;
     this.updateTopBar();
     this._rendering = true;
@@ -5968,6 +6129,12 @@ class StudyView extends ItemView {
   }
 
   async renderReviewSession(container) {
+    // 清理旧定时器（每次重新渲染卡片时，取消之前设置的自动翻转）
+    if (this._autoFlipTimer) {
+      clearTimeout(this._autoFlipTimer);
+      this._autoFlipTimer = null;
+    }
+
     container.empty();
     if (this.currentIndex >= this.reviewQueue.length) {
       // 复习完成
@@ -6045,6 +6212,7 @@ class StudyView extends ItemView {
 
     // 正面（单词）
     const front = cardEl.createDiv({ cls: "study-card-front" });
+    front.style.display = "flex";   // 明确显示
 
     const frontWord = front.createSpan({ cls: "study-card-word library-word", text: card.word });
     frontWord.addEventListener("click", (e) => {
@@ -6073,14 +6241,11 @@ class StudyView extends ItemView {
     // 背面（释义）
     const back = cardEl.createDiv({ cls: "study-card-back" });
     back.style.display = "none"; // 初始隐藏
-    back.style.cssText = "display: none; width: 100%; padding: 0 4px; box-sizing: border-box;";
 
     // ---- 背面顶部：单词 + 音标 ----
     const backTop = back.createDiv({ cls: "study-card-back-top" });
-    backTop.style.cssText = "width: 100%; text-align: center; padding-bottom: 6px; margin-bottom: 6px;";
 
-    const backWord = backTop.createSpan({ cls: "study-card-word library-word", text: card.word });
-    backWord.style.cssText = "font-size: 1.4em; font-weight: bold;";
+    const backWord = backTop.createSpan({ cls: "study-card-back-word library-word", text: card.word });
     backWord.addEventListener("click", (e) => {
       e.stopPropagation();
       playPronunciation(
@@ -6098,50 +6263,47 @@ class StudyView extends ItemView {
     });
 
     if (this.plugin.settings.study.flashcardShowPhonetic && card.phonetic) {
-      const backPhonetic = backTop.createSpan({ cls: "study-card-phonetic", text: card.phonetic });
-      backPhonetic.style.cssText = "font-size: 1em; color: var(--text-muted); opacity: 0.8; display: block; margin-top: 2px;";
+      const backPhonetic = backTop.createSpan({ cls: "study-card-back-phonetic", text: card.phonetic });
     }
 
     // ---- 分隔线 ----
     const backDivider = back.createDiv({ cls: "study-card-divider" });
-    backDivider.style.cssText = "width: 80%; margin: 0 auto 10px auto; border: none; border-top: 1px solid var(--background-modifier-border); opacity: 0.8;";
 
     // ---- 背面内容区域：章节标签 + 释义 ----
     // 解析定义中的章节
     const sections = parseSections(card.definition || t("no_definition"));
     const hasMultipleSections = sections.length > 1;
+    const showTabs = this.plugin.settings.study.flashcardShowTabs !== false;
 
-    // 标签栏（仅在多章节时显示）
-    let tabBar = null;
-    if (hasMultipleSections) {
-      tabBar = back.createDiv({ cls: "study-card-tab-bar" });
-      tabBar.style.cssText = "display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; border-bottom: 1px solid var(--background-modifier-border); padding-bottom: 4px;";
-    }
+    // 根据设置决定显示方式
+    if (hasMultipleSections && showTabs) {
+      // 标签模式
+      const tabBar = back.createDiv({ cls: "study-card-tab-bar" });
 
-    // 内容容器
-    const contentDiv = back.createDiv({ cls: "study-card-content" });
+      // 内容容器
+      const contentDiv = back.createDiv({ cls: "study-card-content" });
 
-    // 渲染指定章节
-    const renderSection = async (index) => {
-      contentDiv.empty();
-      const section = sections[index];
-      if (section) {
-        let content = section.content;
-        const processed = processLineBreaks(content);
-        await MarkdownRenderer.render(this.plugin.app, processed, contentDiv, card.sourceFile, this.plugin);
-        fixInternalLinks(contentDiv, this.plugin.app, card.sourceFile);
-      } else {
-        contentDiv.setText(t("no_definition"));
-      }
-      contentDiv.scrollTop = 0;
-    };
+      // 渲染指定章节
+      const renderSection = async (index) => {
+        contentDiv.empty();
+        const section = sections[index];
+        if (section) {
+          let content = section.content;
+          const processed = processLineBreaks(content);
+          await MarkdownRenderer.render(this.plugin.app, processed, contentDiv, card.sourceFile, this.plugin);
+          fixInternalLinks(contentDiv, this.plugin.app, card.sourceFile);
+        } else {
+          contentDiv.setText(t("no_definition"));
+        }
+        contentDiv.scrollTop = 0;
+      };
 
-    // 创建标签
-    if (hasMultipleSections && tabBar) {
+      // 创建标签
       sections.forEach((section, idx) => {
         const tab = tabBar.createDiv({ cls: "study-card-tab" });
         tab.textContent = section.title;
-        tab.style.cssText = `cursor: pointer; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; color: ${idx === 0 ? "var(--text-accent)" : "var(--text-muted)"}; font-weight: ${idx === 0 ? "bold" : "normal"}; transition: color 0.2s, font-weight 0.2s;`;
+        tab.style.color = idx === 0 ? "var(--text-accent)" : "var(--text-muted)";
+        tab.style.fontWeight = idx === 0 ? "bold" : "normal";
         tab.addEventListener("click", async (e) => {
           e.stopPropagation();
           tabBar.querySelectorAll(".study-card-tab").forEach(t => {
@@ -6153,10 +6315,24 @@ class StudyView extends ItemView {
           await renderSection(idx);
         });
       });
-    }
 
-    // 默认渲染第一个章节
-    await renderSection(0);
+      // 默认渲染第一个章节
+      await renderSection(0);
+
+    } else {
+      // 非标签模式
+      const contentDiv = back.createDiv({ cls: "study-card-content" });
+
+      if (sections.length === 0) {
+        contentDiv.setText(t("no_definition"));
+      } else {
+        const combinedContent = sections.map(s => `**${s.title}**\n${s.content}`).join('\n\n---\n\n');
+        const processed = processLineBreaks(combinedContent);
+        await MarkdownRenderer.render(this.plugin.app, processed, contentDiv, card.sourceFile, this.plugin);
+        fixInternalLinks(contentDiv, this.plugin.app, card.sourceFile);
+      }
+      contentDiv.scrollTop = 0;
+    }
 
     // 翻转
     cardEl.addEventListener("dblclick", () => this.toggleCardFlip());
@@ -6522,7 +6698,7 @@ class StudyView extends ItemView {
     searchInput.setAttribute("placeholder", t("study_level_search_placeholder"));
    
     // ---- 筛选标签 ----
-    const filterLabel = filterRow.createSpan({ text: t("study_level_filter") + ":" });
+    filterRow.createSpan({ text: t("study_level_filter") + ":" });
   
     // ---- 下拉筛选器 ----
     const filterSelect = filterRow.createEl("select");
@@ -7232,6 +7408,22 @@ class StudyView extends ItemView {
       this.plugin.settings.study.flashcardShowPhonetic = newVal;
       await this.plugin.saveSettings();
       phoneticToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 释义以标签页显示（开关）
+    const tabsSetting = container.createDiv({ cls: "study-setting-item" });
+    tabsSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_tabs") });
+    tabsSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_tabs_desc") });
+    const tabsControl = tabsSetting.createDiv({ cls: "study-setting-control" });
+    const tabsToggle = tabsControl.createDiv({ cls: "checkbox-container" });
+    if (settings.flashcardShowTabs !== false) tabsToggle.addClass("is-enabled");
+    tabsToggle.createDiv({ cls: "checkbox-handle" });
+    tabsToggle.addEventListener("click", async () => {
+      const newVal = !settings.flashcardShowTabs;
+      settings.flashcardShowTabs = newVal;
+      this.plugin.settings.study.flashcardShowTabs = newVal;
+      await this.plugin.saveSettings();
+      tabsToggle.toggleClass("is-enabled", newVal);
     });
 
     // 自动翻转（秒）

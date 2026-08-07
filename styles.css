@@ -1351,27 +1351,24 @@
 }
 
 /* 部件：卡片正面与背面 */
-.study-card-front,
-.study-card-back {
+.study-card-front {
     width: 100%;
     text-align: center;
     user-select: text;
     -webkit-user-select: text;
     /*cursor: text;*/
-}
-.study-card-front {
-    display: flex;
+    display: flex;              /* 初始已由 JS 控制显示 */
     flex-direction: column;
     align-items: center;
     gap: 8px;
 }
 .study-card-word {
     font-size: 1.8em;
-    font-weight: bold;
 }
 .study-card-phonetic {
     font-size: 1.1em;
     color: var(--text-muted);
+    opacity: 0.8;
 }
 .study-card-hint {
     font-size: 0.8em;
@@ -1389,12 +1386,72 @@
     font-weight: bold;
     color: var(--text-muted);
 }
+
+/* 部件：卡片背面 */
+.study-card-back {
+    /*display: none;*/  /* display 由 JS 控制：初始隐藏，翻转时显示 */
+    width: 100%;
+    padding: 0 4px;
+    box-sizing: border-box;
+    text-align: center;
+    user-select: text;
+    -webkit-user-select: text;
+    /*cursor: text;*/
+}
+/* 部件：复习卡片背面释义内容 */
 .study-card-content {
     max-height: 40vh;   /* 始终为视口高度的 40% */
     overflow-y: auto;
     line-height: 1.8;
     text-align: left;
     padding-right: 4px;
+}
+/* 部件：复习卡片背面顶部（单词 + 音标区域） */
+.study-card-back-top {
+  width: 100%;
+  text-align: center;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+/* 部件：复习卡片背面单词 */
+.study-card-back-word {
+  font-size: 1.4em;
+}
+/* 部件：复习卡片背面音标 */
+.study-card-back-phonetic {
+  font-size: 1em;
+  color: var(--text-muted);
+  opacity: 0.8;
+  display: block;
+  margin-top: 2px;
+}
+/* 部件：复习卡片分隔线 */
+.study-card-divider {
+  width: 80%;
+  margin: 0 auto 10px auto;
+  border: none;
+  border-top: 1px solid var(--background-modifier-border);
+  opacity: 0.8;
+}
+/* 部件：复习卡片标签栏 */
+.study-card-tab-bar {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--background-modifier-border);
+  padding-bottom: 4px;
+}
+/* 复习卡片便签栏的每个标签 */
+.study-card-tab {
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  transition: color 0.2s, font-weight 0.2s;
+}
+.study-card-tab:hover {
+  background: var(--background-modifier-hover);
 }
 
 /* 部件：复习操作按钮（包含导航按钮和忘记/记得） */
