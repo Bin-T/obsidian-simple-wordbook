@@ -25,7 +25,7 @@
 .sidebar-tabs {
   display: flex;
   gap: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   background: var(--background-secondary);
   padding: 4px;
   border-radius: 10px;
@@ -62,7 +62,8 @@
 .word-list {
   max-height: calc(100vh - 140px);
   overflow-y: auto;
-  padding-right: 4px;
+  /*padding-right: 4px;*/
+  padding-top: 1px;
 }
 
 /* 部件：空状态提示 */
@@ -180,7 +181,7 @@
 .word-line {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 0px;
   margin-bottom: 6px;
   padding-bottom: 4px;
   border-bottom: 1px solid var(--background-modifier-border);
@@ -559,8 +560,7 @@
   flex-shrink: 0;
   width: auto;
 }
-.simple-wordbook-tooltip select.tooltip-source-select:hover,
-.simple-wordbook-tooltip select.tooltip-source-select:focus {
+.simple-wordbook-tooltip select.tooltip-source-select:hover {
   border-bottom-color: var(--interactive-accent);
 }
 
@@ -1252,11 +1252,61 @@
 }
 
 /* 部件：复习准备界面 */
+/* 下拉选择行 - 居中 */
+.study-prep-select-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+.study-prep-select-row .study-prep-label {
+    font-weight: 500;
+    flex-shrink: 0;
+}
+.study-prep-select-row select {
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 120px;
+    max-width: 80%;
+    padding: 4px 24px 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 0.9em;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+}
+@media (prefers-color-scheme: dark) {
+    .study-prep-select-row select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    }
+}
+/* 统计行 */
+.study-prep-stats {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 8px 12px;
+    /*background: var(--background-secondary);*/
+    /*border-radius: 6px;*/
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    font-size: 0.9em;
+    color: var(--text-muted);
+}
+.study-prep-stats .stat-item {
+    white-space: nowrap;
+}
+/* 复习信息和复习按钮 */
 .study-review-info {
     text-align: center;
     margin: 20px 0;
 }
-/* 开始复习按钮 */
 .study-review-info + .mod-cta {
     display: block;
     width: fit-content;      /* 宽度自适应文字 */
@@ -1267,7 +1317,6 @@
     font-weight: bold;
     transition: all 0.2s ease;
 }
-
 .study-review-info + .mod-cta:hover {
     background-color: color-mix(in srgb, var(--interactive-accent) 95%, var(--background-primary) 5%);
     transform: scale(1.05);
@@ -1350,7 +1399,21 @@
     transform: scale(1.01);
 }
 
-/* 部件：卡片正面与背面 */
+/* 部件：复习卡片词源名 */
+.study-card-source {
+    position: absolute;
+    bottom: 2px;
+    /*right: 12px;*/
+    left: 50%;                    /* 水平居中 */
+    transform: translateX(-50%);  /* 修正偏移 */
+    font-size: 0.7em;
+    color: var(--text-muted);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.6;
+}
+
+/* 部件：卡片正面 */
 .study-card-front {
     width: 100%;
     text-align: center;
@@ -1663,6 +1726,7 @@
 }
 
 /* 部件：学习中心内的设置项 */
+/* 设置项容器 */
 .study-setting-item {
     display: flex;
     flex-wrap: wrap;
@@ -1673,11 +1737,13 @@
 .study-setting-item:last-child {
     border-bottom: none;
 }
+/* 设置项标题 */
 .study-setting-item .study-setting-label {
     font-weight: 500;
     flex: 1;
     min-width: 0;
 }
+/* 设置项描述 */
 .study-setting-item .study-setting-desc {
     color: var(--text-muted);
     font-size: 0.8em;
@@ -1686,12 +1752,14 @@
     margin-top: 2px;
     padding-right: 4px;
 }
+/* 设置项控件区 */
 .study-setting-item .study-setting-control {
     flex-shrink: 0;
     display: flex;
     align-items: center;
     order: 1;              /* 与标题同行 */
 }
+/* 设置项下拉选择框 */
 .study-setting-item select {
     padding: 4px 24px 4px 10px;
     border-radius: 4px;
@@ -1712,7 +1780,7 @@
     }
 }
 
-/* 部件：开关组件（复用 checkbox-container） */
+/* 设置项开关组件容器（复用 checkbox-container） */
 .study-setting-item .checkbox-container {
     width: 40px;
     height: 24px;
@@ -1723,9 +1791,11 @@
     transition: background 0.15s;
     flex-shrink: 0;
 }
+/* 开关组件（启用状态） */
 .study-setting-item .checkbox-container.is-enabled {
     background: var(--interactive-accent);
 }
+/* 开关滑块 */
 .study-setting-item .checkbox-container .checkbox-handle {
     position: absolute;
     top: 2px;
@@ -1737,16 +1807,67 @@
     transition: transform 0.15s;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
+/* 开关滑块（启用状态） */
 .study-setting-item .checkbox-container.is-enabled .checkbox-handle {
     transform: translateX(16px);
 }
 
-/* 部件：重置按钮（警告色） */
+/* 部件：间隔天数设置 */
+/* 间隔天数标题行（标题 + 恢复按钮） */
+.study-setting-item .study-interval-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+/* 间隔天数输入框行 */
+.study-setting-item .study-interval-input-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  order: 3;                    /* 描述行（order:2）之后 */
+  margin-top: 4px;
+}
+/* 输入框分组（标签 + 输入框） */
+.study-setting-item .study-interval-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+/* 等级标签（L0~L4） */
+.study-setting-item .study-interval-group-label {
+  font-size: 0.75em;
+  color: var(--text-muted);
+  user-select: none;
+}
+/* 数字输入框 */
+.study-setting-item .study-interval-input {
+  padding: 2px 4px;
+  border: 1px solid var(--background-modifier-border);
+  text-align: center;
+  transition: border-color 0.3s;
+}
+.study-setting-item .study-interval-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.study-setting-item .study-interval-input[type="number"] {
+  -moz-appearance: textfield;
+}
+/* 间隔天数恢复默认按钮 */
+.study-setting-item .study-interval-reset-btn {
+  font-size: 0.9em;
+}
+
+/* 重置按钮（警告色） */
 .study-setting-item button.mod-warning {
     background: var(--color-red);
     color: white;
     border-color: var(--color-red);
 }
+/* 重置按钮悬停 */
 .study-setting-item button.mod-warning:hover {
     opacity: 0.85;
 }
@@ -1780,12 +1901,6 @@
   border: 1px solid var(--background-modifier-border);
   background: var(--background-primary);
   color: var(--text-normal);
-}
-
-/* 部件：等级列表搜索框获得焦点 */
-.study-level-filter-row input[type="text"]:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--interactive-accent) 30%, transparent);
 }
 
 /* 部件：筛选标签 */

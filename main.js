@@ -519,7 +519,7 @@ const locale = {
     study_tab_mastered: "✅ Mastered",
     study_tab_stats: "📊 Stats",
     study_tab_settings: "⚙️ Settings",
-    study_review_motivation: "🚀 {0} words for this round, let's go go go!",
+    study_review_motivation: "Today {0} due, {1} words this round, go go go!",
     study_review_empty: "No words due for review today! 🎉",
     study_review_done: "Review complete! {0} words this round, {1} words total today.",
     study_review_progress: "Word {0}/{1} · Level {2} · Next in {3} days",
@@ -572,6 +572,21 @@ const locale = {
     study_goal_adjusted_to_limit: "Daily goal adjusted to match review limit ({0}).",
     study_settings_flashcard_tabs: "Show Tabs for Definition",
     study_settings_flashcard_tabs_desc: "Display multiple definition sections as tabs on the review card",
+    study_prep_wordbook: "Wordbook",
+    study_prep_all: "All Wordbooks",
+    study_prep_total: "Total",
+    study_prep_mastered: "Mastered",
+    study_prep_ignored: "Ignored",
+    study_prep_learning: "Learning",
+    study_prep_no_wordbooks: "No wordbooks enabled",
+    study_prep_empty_book: "This wordbook is empty",
+    study_prep_all_mastered: "No words to review!",
+    study_level_list_empty: "No review records found.",
+    study_settings_intervals: "Review Intervals (Level 0~4)",
+    study_settings_intervals_desc: "Customize review intervals (days) for levels 0~4. Clicking 'Remember' increases level and interval; clicking 'Forget' resets to level 0. Level 5 is mastered. Only affects future reviews.",
+    study_intervals_reset: "Reset to Default",
+    study_intervals_reset_notice: "Reset to default: 1, 2, 4, 8, 16 days",
+    study_intervals_updated_notice: "Intervals updated, will take effect next review",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -1098,7 +1113,7 @@ const locale = {
     study_tab_mastered: "✅ 已掌握",
     study_tab_stats: "📊 统计",
     study_tab_settings: "⚙️ 设置",
-    study_review_motivation: "🚀 本轮{0}个词，冲鸭，go go go！",
+    study_review_motivation: "今日到期{0}个词，本轮复习{1}个词，冲鸭！",
     study_review_empty: "今日没有需要复习的单词 🎉",
     study_review_done: "复习完成！本轮复习了 {0} 个单词，今日累计复习了 {1} 个单词。",
     study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距下次 {3} 天",
@@ -1151,6 +1166,21 @@ const locale = {
     study_goal_adjusted_to_limit: "每日目标已自动调整为 {0} 以匹配复习上限。",
     study_settings_flashcard_tabs: "释义以标签页显示",
     study_settings_flashcard_tabs_desc: "在复习卡片上将多段释义显示为标签页形式",
+    study_prep_wordbook: "词库",
+    study_prep_all: "综合所有词库",
+    study_prep_total: "总计",
+    study_prep_mastered: "已掌握",
+    study_prep_ignored: "已忽略",
+    study_prep_learning: "待复习",
+    study_prep_no_wordbooks: "没有启用的词库",
+    study_prep_empty_book: "该词库为空",
+    study_prep_all_mastered: "没有单词需要复习！",
+    study_level_list_empty: "没有找到任何复习记录。",
+    study_settings_intervals: "复习间隔 (等级 0~4)",
+    study_settings_intervals_desc: "自定义等级 0~4 的复习间隔（天）。点击「记得」等级+1，间隔递增；点击「忘记」重置为等级0。等级5为已掌握。仅下次复习生效。",
+    study_intervals_reset: "恢复默认",
+    study_intervals_reset_notice: "已恢复默认间隔: 1, 2, 4, 8, 16 天",
+    study_intervals_updated_notice: "间隔已更新，下次复习生效",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1406,7 +1436,9 @@ const DEFAULT_SETTINGS = {
     flashcardShowPhonetic: true,
     flashcardShowTabs: true,
     flashcardAutoFlip: 0,          // 秒，0 表示关闭
+    intervalDays: [1, 2, 4, 8, 16],
     enableSpacedRepetition: true,
+    selectedWordbook: "all",
   },
 
   selectedSourceMap: {}
@@ -2379,7 +2411,7 @@ class StudyStore {
     if (mode === "global") {
       return normalizeWord(word);
     } else {
-      return `${normalizeWord(word)}::${sourceFile}`;
+      return `${sourceFile}::${normalizeWord(word)}`; 
     }
   }
 
@@ -2559,7 +2591,7 @@ class StudyStore {
       const review = this.data.reviews[word];
       if (!review) continue;
       for (const bookPath of allBooks) {
-        const sourceKey = `${word}::${bookPath}`;
+        const sourceKey = `${bookPath}::${word}`;
         // 只有目标词源不存在该记录时才创建（不覆盖已有的词源独立记录）
         if (!this.data.reviews[sourceKey]) {
           newReviews[sourceKey] = { ...review };
@@ -2580,9 +2612,18 @@ class StudyStore {
 
   // ----- 根据等级获取间隔天数（SM-2 简化版） -----
   getInterval(level) {
-    const intervals = [1, 2, 4, 8, 16];
-    if (level >= intervals.length) return 0; // 达到最大等级 -> 掌握
-    return intervals[level];
+    if (level >= 5) return 0; // 达到最大等级 -> 掌握
+    const defaultIntervals = DEFAULT_SETTINGS.study.intervalDays || [1, 2, 4, 8, 16];
+    const userIntervals = this.plugin.settings.study.intervalDays;
+
+    // 如果用户没设置或格式不对，回退到默认
+    if (!userIntervals || !Array.isArray(userIntervals) || userIntervals.length < 5) {
+      return defaultIntervals[level] || 1;
+    }
+
+    // 设置的值最小为1（避免 nextReview 变成 null 导致永不出现）
+    const val = userIntervals[level];
+    return (typeof val === 'number' && val > 0) ? val : 1;
   }
 
   // ----- 计算下次复习日期 -----
@@ -2594,6 +2635,23 @@ class StudyStore {
     const date = fromDate ? this.parseLocalDate(fromDate) : new Date();
     date.setDate(date.getDate() + interval);
     return this.getLocalDateString(date);
+  }
+
+  // 只读统计今日到期单词数
+  countDueWords(cards) {
+    const today = this.getTodayISO();
+    let count = 0;
+    for (const card of cards) {
+      const key = this.getReviewKey(card.word, card.sourceFile);
+      const mastered = this.plugin.masteryStore.isMastered(key);
+      const ignored = this.plugin.masteryStore.isIgnored(key);
+      if (mastered || ignored) continue;
+      const review = this.getReview(card.word, card.sourceFile);
+      if (review && review.nextReview && review.nextReview <= today) {
+        count++;
+      }
+    }
+    return count;
   }
 
   // ----- 获取今日应复习的单词列表 -----
@@ -4044,6 +4102,7 @@ class SidebarView extends ItemView {
     this.searchQuery = "";
     this.activeTab = "learning";
     this.cardCache = new Map();
+    this.foldState = new Map();
   }
   getViewType() { return VIEW_TYPE_SIDEBAR; }
   getDisplayText() { return t("sidebar_title"); }
@@ -4060,6 +4119,7 @@ class SidebarView extends ItemView {
         this.debouncedRefresh();
       }
     }));
+    this._lastFoldEnabled = this.plugin.settings.enableFoldDefinition;
     await this.refresh();
   }
 
@@ -4079,6 +4139,13 @@ class SidebarView extends ItemView {
   }
 
   async refresh() {
+    // 检测折叠开关是否发生变化，若变化则清空所有折叠状态
+    const currentFoldEnabled = this.plugin.settings.enableFoldDefinition;
+    if (this._lastFoldEnabled !== undefined && this._lastFoldEnabled !== currentFoldEnabled) {
+      this.foldState.clear();
+    }
+    this._lastFoldEnabled = currentFoldEnabled;
+
     await this.scanCurrentDocument();
     this.filterWords();
     this.render();
@@ -4157,6 +4224,14 @@ class SidebarView extends ItemView {
     }
 
     this.currentFileWords = matchedCards;
+
+    // 清理不再存在的卡片折叠状态
+    const validKeys = new Set(this.currentFileWords.map(w => w.studyKey));
+    for (const key of this.foldState.keys()) {
+      if (!validKeys.has(key)) {
+        this.foldState.delete(key);
+      }
+    }
   }
 
   // PDF提取改用轮询
@@ -4195,6 +4270,15 @@ class SidebarView extends ItemView {
     const container = this.containerEl;
     container.empty();
     this.cardCache.clear();
+
+    // 清理无效折叠状态
+    const currentKeys = new Set(this.currentFileWords.map(w => w.studyKey));
+    for (const key of this.foldState.keys()) {
+      if (!currentKeys.has(key)) {
+        this.foldState.delete(key);
+      }
+    }
+
     // 清除旧的渲染定时器，防止冲突
     if (this._renderTimer) {
       clearTimeout(this._renderTimer);
@@ -4363,27 +4447,8 @@ class SidebarView extends ItemView {
 
     // ---- 折叠按钮（在单词前面） ----
     const foldBtn = wordLine.createSpan({ cls: "fold-btn" });
-    foldBtn.addEventListener("mouseenter", () => { foldBtn.style.opacity = "1"; });
-    foldBtn.addEventListener("mouseleave", () => { foldBtn.style.opacity = "0.6"; });
 
-    // 根据设置决定是否显示折叠按钮及初始状态
-    const foldEnabled = this.plugin.settings.enableFoldDefinition;
-    let isFolded = foldEnabled; // 启用时默认折叠
-
-    if (foldEnabled) {
-      setIcon(foldBtn, "chevron-right");
-    } else {
-      foldBtn.style.display = "none";
-    }
-
-    // 点击折叠按钮切换
-    foldBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      isFolded = !isFolded;
-      setIcon(foldBtn, isFolded ? "chevron-right" : "chevron-down");
-      defDiv.style.display = isFolded ? "none" : "block";
-    });
-
+    // 单词
     const wordSpan = wordLine.createSpan({ cls: "word", text: wordObj.word });
     wordSpan.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -4404,10 +4469,42 @@ class SidebarView extends ItemView {
 
     // 释义区域
     const defDiv = cardDiv.createDiv({ cls: "definition" });
-    // 如果启用折叠且当前为折叠状态，隐藏 defDiv
-    if (foldEnabled && isFolded) {
-      defDiv.style.display = "none";
+
+    // 根据设置决定是否显示折叠按钮及初始状态
+    const foldEnabled = this.plugin.settings.enableFoldDefinition;
+    const studyKey = wordObj.studyKey;
+
+    // 从缓存读取折叠状态
+    let isFolded;
+    if (foldEnabled) {
+      const cached = this.foldState.get(studyKey);
+      isFolded = (cached !== undefined) ? cached : true; // 默认折叠
+      this.foldState.set(studyKey, isFolded);  // 启用时写入缓存
+    } else {
+      isFolded = false; // 功能关闭时展开
+      this.foldState.delete(studyKey); // 清除该卡片的缓存
     }
+
+    // 设置折叠按钮外观
+    if (foldEnabled) {
+      setIcon(foldBtn, isFolded ? "chevron-right" : "chevron-down");
+      foldBtn.style.display = "inline-flex";
+    } else {
+      foldBtn.style.display = "none";
+    }
+
+    // 点击切换折叠状态
+    foldBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      isFolded = !isFolded;
+      this.foldState.set(studyKey, isFolded); // 更新缓存
+      setIcon(foldBtn, isFolded ? "chevron-right" : "chevron-down");
+      defDiv.style.display = isFolded ? "none" : "block";
+    });
+
+    // 应用初始折叠状态
+    defDiv.style.display = isFolded ? "none" : "block";
+
     if (this.plugin.settings.enableBlurDefinition) defDiv.classList.add("blur");
 
     const sections = wordObj.sections || [{ title: t("section_default_title"), content: wordObj.definition || "" }];
@@ -5767,7 +5864,6 @@ class LibraryView extends ItemView {
     // 按错误类型分类存储（用于控制台详细输出）
     const errors = {
       readonly: [],      // 文件只读
-      jsonCorrupt: [],   // JSON 损坏
       notFound: [],      // 卡片不存在
       other: []          // 其他异常
     };
@@ -5807,11 +5903,8 @@ class LibraryView extends ItemView {
         if (e.code === 'EPERM' || e.code === 'EACCES') {
           // 文件只读 / 权限不足
           errors.readonly.push(errorInfo);
-        } else if (e instanceof SyntaxError) {
-          // JSON 格式损坏
-          errors.jsonCorrupt.push(errorInfo);
         } else {
-          // 其他异常（磁盘空间不足、文件不存在等）
+          // 其他异常
           errors.other.push(errorInfo);
         }
 
@@ -5827,14 +5920,6 @@ class LibraryView extends ItemView {
       if (errors.readonly.length > 0) {
         console.group(`🔒 Read-only / Permission (${errors.readonly.length} words):`);
         errors.readonly.forEach(({ word, file }) => {
-          console.log(`  • ${word} (${file})`);
-        });
-        console.groupEnd();
-      }
-
-      if (errors.jsonCorrupt.length > 0) {
-        console.group(`📄 JSON Corrupted (${errors.jsonCorrupt.length} words):`);
-        errors.jsonCorrupt.forEach(({ word, file }) => {
           console.log(`  • ${word} (${file})`);
         });
         console.groupEnd();
@@ -5898,7 +5983,7 @@ class StudyView extends ItemView {
   constructor(leaf, plugin) {
     super(leaf);
     this.plugin = plugin;
-    this.studyStore = new StudyStore(plugin);
+    this.studyStore = plugin.studyStore;
     this.currentTab = "review"; // "review", "mastered", "levels", "stats", "settings"
     this.reviewQueue = [];
     this.currentIndex = 0;
@@ -5927,7 +6012,7 @@ class StudyView extends ItemView {
   // 键盘事件
   handleKeydown(e) {
     // 确保当前视图是激活状态
-    if (this.app.workspace.activeLeaf?.view !== this) {
+    if (this.app.workspace.activeLeaf !== this.leaf) {
       return;
     }
 
@@ -5972,7 +6057,6 @@ class StudyView extends ItemView {
   async onOpen() {
     this.containerEl.empty();
     this.containerEl.addClass("simple-wordbook-study");
-    await this.studyStore.load();
     this.buildUI();
     await this.switchTab(this.currentTab);
 
@@ -6101,31 +6185,114 @@ class StudyView extends ItemView {
     if (this._rendering) return;
     this.updateTopBar();
     this._rendering = true;
-
     try {
       const container = this.contentEl;
       container.empty();
-      // 如果正在复习，显示复习界面
       if (this.reviewing) {
         this.renderReviewSession(container);
-        return; // finally 会重置标志
+      } else {
+        this.renderPreparation(container);
       }
-      // 否则显示准备界面
-      const allCards = this.plugin.getAllCards();
-      const due = await this.studyStore.getDueWords(allCards, this.plugin.settings.study.dailyReviewLimit || 20);
-      if (due.length === 0) {
-        container.createDiv({ cls: "study-empty", text: t("study_review_empty") });
-        return;
-      }
-      const info = container.createDiv({ cls: "study-review-info" });
-      info.createSpan({ text: t("study_review_motivation", due.length) });
-      const btn = container.createEl("button", { text: t("study_btn_start"), cls: "mod-cta" });
-      btn.addEventListener("click", () => {
-        this.startReviewWithWords(due);
-      });
     } finally {
       this._rendering = false;
     }
+  }
+  // ----- 复习标签界面 -----
+  renderPreparation(container) {
+    container.empty();
+
+    // 获取词库列表
+    const wordbooks = this.plugin.settings.wordbookFiles.filter(f => f.enabled);
+    if (wordbooks.length === 0) {
+      container.createDiv({ cls: "study-empty", text: t("study_prep_no_wordbooks") });
+      return;
+    }
+
+    // 下拉选择器
+    const selectRow = container.createDiv({ cls: "study-prep-select-row" });
+    const label = selectRow.createSpan({ cls: "study-prep-label", text: t("study_prep_wordbook") + "：" });
+    const select = selectRow.createEl("select");
+    const currentSelected = this.plugin.settings.study.selectedWordbook || "all";
+    const allOpt = select.createEl("option", { value: "all", text: t("study_prep_all") });
+    if (currentSelected === "all") allOpt.selected = true;
+    for (const wb of wordbooks) {
+      const opt = select.createEl("option", { value: wb.path, text: wb.name });
+      if (currentSelected === wb.path) opt.selected = true;
+    }
+    select.addEventListener("change", (e) => {
+      this.plugin.settings.study.selectedWordbook = e.target.value;
+      this.plugin.saveSettings();
+      this.renderPreparation(this.contentEl);
+    });
+
+    // 获取卡片数据并统计
+    const filteredCards = this.getFilteredCards();
+    const total = filteredCards.length;
+    let masteredCount = 0, ignoredCount = 0;
+    for (const card of filteredCards) {
+      const key = getStudyKey(card.word, card.sourceFile);
+      if (this.plugin.masteryStore.isMastered(key)) masteredCount++;
+      else if (this.plugin.masteryStore.isIgnored(key)) ignoredCount++;
+    }
+    const learningCount = total - masteredCount - ignoredCount;
+    const dueCount = this.studyStore.countDueWords(filteredCards);
+
+    // 统计行
+    const statsRow = container.createDiv({ cls: "study-prep-stats" });
+    statsRow.createSpan({ cls: "stat-item", text: `${t("study_prep_total")}：${total}` });
+    statsRow.createSpan({ cls: "stat-item", text: `${t("study_prep_mastered")}：${masteredCount}` });
+    statsRow.createSpan({ cls: "stat-item", text: `${t("study_prep_ignored")}：${ignoredCount}` });
+    statsRow.createSpan({ cls: "stat-item", text: `${t("study_prep_learning")}：${learningCount}` });
+
+    // 空状态
+    if (total === 0) {
+      container.createDiv({ cls: "study-empty", text: t("study_prep_empty_book") });
+      return;
+    }
+
+    // 全部掌握
+    if (learningCount === 0) {
+      container.createDiv({ cls: "study-empty", text: t("study_prep_all_mastered") });
+      return;
+    }
+
+    // 复习信息和复习按钮
+    const infoContainer = container.createDiv({ cls: "study-review-info" });
+    const limit = this.plugin.settings.study.dailyReviewLimit || 20;
+    const actualCount = Math.min(learningCount, limit);
+    infoContainer.createSpan({
+      text: t("study_review_motivation", dueCount, actualCount)
+    });
+
+    const btn = container.createEl("button", { text: t("study_btn_start"), cls: "mod-cta" });
+    btn.addEventListener("click", () => {
+      this.startReviewWithFilter(filteredCards);
+    });
+  }
+  // ----- 复习标签界面过滤词库 -----
+  getFilteredCards() {
+    const allCards = this.plugin.getAllCards();
+    const selected = this.plugin.settings.study.selectedWordbook || "all";
+    if (selected === "all") {
+      return allCards;
+    } else {
+      return allCards.filter(c => c.sourceFile === selected);
+    }
+  }
+  // ----- 复习标签界面获取词库统计信息 -----
+  async startReviewWithFilter(cards) {
+    const limit = this.plugin.settings.study.dailyReviewLimit || 20;
+    const due = await this.studyStore.getDueWords(cards, limit);
+    if (due.length === 0) {
+      new Notice(t("study_review_empty"));
+      return;
+    }
+    this.reviewQueue = due;
+    this.currentIndex = 0;
+    this.totalReviewed = 0;
+    this.totalMastered = 0;
+    this.reviewing = true;
+    this.renderReviewTab();
   }
 
   async renderReviewSession(container) {
@@ -6148,8 +6315,8 @@ class StudyView extends ItemView {
       // 再来一轮按钮
       const againBtn = buttonGroup.createEl("button", { text: t("study_btn_again"), cls: "mod-cta" });
       againBtn.addEventListener("click", async () => {
-        const allCards = this.plugin.getAllCards();
-        const due = await this.studyStore.getDueWords(allCards, this.plugin.settings.study.dailyReviewLimit || 20);
+        const filteredCards = this.getFilteredCards();   // 按当前词库过滤
+        const due = await this.studyStore.getDueWords(filteredCards, this.plugin.settings.study.dailyReviewLimit || 20);
         if (due.length === 0) {
           this.reviewing = false;
           this.renderReviewTab();
@@ -6209,6 +6376,11 @@ class StudyView extends ItemView {
       cyan: 'var(--color-cyan)'
     };
     cardEl.style.setProperty('--study-card-color', colorMap[card.color] || 'var(--interactive-accent)');
+
+    // 词源名
+    cardEl.style.position = 'relative';
+    const sourceName = card.sourceFile.split('/').pop();
+    const sourceEl = cardEl.createDiv({ cls: 'study-card-source', text: sourceName });
 
     // 正面（单词）
     const front = cardEl.createDiv({ cls: "study-card-front" });
@@ -6458,12 +6630,7 @@ class StudyView extends ItemView {
       // 达到等级5 → 自动标记为掌握
       const key = getStudyKey(card.word, card.sourceFile);
 
-      // 等级5 → 直接修改当前 review 对象，使界面立即更新
-      review.level = 5;
-      review.nextReview = null;
-      review.consecutiveCorrect = 0;
-
-      // 异步保存到持久存储
+      // 保存到持久存储
       this.plugin.masteryStore.setMastered(key, true);
       this.studyStore.incrementMastered();
       this.studyStore.incrementReviewed();
@@ -6685,7 +6852,7 @@ class StudyView extends ItemView {
     }
 
     if (cardLevels.length === 0) {
-      container.createDiv({ cls: "study-empty", text: t("study_mastered_list_empty") });
+      container.createDiv({ cls: "study-empty", text: t("study_level_list_empty") });
       return;
     }
 
@@ -7442,6 +7609,67 @@ class StudyView extends ItemView {
       settings.flashcardAutoFlip = parseInt(e.target.value);
       this.plugin.settings.study.flashcardAutoFlip = settings.flashcardAutoFlip;
       await this.plugin.saveSettings();
+    });
+
+    // 间隔天数自定义
+    const intervalSetting = container.createDiv({ cls: "study-setting-item" });
+    const headerRow = intervalSetting.createDiv({ cls: "study-interval-header" });
+    headerRow.createDiv({ cls: "study-setting-label", text: t("study_settings_intervals") });
+    const resetIntervalBtn = headerRow.createEl("button", { cls: "study-interval-reset-btn", text: t("study_intervals_reset") });
+    intervalSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_intervals_desc") });
+    const inputRow = intervalSetting.createDiv({ cls: "study-interval-input-row" });
+
+    const labels = ["L0", "L1", "L2", "L3", "L4"];
+    const defaultIntervals = [1, 2, 4, 8, 16];
+    const currentIntervals = settings.intervalDays || defaultIntervals;
+    const inputs = [];
+
+    for (let i = 0; i < 5; i++) {
+      const group = inputRow.createDiv({ cls: "study-interval-group" });
+
+      group.createSpan({ cls: "study-interval-group-label", text: labels[i] });
+
+      const input = group.createEl("input", { type: "number", cls: "study-interval-input" });
+      input.value = currentIntervals[i] ?? defaultIntervals[i];
+      input.min = 1;
+      input.max = 365;
+      input.step = 1;
+
+      inputs.push(input);
+
+      input.addEventListener("change", async () => {
+        const newIntervals = inputs.map(inp => {
+          let val = parseInt(inp.value);
+          if (isNaN(val) || val < 1) val = 1;
+          if (val > 365) val = 365;
+          inp.value = val;
+          return val;
+        });
+        settings.intervalDays = newIntervals;
+        this.plugin.settings.study.intervalDays = newIntervals;
+        await this.plugin.saveSettings();
+        new Notice(t("study_intervals_updated_notice"));
+      });
+    }
+
+    // 恢复默认按钮点击事件
+    resetIntervalBtn.addEventListener("click", async () => {
+      for (let i = 0; i < 5; i++) {
+        inputs[i].value = defaultIntervals[i];
+      }
+      settings.intervalDays = [...defaultIntervals];
+      this.plugin.settings.study.intervalDays = [...defaultIntervals];
+      await this.plugin.saveSettings();
+
+      inputs.forEach(inp => {
+        inp.style.borderColor = "var(--interactive-accent)";
+        inp.style.transition = "border-color 0.3s";
+        setTimeout(() => {
+          inp.style.borderColor = "";
+        }, 800);
+      });
+
+      new Notice(t("study_intervals_reset_notice"));
     });
 
     // 重置进度
@@ -12996,6 +13224,16 @@ class SimpleWordbookPlugin extends Plugin {
     // 迁移复习排序设置：将旧的 "level_first" 映射到 "level_high_first"
     if (this.settings.study && this.settings.study.reviewOrder === 'level_first') {
       this.settings.study.reviewOrder = 'level_high_first';
+      needsSave = true;
+    }
+    // 确保 selectedWordbook 字段存在（兼容旧数据）
+    if (this.settings.study && !this.settings.study.hasOwnProperty('selectedWordbook')) {
+      this.settings.study.selectedWordbook = "all";
+      needsSave = true;
+    }
+    // 确保 intervalDays 字段存在（兼容旧数据）
+    if (!this.settings.study.intervalDays || this.settings.study.intervalDays.length !== 5) {
+      this.settings.study.intervalDays = [1, 2, 4, 8, 16];
       needsSave = true;
     }
 
