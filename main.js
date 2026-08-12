@@ -557,8 +557,8 @@ const locale = {
     study_btn_prev: "Prev",
     study_btn_next: "Next",
     study_shortcut_hint: "← Forget ｜ Remember →",
+    study_shortcut_hint_4btn: "← Forget ｜ Good →\n↑ Easy ｜ ↓ Hard",
     study_tab_levels: "📈 Levels",
-    study_level_filter: "Filter by level",
     study_level_all: "All levels",
     study_level_label: "Level {0}",
     study_no_words_for_level: "No words for this level.",
@@ -583,10 +583,54 @@ const locale = {
     study_prep_all_mastered: "No words to review!",
     study_level_list_empty: "No review records found.",
     study_settings_intervals: "Review Intervals (Level 0~4)",
-    study_settings_intervals_desc: "Customize review intervals (days) for levels 0~4. Clicking 'Remember' increases level and interval; clicking 'Forget' resets to level 0. Level 5 is mastered. Only affects future reviews.",
+    study_settings_intervals_desc: "Customize base review intervals (days) for levels 0~4. Actual interval = base × Ease Factor. Only affects future reviews.",
     study_intervals_reset: "Reset to Default",
     study_intervals_reset_notice: "Reset to default: 1, 2, 4, 8, 16 days",
     study_intervals_updated_notice: "Intervals updated, will take effect next review",
+    study_btn_hard: "😐 Hard",
+    study_btn_good: "🙂 Good",
+    study_btn_easy: "😊 Easy",
+    study_sort_level_asc: "Level ↑ (0→5)",
+    study_sort_level_desc: "Level ↓ (5→0)",
+    study_sort_diff_asc: "Ease Factor ↑",
+    study_sort_diff_desc: "Ease Factor ↓",
+    study_sort_review_asc: "Review Count ↑",
+    study_sort_review_desc: "Review Count ↓",
+    library_table_header_difficulty: "Ease Factor",
+    study_table_header_review_count: "Reviews",
+    settings_enable_fine_feedback: "Enable Fine Feedback",
+    settings_enable_fine_feedback_desc: "Show 4 feedback buttons (Forget/Hard/Good/Easy) on review cards",
+    study_type_filter_all: "All Types",
+    study_type_newbie: "🔵 Newbie",
+    study_type_steady: "🟡 Steady",
+    study_type_efficient: "🟢 Efficient",
+    study_type_struggling: "🟠 Struggling",
+    study_type_stubborn: "🔴 Stubborn",
+    study_params_advanced: "Advanced Settings",
+    study_params_baseDelta: "Base Ease Factor",
+    study_params_extraDelta: "Extra Ease Factor + Reward Threshold",
+    study_params_range: "Ease Factor Range",
+    study_params_min: "Min:",
+    study_params_max: "Max:",
+    study_params_threshold: "Reward Threshold (count): ≥",
+    study_params_suspend: "Suspend Parameters + Penalty Threshold",
+    study_params_suspend_thresholds: "Penalty Threshold (count):",
+    study_params_suspend_again: "Again Suspend (days):",
+    study_params_suspend_hard: "Hard Suspend (days):",
+    study_params_reset: "Reset to Default",
+    study_params_reset_confirm: "Reset to default parameters?",
+    study_params_reset_success: "✅ Reset to default params",
+    study_params_help_title: "Parameter Description:",
+    study_params_help_baseDelta: "Base Ease Factor: Change in ease factor after each review button click (negative = shorter interval, positive = longer interval).",
+    study_params_help_extraDelta: "Extra Ease Factor: Extra bonus after {0} consecutive Good/Easy reviews.",
+    study_params_help_suspend: "Suspend Parameters + Penalty Threshold: Suspend N days after X consecutive Again/Hard reviews.",
+    study_params_help_threshold_note: "Threshold (count): Reward threshold is the consecutive count of Good/Easy clicks; Penalty threshold is the consecutive count of Again/Hard clicks.",
+    study_params_apply_threshold_duplicate: "❌ Penalty thresholds cannot be duplicated",
+    study_params_import_minmax: "❌ Ease factor min must be less than max",
+    study_params_again: "Again:",
+    study_params_hard: "Hard:",
+    study_params_good: "Good:",
+    study_params_easy: "Easy:",
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -1151,8 +1195,8 @@ const locale = {
     study_btn_prev: "上一个",
     study_btn_next: "下一个",
     study_shortcut_hint: "← 忘记 ｜ 记得 →",
+    study_shortcut_hint_4btn: "← 忘记 ｜ 良好 →\n↑ 简单 ｜ ↓ 困难",
     study_tab_levels: "📈 等级列表",
-    study_level_filter: "筛选等级",
     study_level_all: "全部等级",
     study_level_label: "等级 {0}",
     study_no_words_for_level: "该等级暂无单词",
@@ -1177,10 +1221,54 @@ const locale = {
     study_prep_all_mastered: "没有单词需要复习！",
     study_level_list_empty: "没有找到任何复习记录。",
     study_settings_intervals: "复习间隔 (等级 0~4)",
-    study_settings_intervals_desc: "自定义等级 0~4 的复习间隔（天）。点击「记得」等级+1，间隔递增；点击「忘记」重置为等级0。等级5为已掌握。仅下次复习生效。",
+    study_settings_intervals_desc: "自定义等级 0~4 的基础复习间隔（天）。实际间隔 = 基础间隔 × 难易系数。仅下次复习生效。",
     study_intervals_reset: "恢复默认",
     study_intervals_reset_notice: "已恢复默认间隔: 1, 2, 4, 8, 16 天",
     study_intervals_updated_notice: "间隔已更新，下次复习生效",
+    study_btn_hard: "😐 困难",
+    study_btn_good: "🙂 良好",
+    study_btn_easy: "😊 简单",
+    study_sort_level_asc: "等级 ↑ (0→5)",
+    study_sort_level_desc: "等级 ↓ (5→0)",
+    study_sort_diff_asc: "难易系数 ↑",
+    study_sort_diff_desc: "难易系数 ↓",
+    study_sort_review_asc: "复习次数 ↑",
+    study_sort_review_desc: "复习次数 ↓",
+    library_table_header_difficulty: "难易系数",
+    study_table_header_review_count: "复习次数",
+    settings_enable_fine_feedback: "启用精细反馈",
+    settings_enable_fine_feedback_desc: "开启后，复习卡片显示 4 个反馈按钮（忘记/困难/良好/简单）",
+    study_type_filter_all: "全部类型",
+    study_type_newbie: "🔵 新手词",
+    study_type_steady: "🟡 稳步词",
+    study_type_efficient: "🟢 高效词",
+    study_type_struggling: "🟠 吃力词",
+    study_type_stubborn: "🔴 顽固词",
+    study_params_advanced: "高级设置",
+    study_params_baseDelta: "基础难易系数",
+    study_params_extraDelta: "额外难易系数 + 奖励阈值",
+    study_params_range: "难易系数范围",
+    study_params_min: "最小值：",
+    study_params_max: "最大值：",
+    study_params_threshold: "奖励阈值（count）：≥",
+    study_params_suspend: "搁置参数 + 惩罚阈值",
+    study_params_suspend_thresholds: "惩罚阈值（count）：",
+    study_params_suspend_again: "忘记搁置（天）：",
+    study_params_suspend_hard: "困难搁置（天）：",
+    study_params_reset: "重置为默认值",
+    study_params_reset_confirm: "确定重置为默认参数吗？",
+    study_params_reset_success: "✅ 已重置为默认参数",
+    study_params_help_title: "参数说明：",
+    study_params_help_baseDelta: "基础难易系数：每次复习点击按钮后的难易系数变化（负=缩短间隔，正=延长间隔）。",
+    study_params_help_extraDelta: "额外难易系数：连续良好/简单 ≥ {0} 次后的额外奖励。",
+    study_params_help_suspend: "搁置参数 + 惩罚阈值：连续忘记/困难达到惩罚阈值 X 次后搁置 Y 天。",
+    study_params_help_threshold_note: "阈值（count）：奖励阈值是连续点击良好或简单的累积次数，惩罚阈值同理。",
+    study_params_apply_threshold_duplicate: "❌ 惩罚阈值不能重复",
+    study_params_import_minmax: "❌ 难易系数最小值必须小于最大值",
+    study_params_again: "忘记：",
+    study_params_hard: "困难：",
+    study_params_good: "良好：",
+    study_params_easy: "简单：",
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1438,7 +1526,37 @@ const DEFAULT_SETTINGS = {
     flashcardAutoFlip: 0,          // 秒，0 表示关闭
     intervalDays: [1, 2, 4, 8, 16],
     enableSpacedRepetition: true,
+    enableFineFeedback: false,
     selectedWordbook: "all",
+  },
+
+  // ===== 学习算法参数 =====
+  studyParams: {
+    baseDelta: {
+      again: -0.12,
+      hard: -0.08,
+      good: 0.05,
+      easy: 0.12
+    },
+    extraDelta: {
+      good: 0.05,
+      easy: 0.03
+    },
+    difficultyMin: 0.7,
+    difficultyMax: 1.5,
+    rewardThreshold: 3,
+    suspend: {
+      again: [
+        { threshold: 3, days: 4 },
+        { threshold: 6, days: 8 },
+        { threshold: 9, days: 30 }
+      ],
+      hard: [
+        { threshold: 3, days: 3 },
+        { threshold: 6, days: 5 },
+        { threshold: 9, days: 15 }
+      ]
+    }
   },
 
   selectedSourceMap: {}
@@ -2391,6 +2509,21 @@ class StudyStore {
       this.data = { reviews: {}, dailyStats: {}, dailyGoal: this.plugin.settings.study.dailyGoal || 10 };
     }
     this.data.dailyGoal = this.plugin.settings.study.dailyGoal || 10;
+
+    // 数据迁移：为旧数据补全 difficulty 和 consecutive 字段
+    for (const key in this.data.reviews) {
+      const review = this.data.reviews[key];
+      if (review.difficulty === undefined) {
+        review.difficulty = 1.0;
+      }
+      if (review.consecutive === undefined) {
+        review.consecutive = { rating: null, count: 0 };
+      }
+      // 移除废弃的 consecutiveCorrect 字段
+      if (review.consecutiveCorrect !== undefined) {
+        delete review.consecutiveCorrect;
+      }
+    }
     await this.save();
   }
 
@@ -2440,8 +2573,12 @@ class StudyStore {
         nextReview: this.getTodayISO(),
         lastReview: null,
         reviewCount: 0,
-        consecutiveCorrect: 0,
-        firstLearned: this.getTodayISO()
+        firstLearned: this.getTodayISO(),
+        difficulty: 1.0,
+        consecutive: {
+          rating: null,
+          count: 0
+        }
       };
       this.save();
     }
@@ -2511,15 +2648,22 @@ class StudyStore {
         nextReview: this.getTodayISO(),
         lastReview: null,
         reviewCount: 0,
-        consecutiveCorrect: 0,
-        firstLearned: this.getTodayISO()
+        firstLearned: this.getTodayISO(),
+        difficulty: 1.0,
+        consecutive: {
+          rating: null,
+          count: 0
+        }
       };
     }
     this.data.reviews[key].level = level;
 
-    // 当等级重置为 0 或达到 5（掌握）时，连续正确计数应清零
+    // 当等级重置为 0 或达到 5（掌握）时，单词评级和计数清零
     if (level === 0 || level >= 5) {
-      this.data.reviews[key].consecutiveCorrect = 0;
+      this.data.reviews[key].consecutive = {
+        rating: null,
+        count: 0
+      };
     }
 
     if (level >= 5) {
@@ -2528,6 +2672,82 @@ class StudyStore {
       this.data.reviews[key].nextReview = this.calculateNextReview(level);
     }
     await this.save();
+  }
+
+  // ----- 更新难易系数（系数调整 + 连续计数 + 搁置） -----
+  updateDifficulty(review, rating) {
+    if (!review) return { suspendDays: 0 };
+
+    // 从 settings 获取参数
+    const params = this.plugin.settings.studyParams || DEFAULT_SETTINGS.studyParams;
+
+    // 基础系数变化
+    let baseDelta = 0;
+    switch (rating) {
+      case 'again': baseDelta = params.baseDelta?.again ?? -0.12; break;
+      case 'hard': baseDelta = params.baseDelta?.hard ?? -0.08; break;
+      case 'good': baseDelta = params.baseDelta?.good ?? 0.05; break;
+      case 'easy': baseDelta = params.baseDelta?.easy ?? 0.12; break;
+      default: return { suspendDays: 0 };
+    }
+
+    const isBadGroup = (rating === 'again' || rating === 'hard');
+    const isGoodGroup = (rating === 'good' || rating === 'easy');
+
+    // 连续计数
+    if (!review.consecutive) {
+      review.consecutive = { rating: null, count: 0 };
+    }
+
+    const currentGroup = review.consecutive.rating;
+
+    let sameGroup = false;
+    if (currentGroup) {
+      const currentIsBad = (currentGroup === 'again' || currentGroup === 'hard');
+      const currentIsGood = (currentGroup === 'good' || currentGroup === 'easy');
+      sameGroup = (isBadGroup && currentIsBad) || (isGoodGroup && currentIsGood);
+    }
+
+    if (sameGroup) {
+      review.consecutive.count += 1;
+    } else {
+      review.consecutive.rating = rating;
+      review.consecutive.count = 1;
+    }
+
+    const count = review.consecutive.count;
+
+    // 额外系数奖励（仅奖励组，且 count >= 3）
+    const threshold = params.rewardThreshold ?? 3;
+    let extraDelta = 0;
+    if (isGoodGroup && count >= threshold) {
+      extraDelta = (rating === 'good')
+        ? (params.extraDelta?.good ?? 0.05)
+        : (params.extraDelta?.easy ?? 0.03);
+    }
+    // 应用系数变化
+    const minDiff = params.difficultyMin ?? 0.7;
+    const maxDiff = params.difficultyMax ?? 1.5;
+    let newDifficulty = (review.difficulty || 1.0) + baseDelta + extraDelta;
+    review.difficulty = Math.max(minDiff, Math.min(maxDiff, newDifficulty));
+
+    // 阈值检查（仅惩罚组）
+    let suspendDays = 0;
+    if (isBadGroup) {
+      const suspendConfig = params.suspend?.[rating] || [];
+      const sortedConfig = [...suspendConfig].sort((a, b) => a.threshold - b.threshold);
+      for (const entry of sortedConfig) {
+        if (count === entry.threshold) {
+          suspendDays = entry.days;
+          if (entry === sortedConfig[sortedConfig.length - 1]) {
+            review.consecutive = { rating: null, count: 0 };
+          }
+          break;
+        }
+      }
+    }
+
+    return { suspendDays };
   }
 
   // ----- 从词源独立迁移到全局（合并复习记录，保留最高等级） -----
@@ -2611,29 +2831,37 @@ class StudyStore {
   }
 
   // ----- 根据等级获取间隔天数（SM-2 简化版） -----
-  getInterval(level) {
+  getInterval(level, difficulty = 1.0) {
     if (level >= 5) return 0; // 达到最大等级 -> 掌握
     const defaultIntervals = DEFAULT_SETTINGS.study.intervalDays || [1, 2, 4, 8, 16];
     const userIntervals = this.plugin.settings.study.intervalDays;
 
     // 如果用户没设置或格式不对，回退到默认
     if (!userIntervals || !Array.isArray(userIntervals) || userIntervals.length < 5) {
-      return defaultIntervals[level] || 1;
+      return Math.max(1, Math.round(defaultIntervals[level] * difficulty));
     }
 
     // 设置的值最小为1（避免 nextReview 变成 null 导致永不出现）
     const val = userIntervals[level];
-    return (typeof val === 'number' && val > 0) ? val : 1;
+    const base = (typeof val === 'number' && val > 0) ? val : 1;
+    return Math.max(1, Math.round(base * difficulty));
   }
 
   // ----- 计算下次复习日期 -----
-  calculateNextReview(level, fromDate = null) {
+  calculateNextReview(level, fromDate = null, difficulty = 1.0) {
     if (level >= 5) return null; // 掌握
-    const interval = this.getInterval(level);
+    const interval = this.getInterval(level, difficulty);
     if (interval === 0) return null;
     // 使用 parseLocalDate 安全解析日期字符串
     const date = fromDate ? this.parseLocalDate(fromDate) : new Date();
     date.setDate(date.getDate() + interval);
+    return this.getLocalDateString(date);
+  }
+
+  // ----- 获取 N 天后的日期字符串 (YYYY-MM-DD) -----
+  getDateFromNow(days) {
+    const date = new Date();
+    date.setDate(date.getDate() + days);
     return this.getLocalDateString(date);
   }
 
@@ -2692,8 +2920,12 @@ class StudyStore {
           nextReview: today,  // 立即到期
           lastReview: null,
           reviewCount: 0,
-          consecutiveCorrect: 0,
-          firstLearned: today
+          firstLearned: today,
+          difficulty: 1.0,
+          consecutive: {
+            rating: null,
+            count: 0
+          }
         };
         // 加入 due
         due.push({ card, review: this.data.reviews[key] });
@@ -5635,16 +5867,17 @@ class LibraryView extends ItemView {
     const mastered = this.allCards.filter(c => c._mastered).length;
     const ignored = this.allCards.filter(c => c._ignored).length;
     const learning = total - mastered - ignored;
-    const pct = total ? Math.round(mastered / total * 100) : 0;
+    const displayPct = total ? (mastered / total * 100).toFixed(1) : "0.0";
+    const widthPct = total ? Math.round(mastered / total * 100) : 0;
     this.statsBar.innerHTML = `
-            <span>${t("library_stats_total", total)}</span>
-            <span>${t("library_stats_mastered", mastered, pct)}</span>
-            <span>${t("library_stats_learning", learning)}</span>
-            <span>${t("library_stats_ignored", ignored)}</span>
-            <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px;">
-                <div style="width:${pct}%; height:100%; background:var(--color-green); border-radius:3px;"></div>
-            </div>
-        `;
+    <span>${t("library_stats_total", total)}</span>
+    <span>${t("library_stats_mastered", mastered, displayPct)}</span>
+    <span>${t("library_stats_learning", learning)}</span>
+    <span>${t("library_stats_ignored", ignored)}</span>
+    <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px;">
+      <div style="width:${widthPct}%; height:100%; background:var(--color-green); border-radius:3px;"></div>
+    </div>
+  `;
   }
 
   // ---------- 渲染（虚拟滚动） ----------
@@ -5769,6 +6002,11 @@ class LibraryView extends ItemView {
 
     // 双击编辑
     tr.addEventListener('dblclick', () => {
+      const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === card.sourceFile);
+      if (fileSetting && fileSetting.readonly) {
+        new Notice(t("notice_readonly_cannot_edit"));
+        return;
+      }
       new WordModal(this.plugin.app, this.plugin, card).open();
     });
     // 右键菜单
@@ -6033,10 +6271,22 @@ class StudyView extends ItemView {
       this.toggleCardFlip();
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
-      this.handleRemember();
+      this.handleRemember('good');
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       this.handleForget();
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      const enableFineFeedback = this.plugin.settings.study.enableFineFeedback || false;
+      if (enableFineFeedback) {
+        this.handleHard();
+      }
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      const enableFineFeedback = this.plugin.settings.study.enableFineFeedback || false;
+      if (enableFineFeedback) {
+        this.handleEasy();
+      }
     }
   }
 
@@ -6408,7 +6658,12 @@ class StudyView extends ItemView {
     }
     front.createDiv({ cls: "study-card-hint", text: t("study_card_hint") });
     const shortcutHint = front.createDiv({ cls: "study-shortcut-hint" });
-    shortcutHint.textContent = t("study_shortcut_hint");
+    const enableFineFeedback = this.plugin.settings.study.enableFineFeedback || false;
+    if (enableFineFeedback) {
+      shortcutHint.textContent = t("study_shortcut_hint_4btn");
+    } else {
+      shortcutHint.textContent = t("study_shortcut_hint");
+    }
 
     // 背面（释义）
     const back = cardEl.createDiv({ cls: "study-card-back" });
@@ -6520,6 +6775,10 @@ class StudyView extends ItemView {
 
     // 操作按钮行
     const btnWrapper = container.createDiv({ cls: "study-btn-wrapper" });
+    // 精细反馈开关
+    if (enableFineFeedback) {
+      btnWrapper.addClass("fine-feedback");
+    }
 
     // 上一个按钮
     const prevBtn = btnWrapper.createEl("button", { text: "◀ " + t("study_btn_prev"), cls: "study-nav-btn" });
@@ -6530,13 +6789,65 @@ class StudyView extends ItemView {
       }
     });
 
-    // 忘记按钮
-    const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-warning" });
-    forgetBtn.addEventListener("click", () => this.handleForget());
+    if (enableFineFeedback) {
+      // 4 按钮模式
+      const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-forget" });
+      forgetBtn.addEventListener("click", () => this.handleForget());
 
-    // 记得按钮
-    const rememberBtn = btnWrapper.createEl("button", { text: t("study_btn_remember"), cls: "mod-cta" });
-    rememberBtn.addEventListener("click", () => this.handleRemember());
+      const hardBtn = btnWrapper.createEl("button", { text: t("study_btn_hard"), cls: "mod-hard" });
+      hardBtn.addEventListener("click", () => this.handleHard());
+
+      const goodBtn = btnWrapper.createEl("button", { text: t("study_btn_good"), cls: "mod-good" });
+      goodBtn.addEventListener("click", () => this.handleRemember('good'));
+
+      const easyBtn = btnWrapper.createEl("button", { text: t("study_btn_easy"), cls: "mod-easy" });
+      easyBtn.addEventListener("click", () => this.handleEasy());
+
+      // 禁用已掌握单词的所有按钮
+      const key = getStudyKey(card.word, card.sourceFile);
+      const isMastered = this.plugin.masteryStore.isMastered(key);
+      if (isMastered) {
+        forgetBtn.disabled = true;
+        hardBtn.disabled = true;
+        goodBtn.disabled = true;
+        easyBtn.disabled = true;
+        forgetBtn.style.opacity = '0.4';
+        hardBtn.style.opacity = '0.4';
+        goodBtn.style.opacity = '0.4';
+        easyBtn.style.opacity = '0.4';
+        forgetBtn.style.cursor = 'not-allowed';
+        hardBtn.style.cursor = 'not-allowed';
+        goodBtn.style.cursor = 'not-allowed';
+        easyBtn.style.cursor = 'not-allowed';
+      }
+
+      // 保存引用（4按钮模式）
+      this.btnForget = forgetBtn;
+      this.btnRemember = goodBtn;
+    } else {
+      // 2 按钮模式（默认）
+      const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-forget" });
+      forgetBtn.addEventListener("click", () => this.handleForget());
+
+      const rememberBtn = btnWrapper.createEl("button", { text: t("study_btn_remember"), cls: "mod-good" });
+      rememberBtn.addEventListener("click", () => this.handleRemember('good'));
+
+      // 禁用已掌握单词的按钮
+      const key = getStudyKey(card.word, card.sourceFile);
+      const isMastered = this.plugin.masteryStore.isMastered(key);
+      if (isMastered) {
+        forgetBtn.disabled = true;
+        rememberBtn.disabled = true;
+        forgetBtn.style.opacity = '0.4';
+        rememberBtn.style.opacity = '0.4';
+        forgetBtn.style.cursor = 'not-allowed';
+        rememberBtn.style.cursor = 'not-allowed';
+      }
+
+      // 保存引用（2按钮模式）
+      this.btnForget = forgetBtn;
+      this.btnRemember = rememberBtn;
+    }
 
     // 下一个按钮
     const nextBtn = btnWrapper.createEl("button", { text: t("study_btn_next") + " ▶", cls: "study-nav-btn" });
@@ -6547,26 +6858,12 @@ class StudyView extends ItemView {
       }
     });
 
-    // 已掌握单词禁用忘记/记得按钮
-    const key = getStudyKey(card.word, card.sourceFile);
-    const isMastered = this.plugin.masteryStore.isMastered(key);
-    if (isMastered) {
-      forgetBtn.disabled = true;
-      rememberBtn.disabled = true;
-      forgetBtn.style.opacity = '0.4';
-      rememberBtn.style.opacity = '0.4';
-      forgetBtn.style.cursor = 'not-allowed';
-      rememberBtn.style.cursor = 'not-allowed';
-    }
-
     // 根据索引禁用导航按钮（视觉反馈）
     if (this.currentIndex === 0) prevBtn.disabled = true;
     if (this.currentIndex === this.reviewQueue.length - 1) nextBtn.disabled = true;
 
     // 保存引用
     this.cardContainer = cardEl;
-    this.btnForget = forgetBtn;
-    this.btnRemember = rememberBtn;
     this.progressEl = progress;
     this.isFlipped = false;
 
@@ -6596,9 +6893,19 @@ class StudyView extends ItemView {
       return;
     }
 
+    // 等级归零
     review.level = 0;
-    review.nextReview = this.studyStore.calculateNextReview(0);
-    review.consecutiveCorrect = 0;
+
+    // 调用 updateDifficulty，更新难易系数/搁置后时间
+    const result = this.studyStore.updateDifficulty(review, 'again');
+
+    // 设置下次复习日期
+    if (result.suspendDays > 0) {
+      review.nextReview = this.studyStore.getDateFromNow(result.suspendDays);
+    } else {
+      review.nextReview = this.studyStore.calculateNextReview(0, null, review.difficulty);
+    }
+
     review.reviewCount += 1;
     review.lastReview = this.studyStore.getTodayISO();
     this.studyStore.setReview(card.word, card.sourceFile, review);
@@ -6608,8 +6915,8 @@ class StudyView extends ItemView {
     this.renderReviewTab();
   }
 
-  // ----- 复习记得按钮 -----
-  handleRemember() {
+  // ----- 复习记得/良好按钮 -----
+  async handleRemember(rating = 'good') {
     if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
       return;
     }
@@ -6625,15 +6932,29 @@ class StudyView extends ItemView {
       return;
     }
 
-    let newLevel = review.level + 1;
+    // 评级简单与良好/记得
+    let newLevel;
+    if (rating === 'good') {
+      // 良好/记得：正常升 1 级
+      newLevel = Math.min(5, review.level + 1);
+    } else if (rating === 'easy') {
+      // 等级 0-1 时跳级（0→2, 1→3）
+      // 等级 >=2 时正常升 1 级（2→3, 3→4, 4→5）
+      if (review.level <= 1) {
+        newLevel = Math.min(5, review.level + 2);
+      } else {
+        newLevel = Math.min(5, review.level + 1);
+      }
+    }
+
+    // 检查是否达到掌握
     if (newLevel >= 5) {
       // 达到等级5 → 自动标记为掌握
       const key = getStudyKey(card.word, card.sourceFile);
-
       // 保存到持久存储
-      this.plugin.masteryStore.setMastered(key, true);
-      this.studyStore.incrementMastered();
-      this.studyStore.incrementReviewed();
+      await this.plugin.masteryStore.setMastered(key, true);
+      await this.studyStore.incrementMastered();
+      await this.studyStore.incrementReviewed();
       this.totalReviewed++;
       this.totalMastered++;
       this.currentIndex++;
@@ -6642,8 +6963,54 @@ class StudyView extends ItemView {
       return;
     }
     review.level = newLevel;
-    review.nextReview = this.studyStore.calculateNextReview(newLevel);
-    review.consecutiveCorrect += 1;
+
+    // 调用 updateDifficulty，更新难易系数/搁置后时间
+    this.studyStore.updateDifficulty(review, rating);
+
+    // 计算下次复习日期
+    review.nextReview = this.studyStore.calculateNextReview(newLevel, null, review.difficulty);
+
+    review.reviewCount += 1;
+    review.lastReview = this.studyStore.getTodayISO();
+    await this.studyStore.setReview(card.word, card.sourceFile, review);
+    await this.studyStore.incrementReviewed();  
+    this.totalReviewed++;
+    this.currentIndex++;
+    this.renderReviewTab();
+  }
+
+  // ----- 复习困难按钮 -----
+  handleHard() {
+    if (this.currentIndex >= this.reviewQueue.length || this.reviewQueue.length === 0) {
+      return;
+    }
+    const item = this.reviewQueue[this.currentIndex];
+    const card = item.card;
+    const review = item.review;
+
+    // 如果单词已掌握，直接跳过
+    const key = getStudyKey(card.word, card.sourceFile);
+    if (this.plugin.masteryStore.isMastered(key)) {
+      this.currentIndex++;
+      this.renderReviewTab();
+      return;
+    }
+
+    // 等级降级
+    if (review.level >= 3) {
+      review.level = 2;
+    }
+
+    // 调用 updateDifficulty，更新难易系数/搁置后时间
+    const result = this.studyStore.updateDifficulty(review, 'hard');
+
+    // 设置下次复习日期
+    if (result.suspendDays > 0) {
+      review.nextReview = this.studyStore.getDateFromNow(result.suspendDays);
+    } else {
+      review.nextReview = this.studyStore.calculateNextReview(review.level, null, review.difficulty);
+    }
+
     review.reviewCount += 1;
     review.lastReview = this.studyStore.getTodayISO();
     this.studyStore.setReview(card.word, card.sourceFile, review);
@@ -6651,6 +7018,11 @@ class StudyView extends ItemView {
     this.totalReviewed++;
     this.currentIndex++;
     this.renderReviewTab();
+  }
+
+  // ----- 复习简单按钮 -----
+  async handleEasy() {
+    await this.handleRemember('easy');
   }
 
   // ----- 开始复习 -----
@@ -6815,6 +7187,11 @@ class StudyView extends ItemView {
           new WordContextMenu(this.plugin, card).showAtMouseEvent(e);
         });
         tr.addEventListener("dblclick", () => {
+          const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === card.sourceFile);
+          if (fileSetting && fileSetting.readonly) {
+            new Notice(t("notice_readonly_cannot_edit"));
+            return;
+          }
           new WordModal(this.plugin.app, this.plugin, card).open();
         });
       }
@@ -6833,6 +7210,20 @@ class StudyView extends ItemView {
     const container = this.contentEl;
     container.empty();
 
+    // 单词分类
+    const getWordType = (reviewCount, level) => {
+      // 顽固词
+      if (reviewCount >= 8 && level <= 2) return 'stubborn';
+      // 吃力词
+      if (reviewCount >= 5 && level <= 2) return 'struggling';
+      // 高效词
+      if (reviewCount <= 5 && level >= 4) return 'efficient';
+      // 新手词
+      if (reviewCount <= 2) return 'newbie';
+      // 稳步词
+      return 'steady';
+    };
+
     const allCards = this.plugin.getAllCards();
     // 获取所有有复习记录的单词及其等级
     const cardLevels = [];
@@ -6847,7 +7238,10 @@ class StudyView extends ItemView {
         if (this.plugin.masteryStore.isMastered(key) && level < 5) {
           level = 5;
         }
-        cardLevels.push({ card, level, reviewKey: key });
+        // 难度系数
+        const difficulty = review.difficulty || 1.0;
+        const reviewCount = review.reviewCount || 0;
+        cardLevels.push({ card, level, reviewKey: key, difficulty, reviewCount });
       }
     }
 
@@ -6856,34 +7250,64 @@ class StudyView extends ItemView {
       return;
     }
 
-    // --- 搜索框 + 下拉筛选器 ---
+    // --- 搜索框 + 排序 + 筛选 ---
     const filterRow = container.createDiv({ cls: "study-level-filter-row" });
 
-
-    // ---- 搜索框 ----
+    // 搜索框
     const searchInput = filterRow.createEl("input", { type: "text" });
     searchInput.setAttribute("placeholder", t("study_level_search_placeholder"));
-   
-    // ---- 筛选标签 ----
-    filterRow.createSpan({ text: t("study_level_filter") + ":" });
-  
-    // ---- 下拉筛选器 ----
-    const filterSelect = filterRow.createEl("select");
 
-    // 添加选项
+    // 等级筛选
+    const filterSelect = filterRow.createEl("select");
     filterSelect.createEl("option", { value: "all", text: t("study_level_all") + ` (${cardLevels.length})` });
     for (let i = 5; i >= 0; i--) {
       const count = cardLevels.filter(item => item.level === i).length;
-      const label = `${t("study_level_label", i)} (${count})`;
-      filterSelect.createEl("option", { value: String(i), text: label });
+      filterSelect.createEl("option", { value: String(i), text: `${t("study_level_label", i)} (${count})` });
     }
+
+    // 排序下拉
+    const sortSelect = filterRow.createEl("select");
+    sortSelect.createEl("option", { value: "level_desc", text: t("study_sort_level_desc") });
+    sortSelect.createEl("option", { value: "level_asc", text: t("study_sort_level_asc") });
+    sortSelect.createEl("option", { value: "difficulty_desc", text: t("study_sort_diff_desc") });
+    sortSelect.createEl("option", { value: "difficulty_asc", text: t("study_sort_diff_asc") });
+    sortSelect.createEl("option", { value: "review_count_desc", text: t("study_sort_review_desc") });
+    sortSelect.createEl("option", { value: "review_count_asc", text: t("study_sort_review_asc") });
+    if (!this._levelSortMode) this._levelSortMode = "level_desc";
+    sortSelect.value = this._levelSortMode;
+
+    // 单词类型筛选
+    const typeFilterSelect = filterRow.createEl("select");
+    // 统计各类型数量
+    const typeCounts = {
+      all: cardLevels.length,
+      newbie: 0,
+      steady: 0,
+      efficient: 0,
+      struggling: 0,
+      stubborn: 0
+    };
+
+    for (const item of cardLevels) {
+      const type = getWordType(item.reviewCount || 0, item.level);
+      if (typeCounts[type] !== undefined) typeCounts[type]++;
+    }
+    // 类型下拉
+    typeFilterSelect.createEl("option", { value: "all", text: `${t("study_type_filter_all")} (${typeCounts.all})` });
+    typeFilterSelect.createEl("option", { value: "newbie", text: `${t("study_type_newbie")} (${typeCounts.newbie})` });
+    typeFilterSelect.createEl("option", { value: "steady", text: `${t("study_type_steady")} (${typeCounts.steady})` });
+    typeFilterSelect.createEl("option", { value: "efficient", text: `${t("study_type_efficient")} (${typeCounts.efficient})` });
+    typeFilterSelect.createEl("option", { value: "struggling", text: `${t("study_type_struggling")} (${typeCounts.struggling})` });
+    typeFilterSelect.createEl("option", { value: "stubborn", text: `${t("study_type_stubborn")} (${typeCounts.stubborn})` });
+
+    if (!this._selectedType) this._selectedType = "all";
+    typeFilterSelect.value = this._selectedType;
 
     // 当前选中的等级
     let selectedLevel = "all";
 
     // --- 表格容器 ---
     const tableWrapper = container.createDiv({ cls: "study-level-table-wrapper" });
-
     const table = tableWrapper.createEl("table");
     table.className = "study-level-table";
 
@@ -6895,11 +7319,13 @@ class StudyView extends ItemView {
       t("library_table_header_phonetic"),
       t("library_table_header_definition"),
       t("library_table_header_source"),
+      t("study_table_header_review_count"),
+      t("library_table_header_difficulty"),
       t("study_table_header_level"),
       t("study_table_header_actions")
     ];
     for (const h of headers) {
-      const th = headerRow.createEl("th", { text: h });
+      headerRow.createEl("th", { text: h });
     }
 
     // 表体
@@ -6916,11 +7342,8 @@ class StudyView extends ItemView {
     ];
 
     // 渲染表格函数
-    const renderTable = (level) => {
+    const renderTable = (level, searchQuery, sortMode, typeFilter) => {
       tbody.empty();
-
-      // 获取搜索词
-      const searchQuery = searchInput.value.trim().toLowerCase();
 
       let filtered = cardLevels;
 
@@ -6930,34 +7353,53 @@ class StudyView extends ItemView {
         filtered = filtered.filter(item => item.level === lvl);
       }
 
-      // 2. 按搜索词过滤（搜索单词 + 音标 + 释义 + 来源文件名）
+      // 2. 按单词类型过滤
+      if (typeFilter !== "all") {
+        filtered = filtered.filter(item => {
+          const itemType = getWordType(item.reviewCount || 0, item.level);
+          return itemType === typeFilter;
+        });
+      }
+
+      // 3. 按搜索词过滤（搜索单词 + 音标 + 释义 + 来源文件名）
       if (searchQuery) {
+        const q = searchQuery.toLowerCase();
         filtered = filtered.filter(item => {
           const card = item.card;
           const word = card.word.toLowerCase();
           const phonetic = (card.phonetic || "").toLowerCase();
           const definition = (card.definition || "").toLowerCase();
           const source = card.sourceFile.split('/').pop().toLowerCase();
-          return word.includes(searchQuery) ||
-            phonetic.includes(searchQuery) ||
-            definition.includes(searchQuery) ||
-            source.includes(searchQuery);
+          return word.includes(q) ||
+            phonetic.includes(q) ||
+            definition.includes(q) ||
+            source.includes(q);
         });
       }
 
-      // 排序（按等级从高到低）
-      filtered.sort((a, b) => b.level - a.level);
+      // 4. 排序
+      filtered.sort((a, b) => {
+        if (sortMode === "level_asc") {
+          return a.level - b.level;
+        } else if (sortMode === "level_desc") {
+          return b.level - a.level;
+        } else if (sortMode === "difficulty_asc") {
+          return (a.difficulty || 1.0) - (b.difficulty || 1.0);
+        } else if (sortMode === "difficulty_desc") {
+          return (b.difficulty || 1.0) - (a.difficulty || 1.0);
+        } else if (sortMode === "review_count_asc") {
+          return (a.reviewCount || 0) - (b.reviewCount || 0);
+        } else if (sortMode === "review_count_desc") {
+          return (b.reviewCount || 0) - (a.reviewCount || 0);
+        }
+        return 0;
+      });
 
       // 空状态
       if (filtered.length === 0) {
         const tr = tbody.createEl("tr");
-        let emptyText;
-        if (searchQuery) {
-          emptyText = t("study_level_search_empty", searchQuery);
-        } else {
-          emptyText = t("study_no_words_for_level");
-        }
-        const td = tr.createEl("td", { colspan: 6, text: emptyText });
+        let emptyText = searchQuery ? t("study_level_search_empty", searchQuery) : t("study_no_words_for_level");
+        const td = tr.createEl("td", { colspan: 8, text: emptyText });
         td.style.cssText = "text-align: center; padding: 20px; color: var(--text-muted);";
         return;
       }
@@ -6967,10 +7409,17 @@ class StudyView extends ItemView {
         const card = item.card;
         const levelNum = item.level;
         const key = item.reviewKey;
+        const difficulty = item.difficulty || 1.0;
+        const reviewCount = item.reviewCount || 0;
+
+        // 难度系数颜色类
+        let diffClass = "difficulty-normal";
+        if (difficulty < 0.9) diffClass = "difficulty-easy";
+        else if (difficulty > 1.1) diffClass = "difficulty-hard";
 
         const tr = tbody.createEl("tr");
 
-        // 单词列（可点击发音）
+        // 单词列
         const tdWord = tr.createEl("td");
         tdWord.title = card.word;
         const wordSpan = tdWord.createSpan({ text: card.word });
@@ -6983,8 +7432,6 @@ class StudyView extends ItemView {
             card.lang
           );
         });
-
-        // 单词列的右键菜单
         tdWord.addEventListener('contextmenu', (e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -6995,7 +7442,7 @@ class StudyView extends ItemView {
         const tdPhon = tr.createEl("td", { text: card.phonetic || '' });
         tdPhon.title = card.phonetic || '';
 
-        // 释义列（截断）
+        // 释义列
         const def = card.definition || '';
         const shortDef = def.length > 80 ? def.slice(0, 80) + '…' : def;
         const tdDef = tr.createEl("td", { text: shortDef });
@@ -7004,6 +7451,43 @@ class StudyView extends ItemView {
         // 来源列
         const tdSource = tr.createEl("td", { text: card.sourceFile.split('/').pop() });
         tdSource.title = card.sourceFile;
+
+        // 复习次数列
+        const tdReviewCount = tr.createEl("td");
+        let countClass = "review-count";
+
+        // 复习次数颜色类
+        if (reviewCount >= 9 && levelNum <= 2) {
+          // 顽固词：复习很多次但等级很低
+          countClass += " stubborn";
+        } else if (reviewCount >= 5 && levelNum <= 2) {
+          // 吃力词：复习次数不少但等级偏低
+          countClass += " struggling";
+        } else if (reviewCount <= 5 && levelNum >= 4) {
+          // 高效词：复习少但等级高
+          countClass += " efficient";
+        } else if (reviewCount <= 2) {
+          // 新手词：刚开始学习
+          countClass += " newbie";
+        } else {
+          // 稳步词：正常进度（默认）
+          countClass += " steady";
+        }
+
+        tdReviewCount.className = countClass;
+        tdReviewCount.textContent = reviewCount;
+
+        // 难度系数列
+        const tdDifficulty = tr.createEl("td");
+        tdDifficulty.className = "difficulty-cell";
+        // 难度系数颜色类
+        if (difficulty <= 0.9) {
+          tdDifficulty.classList.add("diff-hard");
+        } else if (difficulty >= 1.1) {
+          tdDifficulty.classList.add("diff-easy");
+        }
+
+        tdDifficulty.textContent = difficulty.toFixed(2);
 
         // 等级列
         const tdLevel = tr.createEl("td");
@@ -7028,11 +7512,13 @@ class StudyView extends ItemView {
             const review = this.studyStore.getReview(card.word, card.sourceFile);
             if (review) {
               review.level = 0;
+              review.difficulty = 1.0;
+              review.consecutive = { rating: null, count: 0 };
               review.nextReview = this.studyStore.calculateNextReview(0);
               this.studyStore.setReview(card.word, card.sourceFile, review);
             }
             this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-            renderTable(selectedLevel);
+            renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
           });
         } else {
           // 标记掌握按钮
@@ -7051,7 +7537,7 @@ class StudyView extends ItemView {
               this.studyStore.setReview(card.word, card.sourceFile, review);
             }
             this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-            renderTable(selectedLevel);
+            renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
           });
         }
 
@@ -7063,23 +7549,40 @@ class StudyView extends ItemView {
 
         // 双击编辑
         tr.addEventListener("dblclick", () => {
+          const fileSetting = this.plugin.settings.wordbookFiles.find(f => f.path === card.sourceFile);
+          if (fileSetting && fileSetting.readonly) {
+            new Notice(t("notice_readonly_cannot_edit"));
+            return;
+          }
           new WordModal(this.plugin.app, this.plugin, card).open();
         });
       }
     };
 
     // 初始渲染
-    renderTable("all");
+    renderTable("all", "", "level_desc", "all");
 
     // 搜索框输入事件
     searchInput.addEventListener("input", () => {
-      renderTable(selectedLevel);
+      renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
     });
 
-    // 下拉切换事件
+    // 等级筛选事件
     filterSelect.addEventListener("change", (e) => {
       selectedLevel = e.target.value;
-      renderTable(selectedLevel);
+      renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
+    });
+
+    // 排序切换事件
+    sortSelect.addEventListener("change", (e) => {
+      this._levelSortMode = e.target.value;
+      renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
+    });
+
+    // 类型筛选事件
+    typeFilterSelect.addEventListener("change", (e) => {
+      this._selectedType = e.target.value;
+      renderTable(selectedLevel, searchInput.value.trim().toLowerCase(), sortSelect.value, typeFilterSelect.value);
     });
   }
 
@@ -7185,7 +7688,7 @@ class StudyView extends ItemView {
       const oldSvg = container.querySelector('svg');
       if (oldSvg) oldSvg.remove();
 
-      const width = 600;
+      const width = 700;
       const height = 130;
       const padding = { top: 12, bottom: 18 };
       const chartH = height - padding.top - padding.bottom;
@@ -7611,6 +8114,21 @@ class StudyView extends ItemView {
       await this.plugin.saveSettings();
     });
 
+    // 启用精细反馈（4 按钮）
+    const fineFeedbackSetting = container.createDiv({ cls: "study-setting-item" });
+    fineFeedbackSetting.createDiv({ cls: "study-setting-label", text: t("settings_enable_fine_feedback") });
+    fineFeedbackSetting.createDiv({ cls: "study-setting-desc", text: t("settings_enable_fine_feedback_desc") });
+    const fineFeedbackControl = fineFeedbackSetting.createDiv({ cls: "study-setting-control" });
+    const fineFeedbackToggle = fineFeedbackControl.createDiv({ cls: "checkbox-container" });
+    if (this.plugin.settings.study.enableFineFeedback) fineFeedbackToggle.addClass("is-enabled");
+    fineFeedbackToggle.createDiv({ cls: "checkbox-handle" });
+    fineFeedbackToggle.addEventListener("click", async () => {
+      const newVal = !this.plugin.settings.study.enableFineFeedback;
+      this.plugin.settings.study.enableFineFeedback = newVal;
+      await this.plugin.saveSettings();
+      fineFeedbackToggle.toggleClass("is-enabled", newVal);
+    });
+
     // 间隔天数自定义
     const intervalSetting = container.createDiv({ cls: "study-setting-item" });
     const headerRow = intervalSetting.createDiv({ cls: "study-interval-header" });
@@ -7685,6 +8203,289 @@ class StudyView extends ItemView {
         this.refresh();
       }
     });
+
+    // 高级算法参数
+    //const hr = container.createEl("hr");
+    //hr.style.cssText = "border: none; border-top: 1px solid var(--background-modifier-border); margin: 20px 0;";
+    const spacer = container.createDiv();
+    spacer.style.cssText = "height: 12px;";
+
+    // 折叠标题栏
+    const toggleContainer = container.createDiv({ cls: "study-params-toggle" });
+    const toggleIcon = toggleContainer.createSpan({ text: "▶", cls: "toggle-icon" });
+    const toggleTitle = toggleContainer.createSpan({ text: t("study_params_advanced"), cls: "toggle-title" });
+
+    // 内容区域（默认折叠）
+    const contentArea = container.createDiv({ cls: "study-params-content" });
+
+    // 切换展开/折叠
+    let isExpanded = false;
+    toggleContainer.addEventListener("click", () => {
+      isExpanded = !isExpanded;
+      toggleIcon.textContent = isExpanded ? "▼" : "▶";
+      contentArea.toggleClass("expanded", isExpanded);
+    });
+
+    // 内容：所有参数
+    const getParams = () => this.plugin.settings.studyParams || DEFAULT_SETTINGS.studyParams;
+    let params = getParams();
+
+    const formContainer = contentArea.createDiv({ cls: "study-params-form" });
+
+    // 1. 基础系数 (baseDelta)
+    const baseRow = formContainer.createDiv({ cls: "study-param-group" });
+    const baseTitleRow = baseRow.createDiv({ cls: "study-param-title" });
+    baseTitleRow.createSpan({ text: t("study_params_baseDelta") });
+
+    const baseInputRow = baseRow.createDiv({ cls: "study-param-input-row" });
+    const baseInputs = {};
+    const baseKeys = ['again', 'hard', 'good', 'easy'];
+    const baseLabelKeys = ['again', 'hard', 'good', 'easy'];
+    for (let i = 0; i < baseKeys.length; i++) {
+      const key = baseKeys[i];
+      baseInputRow.createSpan({ text: t("study_params_" + baseLabelKeys[i]), cls: "study-param-label" });
+      const input = baseInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.baseDelta?.[key] ?? 0 });
+      input.step = 0.01;
+      baseInputs[key] = input;
+    }
+
+    // 2. 额外系数 (extraDelta) + 奖励阈值
+    const extraRow = formContainer.createDiv({ cls: "study-param-group" });
+    const extraTitleRow = extraRow.createDiv({ cls: "study-param-title" });
+    extraTitleRow.createSpan({ text: t("study_params_extraDelta") });
+
+    const extraInputRow = extraRow.createDiv({ cls: "study-param-input-row" });
+    const extraInputs = {};
+    extraInputRow.createSpan({ text: t("study_params_good"), cls: "study-param-label" });
+    const extraGood = extraInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.extraDelta?.good ?? 0.05 });
+    extraGood.step = 0.01;
+    extraInputs['good'] = extraGood;
+
+    extraInputRow.createSpan({ text: t("study_params_easy"), cls: "study-param-label" });
+    const extraEasy = extraInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.extraDelta?.easy ?? 0.03 });
+    extraEasy.step = 0.01;
+    extraInputs['easy'] = extraEasy;
+
+    extraInputRow.createSpan({ text: t("study_params_threshold"), cls: "study-param-label" });
+    const thresholdInput = extraInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.rewardThreshold ?? 3 });
+    thresholdInput.min = 1;
+    thresholdInput.max = 20;
+
+    // 3. 难易系数范围
+    const rangeRow = formContainer.createDiv({ cls: "study-param-group" });
+    const rangeTitleRow = rangeRow.createDiv({ cls: "study-param-title" });
+    rangeTitleRow.createSpan({ text: t("study_params_range") });
+
+    const rangeInputRow = rangeRow.createDiv({ cls: "study-param-input-row" });
+    rangeInputRow.createSpan({ text: t("study_params_min"), cls: "study-param-label" });
+    const minInput = rangeInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.difficultyMin ?? 0.7 });
+    minInput.step = 0.05;
+
+    rangeInputRow.createSpan({ text: t("study_params_max"), cls: "study-param-label" });
+    const maxInput = rangeInputRow.createEl("input", { type: "number", cls: "study-param-input", value: params.difficultyMax ?? 1.5 });
+    maxInput.step = 0.05;
+
+    // 4. 搁置参数 (suspend)
+    const defaultAgain = params.suspend?.again || [
+      { threshold: 3, days: 4 },
+      { threshold: 6, days: 8 },
+      { threshold: 9, days: 30 }
+    ];
+    const defaultHard = params.suspend?.hard || [
+      { threshold: 3, days: 3 },
+      { threshold: 6, days: 5 },
+      { threshold: 9, days: 15 }
+    ];
+
+    const thresholdInputs = [];
+    const againDayInputs = [];
+    const hardDayInputs = [];
+
+    const suspendGroup = formContainer.createDiv({ cls: "study-param-group" });
+
+    // 标题行
+    const suspendTitleRow = suspendGroup.createDiv({ cls: "study-param-title" });
+    suspendTitleRow.createSpan({ text: t("study_params_suspend") });
+
+    // 4.1 搁置触发阈值
+    const thresholdRow = suspendGroup.createDiv({ cls: "study-param-input-row" });
+    thresholdRow.createSpan({ text: t("study_params_suspend_thresholds"), cls: "study-param-label" });
+
+    for (let i = 0; i < defaultAgain.length; i++) {
+      const entry = defaultAgain[i];
+      if (i > 0) thresholdRow.createSpan({ text: "  ", cls: "study-param-spacer" });
+      const tInput = thresholdRow.createEl("input", { type: "number", cls: "study-param-input", value: entry.threshold });
+      tInput.min = 1;
+      thresholdInputs.push(tInput);
+    }
+
+    // 4.2 忘记搁置天数
+    const againRow = suspendGroup.createDiv({ cls: "study-param-input-row" });
+    againRow.createSpan({ text: t("study_params_suspend_again"), cls: "study-param-label" });
+
+    for (let i = 0; i < defaultAgain.length; i++) {
+      const entry = defaultAgain[i];
+      if (i > 0) againRow.createSpan({ text: "  ", cls: "study-param-spacer" });
+      const dInput = againRow.createEl("input", { type: "number", cls: "study-param-input", value: entry.days });
+      dInput.min = 0;
+      dInput.max = 365;
+      againDayInputs.push(dInput);
+    }
+
+    // 4.3 困难搁置天数
+    const hardRow = suspendGroup.createDiv({ cls: "study-param-input-row" });
+    hardRow.createSpan({ text: t("study_params_suspend_hard"), cls: "study-param-label" });
+
+    for (let i = 0; i < defaultHard.length; i++) {
+      const entry = defaultHard[i];
+      if (i > 0) hardRow.createSpan({ text: "  ", cls: "study-param-spacer" });
+      const dInput = hardRow.createEl("input", { type: "number", cls: "study-param-input", value: entry.days });
+      dInput.min = 0;
+      dInput.max = 365;
+      hardDayInputs.push(dInput);
+    }
+
+    // 5. 参数说明
+    const helpGroup = formContainer.createDiv({ cls: "study-param-group" });
+
+    // 标题行
+    const helpTitleRow = helpGroup.createDiv({ cls: "study-param-title" });
+    helpTitleRow.createSpan({ text: t("study_params_help_title") });
+
+    // 内容行
+    const helpContent = helpGroup.createDiv();
+    helpContent.style.cssText = "font-size: 0.8em; color: var(--text-muted); line-height: 1.6;";
+
+    const updateHelp = (p) => {
+      const threshold = p.rewardThreshold ?? 3;
+      const minDiff = p.difficultyMin ?? 0.7;
+      const maxDiff = p.difficultyMax ?? 1.5;
+      helpContent.innerHTML = `
+    • ${t("study_params_help_baseDelta")}<br>
+    • ${t("study_params_help_extraDelta", threshold)}<br>
+    • ${t("study_params_help_suspend")}<br>
+    • ${t("study_params_help_threshold_note")}
+  `;
+    };
+    updateHelp(params);
+
+    // 6. 重置按钮
+    const resetRow = formContainer.createDiv({ cls: "study-param-reset-row" });
+    const paramsResetBtn = resetRow.createEl("button", { text: t("study_params_reset") });
+
+    paramsResetBtn.addEventListener("click", async () => {
+      if (!confirm(t("study_params_reset_confirm"))) return;
+
+      const defaultParams = JSON.parse(JSON.stringify(DEFAULT_SETTINGS.studyParams));
+      this.plugin.settings.studyParams = defaultParams;
+      await this.plugin.saveSettings();
+      params = defaultParams;
+
+      for (const key of baseKeys) {
+        baseInputs[key].value = defaultParams.baseDelta?.[key] ?? 0;
+      }
+      extraInputs['good'].value = defaultParams.extraDelta?.good ?? 0.05;
+      extraInputs['easy'].value = defaultParams.extraDelta?.easy ?? 0.03;
+      thresholdInput.value = defaultParams.rewardThreshold ?? 3;
+      minInput.value = defaultParams.difficultyMin ?? 0.7;
+      maxInput.value = defaultParams.difficultyMax ?? 1.5;
+
+      const defAgain = defaultParams.suspend?.again || [];
+      for (let i = 0; i < thresholdInputs.length && i < defAgain.length; i++) {
+        thresholdInputs[i].value = defAgain[i].threshold;
+      }
+      for (let i = 0; i < againDayInputs.length && i < defAgain.length; i++) {
+        againDayInputs[i].value = defAgain[i].days;
+      }
+      const defHard = defaultParams.suspend?.hard || [];
+      for (let i = 0; i < hardDayInputs.length && i < defHard.length; i++) {
+        hardDayInputs[i].value = defHard[i].days;
+      }
+
+      updateHelp(defaultParams);
+      new Notice(t("study_params_reset_success"));
+    });
+
+    // 7. 自动保存：所有输入框 change 事件
+    const saveAllParams = async () => {
+      const baseDelta = {};
+      for (const key of baseKeys) {
+        baseDelta[key] = parseFloat(baseInputs[key].value) || 0;
+      }
+
+      const extraDelta = {
+        good: parseFloat(extraInputs['good'].value) || 0,
+        easy: parseFloat(extraInputs['easy'].value) || 0
+      };
+
+      const difficultyMin = parseFloat(minInput.value) || 0.7;
+      const difficultyMax = parseFloat(maxInput.value) || 1.5;
+      const rewardThreshold = parseInt(thresholdInput.value) || 3;
+
+      const againEntries = thresholdInputs.map((tInput, idx) => ({
+        threshold: parseInt(tInput.value) || 1,
+        days: parseInt(againDayInputs[idx]?.value) || 0
+      })).filter(e => e.threshold > 0 && e.days > 0);
+      againEntries.sort((a, b) => a.threshold - b.threshold);
+
+      const hardEntries = thresholdInputs.map((tInput, idx) => ({
+        threshold: parseInt(tInput.value) || 1,
+        days: parseInt(hardDayInputs[idx]?.value) || 0
+      })).filter(e => e.threshold > 0 && e.days > 0);
+      hardEntries.sort((a, b) => a.threshold - b.threshold);
+
+      const againThresholds = againEntries.map(e => e.threshold);
+      const hardThresholds = hardEntries.map(e => e.threshold);
+      if (new Set(againThresholds).size !== againThresholds.length) {
+        new Notice(t("study_params_apply_threshold_duplicate"));
+        return;
+      }
+      if (new Set(hardThresholds).size !== hardThresholds.length) {
+        new Notice(t("study_params_apply_threshold_duplicate"));
+        return;
+      }
+
+      if (difficultyMin >= difficultyMax) {
+        new Notice(t("study_params_import_minmax"));
+        return;
+      }
+
+      const newParams = {
+        baseDelta,
+        extraDelta,
+        difficultyMin,
+        difficultyMax,
+        rewardThreshold,
+        suspend: {
+          again: againEntries,
+          hard: hardEntries
+        }
+      };
+
+      this.plugin.settings.studyParams = newParams;
+      await this.plugin.saveSettings();
+      params = newParams;
+      updateHelp(newParams);
+    };
+
+    // 绑定 change 事件
+    for (const key of baseKeys) {
+      baseInputs[key].addEventListener('change', saveAllParams);
+    }
+    extraGood.addEventListener('change', saveAllParams);
+    extraEasy.addEventListener('change', saveAllParams);
+    thresholdInput.addEventListener('change', saveAllParams);
+    minInput.addEventListener('change', saveAllParams);
+    maxInput.addEventListener('change', saveAllParams);
+    for (const inp of thresholdInputs) {
+      inp.addEventListener('change', saveAllParams);
+    }
+    for (const inp of againDayInputs) {
+      inp.addEventListener('change', saveAllParams);
+    }
+    for (const inp of hardDayInputs) {
+      inp.addEventListener('change', saveAllParams);
+    }
   }
 }
 
@@ -13220,6 +14021,11 @@ class SimpleWordbookPlugin extends Plugin {
     const rawData = await this.loadData();  // 先获取原始数据
     this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
     let needsSave = false;  // 添加保存标志
+
+    // 确保 studyParams 存在
+    if (!this.settings.studyParams) {
+      this.settings.studyParams = JSON.parse(JSON.stringify(DEFAULT_SETTINGS.studyParams));
+    }
 
     // 迁移复习排序设置：将旧的 "level_first" 映射到 "level_high_first"
     if (this.settings.study && this.settings.study.reviewOrder === 'level_first') {

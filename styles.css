@@ -1423,7 +1423,7 @@
     display: flex;              /* 初始已由 JS 控制显示 */
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 .study-card-word {
     font-size: 1.8em;
@@ -1436,14 +1436,16 @@
 .study-card-hint {
     font-size: 0.8em;
     color: var(--text-muted);
-    margin-top: 12px;
+    margin-top: 10px;
 }
 /* 键盘快捷键提示 */
 .study-shortcut-hint {
     font-size: 0.75em;
     color: var(--text-muted);
     opacity: 0.8;
-    margin-top: 6px;
+    margin-top: 2px;
+    margin-bottom: 6px;
+    white-space: pre-line;
 }
 .study-card-back .study-card-phonetic {
     font-weight: bold;
@@ -1468,6 +1470,7 @@
     line-height: 1.8;
     text-align: left;
     padding-right: 4px;
+    margin-bottom: 6px;
 }
 /* 部件：复习卡片背面顶部（单词 + 音标区域） */
 .study-card-back-top {
@@ -1522,13 +1525,60 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
-    margin-top: 16px;
+    gap: 26px;
+    margin-top: 26px;
     flex-wrap: wrap;
 }
 .study-btn-wrapper button {
     padding: 8px 16px;
     font-size: 1.1em;
+}
+/* 忘记按钮 - 红色 */
+.study-btn-wrapper .mod-forget {
+    background: var(--color-red);
+    color: white;
+    border-color: var(--color-red);
+}
+.study-btn-wrapper .mod-forget:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+/* 困难按钮 - 橙色 */
+.study-btn-wrapper .mod-hard {
+    background: var(--color-orange);
+    color: white;
+    border-color: var(--color-orange);
+}
+.study-btn-wrapper .mod-hard:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+/* 良好按钮 - 绿色 */
+.study-btn-wrapper .mod-good {
+    background: var(--color-green);
+    color: white;
+    border-color: var(--color-green);
+}
+.study-btn-wrapper .mod-good:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+/* 简单按钮 - 蓝色 */
+.study-btn-wrapper .mod-easy {
+    background: var(--color-blue);
+    color: white;
+    border-color: var(--color-blue);
+}
+.study-btn-wrapper .mod-easy:hover {
+    opacity: 0.85;
+    transform: scale(1.02);
+}
+/* 4按钮模式（精细反馈） */
+.study-btn-wrapper.fine-feedback {
+  gap: 16px;
+}
+.study-btn-wrapper.fine-feedback button {
+    padding: 8px 10px;
 }
 
 /* 部件：空状态与完成提示 */
@@ -1546,6 +1596,14 @@
     gap: 12px;
     justify-content: center;
     margin-top: 16px;
+}
+
+/* 部件：已掌握标签 */
+/* 已掌握计数标签 */
+.study-mastered-count {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  flex-shrink: 0;
 }
 
 /* 已掌握列表项 */
@@ -1872,6 +1930,88 @@
     opacity: 0.85;
 }
 
+/* 部件：设置高级算法参数 */
+
+/* 折叠标题栏 */
+.study-params-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  padding: 4px 0;
+}
+.study-params-toggle .toggle-icon {
+  font-size: 0.9em;
+  transition: transform 0.2s;
+}
+.study-params-toggle .toggle-title {
+  font-weight: 500;
+  margin: 6px 0;
+}
+
+/* 内容区域（默认折叠） */
+.study-params-content {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 4px;
+}
+.study-params-content.expanded {
+  max-height: 2000px;
+  padding: 8px 4px;
+}
+
+/* 参数表单容器 */
+.study-params-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 参数分组 */
+.study-param-group {
+  background: var(--background-secondary);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+/* 参数标题行 */
+.study-param-title {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+/* 参数输入框行 */
+.study-param-input-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin: 6px 0;
+}
+
+/* 参数标签 */
+.study-param-label {
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+/* 参数输入框 */
+.study-param-input {
+  width: 50px;
+  text-align: center;
+  margin-right: 20px;
+}
+
+/* 重置按钮行 */
+.study-param-reset-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+/* 部件：等级列表标签 */
 /* 部件：等级列表表格外层容器（含滚动） */
 .study-level-table-wrapper {
     flex: 1;
@@ -1901,13 +2041,6 @@
   border: 1px solid var(--background-modifier-border);
   background: var(--background-primary);
   color: var(--text-normal);
-}
-
-/* 部件：筛选标签 */
-.study-level-filter-row .filter-label {
-  font-size: 0.9em;
-  color: var(--text-muted);
-  flex-shrink: 0;
 }
 
 /* 部件：下拉筛选器 */
@@ -1970,9 +2103,49 @@
     cursor: default;
 }
 
+/* 等级列表复习次数列 */
+.study-level-table .review-count {
+  font-weight: bold;
+  font-size: 0.95em;
+}
+/* 新手词 */
+.study-level-table .review-count.newbie {
+  color: var(--color-blue);
+}
+/* 顽固词 */
+.study-level-table .review-count.stubborn {
+  color: var(--color-red);
+}
+/* 吃力词 */
+.study-level-table .review-count.struggling {
+  color: var(--color-orange);
+}
+/* 高效词 */
+.study-level-table .review-count.efficient {
+  color: var(--color-green);
+}
+/* 稳步词（默认） */
+.study-level-table .review-count.steady {
+  /*color: var(--color-yellow);*/
+  color: #FFC100;
+}
+
+/* 等级列表难度列 */
+.study-level-table .difficulty-cell {
+  font-weight: bold;
+  font-size: 0.95em;
+  color: var(--text-faint);
+}
+.study-level-table .difficulty-cell.diff-easy {
+  color: var(--color-green);
+}
+.study-level-table .difficulty-cell.diff-hard {
+  color: var(--color-red);
+}
+
 /* 部件：等级列表单词列 */
 .study-level-table tbody td:first-child {
-    max-width: 150px;
+    max-width: 120px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1995,13 +2168,6 @@
     gap: 4px;
     align-items: center;
     /*justify-content: center;*/
-}
-
-/* 部件：已掌握表格计数标签 */
-.study-mastered-count {
-  font-size: 0.9em;
-  color: var(--text-muted);
-  flex-shrink: 0;
 }
 
 
