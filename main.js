@@ -28,7 +28,7 @@ const locale = {
     word_label: "Word",
     phonetic_label: "Phonetic",
     definition_label: "Definition",
-    definition_placeholder: "**Definition**\ntake, get, spend; take\n\n---\n**Examples**\nI take the bus to work every day.\nIt takes me 30 minutes.\n\n---\n**Phrases**\ntake care of\ntake place\ntake part in",
+    definition_placeholder: "**Definition**\ntake (verb): to get hold of, to use, to require\n\n---\n**Examples**\nI take the bus to work every day.\nIt takes me 30 minutes to get there.\n\n---\n**Phrases**\ntake care of\ntake place\ntake part in",
     aliases_label: "Aliases (comma separated)",
     wordbook_label: "Wordbook File",
     card_color_label: "Card Color",
@@ -149,6 +149,9 @@ const locale = {
     export_enter_filename: "Please enter a file name.",
     export_failed: "Export failed, please check console for errors.",
 
+    plugin_language: "Plugin Language",
+    plugin_language_desc: "Choose the display language for the plugin. 'Auto' will automatically sync with Obsidian's interface language.",
+    language_follow_obsidian: "Auto",
     settings_highlight_preview: "Highlight & Preview",
     settings_enable_highlight: "Enable auto highlight",
     settings_highlight_color: "Highlight color",
@@ -204,11 +207,11 @@ const locale = {
     settings_scope_paths: "Path List",
     settings_scope_paths_desc: "One path per line. Markdown files must include the '.md' extension. Use '*' to match all files in the vault root (not subfolders).",
     scope_paths_placeholder: "Folder/note.md\nFolder",
-    settings_tab_files: "Files Management",
-    settings_tab_general: "General Settings",
+    settings_tab_files: "Files",
+    settings_tab_general: "General",
     command_open_settings: "Open Settings",
 
-    settings_tab_tts: "Pronunciation",
+    settings_tab_tts: "TTS",
     tts_pronunciation_general: "General Pronunciation Settings",
     tts_default_lang_label: "Default Pronunciation Language",
     tts_default_lang_desc: "Used when the word has no 'lang' field",
@@ -274,9 +277,10 @@ const locale = {
     tts_system_fallback_notice: "No {lang} voice available. Please switch back to online TTS or change system voice.",
     tts_system_auto_switched: "Automatically switched to {voice} to support the current language.",
     tts_system_no_voice_for_lang: "No system voice available for {lang}. Please install the language pack or disable System TTS.",
-    command_pronounce_selected: "Read selected text",
+    command_pronounce_selected: "Speak selected text",
+    tts_test_enter_word: "Please enter a word to test.",
 
-    settings_tab_ai: "AI Config",
+    settings_tab_ai: "AI",
     settings_api_config: "API Configuration",
     settings_ai_provider: "Service Provider",
     settings_ai_provider_desc: "Select a preset provider or choose Custom",
@@ -384,6 +388,8 @@ const locale = {
     notice_card_data_not_found: "Card data for this word not found",
     notice_mastery_label_on: "Cancel Mastery",
     notice_mastery_label_off: "Mark as Mastered",
+    notice_ignored_label_on: "Unignore",
+    notice_ignored_label_off: "Mark as Ignored",
     notice_mastery_marked: 'Marked "{0}" as mastered',
     notice_mastery_unmarked: 'Unmarked "{0}" from mastered',
     notice_locate_label: "Locate in Sidebar",
@@ -443,6 +449,7 @@ const locale = {
     example_mode_list_desc: "Detect list markers (-, *, numbers.) and extract the list item where the cursor is located.",
     example_section_title: "Examples",
     example_section_title_label: "Section Title",
+    example_no_content: "No content extracted, please enter manually.",
 
     library_view_title: "Library",
     library_search_placeholder: "Search words or aliases...",
@@ -453,7 +460,7 @@ const locale = {
     library_filter_status_mastered: "Mastered",
     library_filter_status_ignored: "Ignored",
     library_filter_source_all: "All sources",
-    library_sort_field_word: "Word (A-Z)",
+    library_sort_field_word: "Word",
     library_sort_field_status: "Status",
     library_sort_field_color: "Color",
     library_sort_field_source: "Source",
@@ -469,8 +476,8 @@ const locale = {
     library_batch_clear: "Clear Selection",
     library_stats_total: "Total: {0}",
     library_stats_mastered: "Mastered: {0} ({1}%)",
-    library_stats_learning: "Learning: {0}",
-    library_stats_ignored: "Ignored: {0}",
+    library_stats_learning: "Learning: {0} ({1}%)",
+    library_stats_ignored: "Ignored: {0} ({1}%)",
     library_table_header_select: "Select",
     library_table_header_word: "Word",
     library_table_header_phonetic: "Phonetic",
@@ -510,6 +517,7 @@ const locale = {
     study_command_open: "Open Study Center",
     study_today_goal: "Today: {0}/{1}",
     study_stats_total: "Total",
+    study_stats_learning_rate: "Learning Rate",
     study_stats_mastered_rate: "Mastered Rate",
     study_stats_ignored_rate: "Ignored Rate",
     study_stats_today_progress: "Today's Progress",
@@ -542,6 +550,7 @@ const locale = {
     study_settings_daily_limit: "Daily Review Limit",
     study_settings_daily_limit_desc: "Maximum words per review session",
     study_settings_review_order: "Review Order",
+    study_settings_review_order_desc: "Controls the sorting order of all words in the due review queue",
     study_settings_review_order_due: "Due First",
     study_settings_review_order_high_level: "High Level First",
     study_settings_review_order_low_level: "Low Level First",
@@ -549,15 +558,15 @@ const locale = {
     study_settings_flashcard_phonetic_desc: "Show phonetic transcription on the card",
     study_settings_flashcard_autoflip: "Auto Flip (seconds)",
     study_settings_flashcard_autoflip_desc: "Automatically flip after seconds (0=disabled)",
-    study_reset_progress: "Reset All Study Progress",
+    study_reset_progress: "Reset All Review Progress",
     study_reset_desc: "Reset all review progress and statistics. This action cannot be undone.",
-    study_reset_confirm: "Are you sure you want to reset all progress? This will clear all review records and statistics.",
-    study_reset_success: "Study progress reset.",
+    study_reset_confirm: "Are you sure you want to reset all review progress? This will clear all review records and statistics.",
+    study_reset_success: "Review progress reset.",
     study_btn_exit: "Exit Review",
     study_btn_prev: "Prev",
     study_btn_next: "Next",
     study_shortcut_hint: "← Forget ｜ Remember →",
-    study_shortcut_hint_4btn: "← Forget ｜ Good →\n↑ Easy ｜ ↓ Hard",
+    study_shortcut_hint_4btn: "← Forget ｜ Good →\n↑ Easy ｜ Hard ↓",
     study_tab_levels: "📈 Levels",
     study_level_all: "All levels",
     study_level_label: "Level {0}",
@@ -571,7 +580,7 @@ const locale = {
     study_goal_cannot_exceed_limit: "Daily goal cannot exceed review limit ({0}).",
     study_goal_adjusted_to_limit: "Daily goal adjusted to match review limit ({0}).",
     study_settings_flashcard_tabs: "Show Tabs for Definition",
-    study_settings_flashcard_tabs_desc: "Display multiple definition sections as tabs on the review card",
+    study_settings_flashcard_tabs_desc: "Display multiple definition sections as tabs on the review card, press number keys 1-9 to switch.",
     study_prep_wordbook: "Wordbook",
     study_prep_all: "All Wordbooks",
     study_prep_total: "Total",
@@ -598,7 +607,7 @@ const locale = {
     study_sort_review_desc: "Review Count ↓",
     library_table_header_difficulty: "Ease Factor",
     study_table_header_review_count: "Reviews",
-    settings_enable_fine_feedback: "Enable Fine Feedback",
+    settings_enable_fine_feedback: "Fine Feedback",
     settings_enable_fine_feedback_desc: "Show 4 feedback buttons (Forget/Hard/Good/Easy) on review cards",
     study_type_filter_all: "All Types",
     study_type_newbie: "🔵 Newbie",
@@ -631,6 +640,12 @@ const locale = {
     study_params_hard: "Hard:",
     study_params_good: "Good:",
     study_params_easy: "Easy:",
+    study_settings_new_word_order: "New Word Order",
+    study_settings_new_word_order_desc: "Order to add new words from the wordbook when due words are insufficient.",
+    study_new_word_order_sequential: "Sequential",
+    study_new_word_order_random: "Random",
+
+    github_link_text: `Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it`,
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -787,6 +802,9 @@ const locale = {
     export_enter_filename: "请输入文件名。",
     export_failed: "导出失败，请查看控制台错误。",
 
+    plugin_language: "插件语言",
+    plugin_language_desc: "选择插件的显示语言。“自动”将自动与 Obsidian 的界面语言同步。",
+    language_follow_obsidian: "自动",
     settings_highlight_preview: "高亮与预览",
     settings_enable_highlight: "启用自动高亮",
     settings_highlight_color: "高亮颜色",
@@ -842,11 +860,11 @@ const locale = {
     settings_scope_paths: "路径列表",
     settings_scope_paths_desc: "每行一个路径。Markdown 文件必须包含 '.md' 后缀。输入 '*' 可匹配仓库根目录下的所有文件（不含子文件夹）。",
     scope_paths_placeholder: "文件夹/笔记.md\n文件夹",
-    settings_tab_files: "文件管理",
-    settings_tab_general: "常规设置",
+    settings_tab_files: "文件",
+    settings_tab_general: "常规",
     command_open_settings: "打开设置",
 
-    settings_tab_tts: "发音设置",
+    settings_tab_tts: "发音",
     tts_pronunciation_general: "通用发音设置",
     tts_default_lang_label: "默认发音语言",
     tts_default_lang_desc: "当单词未设置「lang」字段时，使用此语言发音",
@@ -913,8 +931,9 @@ const locale = {
     tts_system_auto_switched: "已自动切换到 {voice} 以支持当前语言。",
     tts_system_no_voice_for_lang: "当前系统缺少 {lang} 语音包，请安装语音包或关闭“系统 TTS”。",
     command_pronounce_selected: "朗读选中的文本",
+    tts_test_enter_word: "请输入要测试的单词。",
 
-    settings_tab_ai: "AI 配置",
+    settings_tab_ai: "AI",
     settings_api_config: "API 配置",
     settings_ai_provider: "服务提供商",
     settings_ai_provider_desc: "选择预设服务商或自定义",
@@ -1022,6 +1041,8 @@ const locale = {
     notice_card_data_not_found: "未找到该单词的卡片数据",
     notice_mastery_label_on: "取消掌握",
     notice_mastery_label_off: "标记掌握",
+    notice_ignored_label_on: "取消忽略",
+    notice_ignored_label_off: "标记忽略",
     notice_mastery_marked: '已标记 "{0}" 为掌握',
     notice_mastery_unmarked: '已取消 "{0}" 的掌握',
     notice_locate_label: "在侧边栏定位",
@@ -1081,6 +1102,7 @@ const locale = {
     example_mode_list_desc: "检测列表标记（-、*、数字.），提取光标所在的列表项。",
     example_section_title: "例句",
     example_section_title_label: "章节标题",
+    example_no_content: "未提取到内容，请手动输入。",
 
     library_view_title: "词库管理",
     library_search_placeholder: "搜索单词或别名...",
@@ -1091,7 +1113,7 @@ const locale = {
     library_filter_status_mastered: "掌握",
     library_filter_status_ignored: "忽略",
     library_filter_source_all: "所有来源",
-    library_sort_field_word: "单词 (A-Z)",
+    library_sort_field_word: "单词",
     library_sort_field_status: "状态",
     library_sort_field_color: "颜色",
     library_sort_field_source: "来源",
@@ -1107,8 +1129,8 @@ const locale = {
     library_batch_clear: "清空选择",
     library_stats_total: "总计: {0}",
     library_stats_mastered: "掌握: {0} ({1}%)",
-    library_stats_learning: "学习: {0}",
-    library_stats_ignored: "忽略: {0}",
+    library_stats_learning: "学习: {0} ({1}%)",
+    library_stats_ignored: "忽略: {0} ({1}%)",
     library_table_header_select: "选择",
     library_table_header_word: "单词",
     library_table_header_phonetic: "音标",
@@ -1148,13 +1170,14 @@ const locale = {
     study_command_open: "打开学习中心",
     study_today_goal: "今日：{0}/{1}",
     study_stats_total: "总词汇",
-    study_stats_mastered_rate: "掌握率",
-    study_stats_ignored_rate: "忽略率",
+    study_stats_learning_rate: "学习占比",
+    study_stats_mastered_rate: "掌握占比",
+    study_stats_ignored_rate: "忽略占比",
     study_stats_today_progress: "今日进度",
     study_stats_streak: "连续学习",
     study_stats_streak_days: "{0} 天",
     study_tab_review: "📖 复习",
-    study_tab_mastered: "✅ 已掌握",
+    study_tab_mastered: "✅ 掌握",
     study_tab_stats: "📊 统计",
     study_tab_settings: "⚙️ 设置",
     study_review_motivation: "今日到期{0}个词，本轮复习{1}个词，冲鸭！",
@@ -1180,6 +1203,7 @@ const locale = {
     study_settings_daily_limit: "单次复习上限",
     study_settings_daily_limit_desc: "每次复习最多可复习的单词数",
     study_settings_review_order: "复习排序",
+    study_settings_review_order_desc: "控制到期复习队列中所有词的排序方式",
     study_settings_review_order_due: "到期优先",
     study_settings_review_order_high_level: "高等级优先",
     study_settings_review_order_low_level: "低等级优先",
@@ -1187,16 +1211,16 @@ const locale = {
     study_settings_flashcard_phonetic_desc: "在卡片上显示音标",
     study_settings_flashcard_autoflip: "自动翻转（秒）",
     study_settings_flashcard_autoflip_desc: "几秒后自动翻转卡片（0=关闭）",
-    study_reset_progress: "重置所有学习进度",
+    study_reset_progress: "重置所有复习进度",
     study_reset_desc: "重置所有复习进度和统计数据，此操作不可撤销。",
-    study_reset_confirm: "确定要重置所有学习进度吗？这将清除所有复习记录和统计数据。",
-    study_reset_success: "学习进度已重置。",
+    study_reset_confirm: "确定要重置所有复习进度吗？这将清除所有复习记录和统计数据。",
+    study_reset_success: "复习进度已重置。",
     study_btn_exit: "退出复习",
     study_btn_prev: "上一个",
     study_btn_next: "下一个",
     study_shortcut_hint: "← 忘记 ｜ 记得 →",
-    study_shortcut_hint_4btn: "← 忘记 ｜ 良好 →\n↑ 简单 ｜ ↓ 困难",
-    study_tab_levels: "📈 等级列表",
+    study_shortcut_hint_4btn: "← 忘记 ｜ 良好 →\n↑ 简单 ｜ 困难 ↓",
+    study_tab_levels: "📈 等级",
     study_level_all: "全部等级",
     study_level_label: "等级 {0}",
     study_no_words_for_level: "该等级暂无单词",
@@ -1209,7 +1233,7 @@ const locale = {
     study_goal_cannot_exceed_limit: "每日目标不能超过单次复习上限（{0}）。",
     study_goal_adjusted_to_limit: "每日目标已自动调整为 {0} 以匹配复习上限。",
     study_settings_flashcard_tabs: "释义以标签页显示",
-    study_settings_flashcard_tabs_desc: "在复习卡片上将多段释义显示为标签页形式",
+    study_settings_flashcard_tabs_desc: "在复习卡片上将多段释义显示为标签页形式，按数字键 1-9 快速切换。",
     study_prep_wordbook: "词库",
     study_prep_all: "综合所有词库",
     study_prep_total: "总计",
@@ -1236,8 +1260,8 @@ const locale = {
     study_sort_review_desc: "复习次数 ↓",
     library_table_header_difficulty: "难易系数",
     study_table_header_review_count: "复习次数",
-    settings_enable_fine_feedback: "启用精细反馈",
-    settings_enable_fine_feedback_desc: "开启后，复习卡片显示 4 个反馈按钮（忘记/困难/良好/简单）",
+    settings_enable_fine_feedback: "精细反馈",
+    settings_enable_fine_feedback_desc: "复习卡片显示 4 个反馈按钮（忘记/困难/良好/简单）",
     study_type_filter_all: "全部类型",
     study_type_newbie: "🔵 新手词",
     study_type_steady: "🟡 稳步词",
@@ -1269,6 +1293,12 @@ const locale = {
     study_params_hard: "困难：",
     study_params_good: "良好：",
     study_params_easy: "简单：",
+    study_settings_new_word_order: "新词补充顺序",
+    study_settings_new_word_order_desc: "当到期词不足时，从词库中补充新词的顺序。",
+    study_new_word_order_sequential: "顺序",
+    study_new_word_order_random: "随机",
+
+    github_link_text: `点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐`,
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1290,24 +1320,23 @@ const locale = {
 
 // 轻量级语言工具
 function getLocale() {
+  // 检查插件自身语言设置
+  const plugin = globalThis.__simpleWordbookPlugin;
+  if (plugin?.settings?.pluginLanguage === "en") return locale.en;
+  if (plugin?.settings?.pluginLanguage === "zh") return locale.zh;
+
+  // 自动检测 Obsidian 当前界面语言
   const lang = window.localStorage.getItem("language") || "en";
   // 标准化语言代码：'zh-TW' -> 'zh', 'en-US' -> 'en'
   const normalizedLang = lang.split('-')[0];
 
-  // Obsidian 官方支持的所有语言代码（基于 obsidian-translations 仓库）
-  const supported = [
-    'af', 'am', 'ar', 'az', 'be', 'bg', 'bn', 'ca', 'cs', 'da', 'de', 'dv',
-    'el', 'en', 'eo', 'es', 'eu', 'fa', 'fi', 'fr', 'ga', 'gl', 'he', 'hi',
-    'hr', 'hu', 'id', 'it', 'ja', 'ko', 'lv', 'ml', 'ms', 'ne', 'nl', 'nn',
-    'no', 'oc', 'or', 'pl', 'pt', 'ro', 'ru', 'si', 'sk', 'sl', 'sq', 'sr',
-    'sv', 'ta', 'te', 'th', 'tr', 'uk', 'ur', 'vi', 'zh'
-  ];
-
-  if (supported.includes(normalizedLang) && locale[normalizedLang]) {
+  // 如果 locale 中存在该语言，直接返回；否则回退到英文
+  if (locale[normalizedLang]) {
     return locale[normalizedLang];
   }
   return locale.en;
 }
+
 function t(key, ...args) {
   const currentLocale = getLocale();
   // 优先当前语言，没有则回退到英文，再没有才显示 key 本身
@@ -1458,6 +1487,7 @@ const DEFAULT_SETTINGS = {
   masteryMode: "global",  // 可选 "per-source" 或 "global"
   masteryFilePath: "",
   ignoredFilePath: "",
+  pluginLanguage: "auto",
   enableHighlight: true,
   enableHoverPreview: true,
   enableBlurDefinition: false,
@@ -1520,17 +1550,17 @@ const DEFAULT_SETTINGS = {
   study: {
     dailyGoal: 10,
     dailyReviewLimit: 20,
+    flashcardAutoFlip: 0,          // 秒，0 表示关闭
+    newWordOrder: "sequential",  // "sequential" | "random"
     reviewOrder: "due_first",
     flashcardShowPhonetic: true,
     flashcardShowTabs: true,
-    flashcardAutoFlip: 0,          // 秒，0 表示关闭
-    intervalDays: [1, 2, 4, 8, 16],
-    enableSpacedRepetition: true,
     enableFineFeedback: false,
+    intervalDays: [1, 2, 4, 8, 16],
     selectedWordbook: "all",
   },
 
-  // ===== 学习算法参数 =====
+  // ---- 学习算法参数 ----
   studyParams: {
     baseDelta: {
       again: -0.12,
@@ -2910,8 +2940,23 @@ class StudyStore {
     // 如果到期单词不够 limit，从待初始化中补充
     const need = limit - due.length;
     if (need > 0 && toInit.length > 0) {
-      // 只取前 need 个进行初始化
-      const toInitBatch = toInit.slice(0, need);
+      let toInitBatch;
+
+      // 检查用户设置（顺序/乱序）
+      const newWordOrder = this.plugin.settings.study.newWordOrder || "sequential";
+      if (newWordOrder === "random") {
+        // 随机打乱 toInit 数组（Fisher-Yates 洗牌算法）
+        const shuffled = [...toInit];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        toInitBatch = shuffled.slice(0, need);
+      } else {
+        // 按顺序取前 need 个
+        toInitBatch = toInit.slice(0, need);
+      }
+
       for (const card of toInitBatch) {
         const key = this.getReviewKey(card.word, card.sourceFile);
         // 直接写入 data.reviews，避免多次 save
@@ -3030,6 +3075,7 @@ class StudyStore {
       colorCounts,
       streak,
       trend,
+      learningRate: total ? (learning / total * 100) : 0,
       masteredRate: total ? (mastered / total * 100) : 0,
       ignoredRate: total ? (ignored / total * 100) : 0
     };
@@ -4653,6 +4699,7 @@ class SidebarView extends ItemView {
       const masteryBtn = actionsDiv.createDiv({ cls: "action-icon" });
       setIcon(masteryBtn, wordObj.mastered ? "meh" : "smile");
       masteryBtn.classList.add(wordObj.mastered ? "icon-meh" : "icon-smile");
+      masteryBtn.setAttribute("title", wordObj.mastered ? t("notice_mastery_label_on") : t("notice_mastery_label_off"));
       masteryBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newState = !wordObj.mastered;
@@ -4665,6 +4712,7 @@ class SidebarView extends ItemView {
       const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
       setIcon(ignoreBtn, wordObj.ignored ? "eye-off" : "eye");
       ignoreBtn.classList.add(wordObj.ignored ? "icon-eye-off" : "icon-eye");
+      ignoreBtn.setAttribute("title", wordObj.ignored ? t("notice_ignored_label_on") : t("notice_ignored_label_off"));
       ignoreBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newIgnore = !wordObj.ignored;
@@ -4931,6 +4979,7 @@ class LookupView extends ItemView {
     this.currentPromptName = "";
     this.resultMarkdown = "";
     this.isLoading = false;
+    this.currentMode = "local";
   }
 
   getViewType() { return VIEW_TYPE_LOOKUP; }
@@ -4942,6 +4991,15 @@ class LookupView extends ItemView {
     this.containerEl.addClass("simple-wordbook-lookup-panel");
     this.buildUI();
     this.refreshPromptSelect();
+
+    // 监听数据更新事件，自动刷新查词结果
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => {
+      // 仅在本地模式下自动刷新
+      if (this.currentWord && this.searchInput && this.currentMode === "local") {
+        this.doLocalLookup(this.currentWord);
+      }
+    }));
+
     // 如果有待查询的单词，自动查询
     if (this.currentWord) {
       this.searchInput.value = this.currentWord;
@@ -4958,6 +5016,14 @@ class LookupView extends ItemView {
         }
       }
     }
+  }
+
+  // 刷新视图
+  async refresh() {
+    // 清空并重建 UI
+    this.containerEl.empty();
+    this.buildUI();
+    this.refreshPromptSelect();
   }
 
   buildUI() {
@@ -5076,6 +5142,7 @@ class LookupView extends ItemView {
       const isMastered = this.plugin.masteryStore.isMastered(card._stateKey || card.word);
       setIcon(masteryBtn, isMastered ? "meh" : "smile");
       masteryBtn.classList.add(isMastered ? "icon-meh" : "icon-smile");
+      masteryBtn.setAttribute("title", isMastered ? t("notice_mastery_label_on") : t("notice_mastery_label_off"));
       masteryBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newState = !isMastered;
@@ -5089,6 +5156,7 @@ class LookupView extends ItemView {
       const isIgnored = this.plugin.masteryStore.isIgnored(card._stateKey || card.word);
       setIcon(ignoreBtn, isIgnored ? "eye-off" : "eye");
       ignoreBtn.classList.add(isIgnored ? "icon-eye-off" : "icon-eye");
+      ignoreBtn.setAttribute("title", isIgnored ? t("notice_ignored_label_on") : t("notice_ignored_label_off"));
       ignoreBtn.addEventListener("click", async (e) => {
         e.stopPropagation();
         const newIgnore = !isIgnored;
@@ -5338,6 +5406,7 @@ class LookupView extends ItemView {
       new Notice(t("lookup_empty_word"));
       return;
     }
+    this.currentMode = "local";
     this.currentWord = word.trim();
     const inputLower = this.currentWord.toLowerCase();
 
@@ -5393,6 +5462,7 @@ class LookupView extends ItemView {
       new Notice(t("lookup_empty_word"));
       return;
     }
+    this.currentMode = "ai";
     this.currentWord = word.trim();
     const promptName = this.promptSelect ? this.promptSelect.value : "默认";
     this.currentPromptName = promptName;
@@ -5590,6 +5660,15 @@ class LibraryView extends ItemView {
     }));
   }
 
+  // 刷新视图
+  async refresh() {
+    // 清空并重建 UI
+    this.containerEl.empty();
+    this.buildUI();
+    await this.loadData();
+    this.render();
+  }
+
   onClose() {
     if (this._scrollListener) {
       this.scrollContainer?.removeEventListener("scroll", this._scrollListener);
@@ -5614,7 +5693,7 @@ class LibraryView extends ItemView {
     // 筛选：颜色
     const colorFilter = toolbar.createEl("select");
     colorFilter.add(new Option(t("library_filter_color_all"), "all"));
-    const colors = ["red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan", ""];
+    const colors = ["", "red", "orange", "yellow", "green", "blue", "purple", "pink", "cyan"];
     for (const c of colors) {
       const label = c ? t("color_" + c) : t("library_filter_color_default");
       colorFilter.add(new Option(label, c || "default"));
@@ -5663,22 +5742,33 @@ class LibraryView extends ItemView {
     });
 
     // 排序方向按钮
-    const sortDirBtn = toolbar.createEl("button", { text: "🔄", title: t("library_sort_toggle") });
+    const sortDirBtn = toolbar.createEl("button", { title: t("library_sort_toggle") });
+
+    const updateSortIcon = () => {
+      setIcon(sortDirBtn, this.sortAsc ? "arrow-up" : "arrow-down");
+    };
+    updateSortIcon();
+
     sortDirBtn.addEventListener("click", () => {
       this.sortAsc = !this.sortAsc;
+      updateSortIcon();
       this.filterData();
       this.render();
     });
 
     // 全选按钮
-    const selectAllBtn = toolbar.createEl("button", {
-      text: "☑",
-      title: t("library_select_all_title")
-    });
+    const selectAllBtn = toolbar.createEl("button", { title: t("library_select_all_title") });
+
+    const updateSelectAllIcon = () => {
+      const total = this.filteredCards.length;
+      const isAllSelected = total > 0 && this.selectedRows.size === total;
+      setIcon(selectAllBtn, isAllSelected ? "check-square" : "square");
+    };
+    updateSelectAllIcon();
+
     selectAllBtn.addEventListener("click", () => {
       const total = this.filteredCards.length;
       if (total === 0) return;
-      // 如果已全选则取消全选，否则全选所有当前显示的行
       if (this.selectedRows.size === total) {
         this.selectedRows.clear();
       } else {
@@ -5686,6 +5776,7 @@ class LibraryView extends ItemView {
           this.selectedRows.add(card._uid);
         }
       }
+      updateSelectAllIcon();
       this.updateBatchBar();
       this.render();
     });
@@ -5867,17 +5958,25 @@ class LibraryView extends ItemView {
     const mastered = this.allCards.filter(c => c._mastered).length;
     const ignored = this.allCards.filter(c => c._ignored).length;
     const learning = total - mastered - ignored;
-    const displayPct = total ? (mastered / total * 100).toFixed(1) : "0.0";
-    const widthPct = total ? Math.round(mastered / total * 100) : 0;
+
+    const masteredPct = total ? (mastered / total * 100).toFixed(1) : "0.0";
+    const learningPct = total ? (learning / total * 100).toFixed(1) : "0.0";
+    const ignoredPct = total ? (ignored / total * 100).toFixed(1) : "0.0";
+
+    const masteredBar = total ? Math.round(mastered / total * 100) : 0;
+    const ignoredBar = total ? Math.round(ignored / total * 100) : 0;
+
     this.statsBar.innerHTML = `
     <span>${t("library_stats_total", total)}</span>
-    <span>${t("library_stats_mastered", mastered, displayPct)}</span>
-    <span>${t("library_stats_learning", learning)}</span>
-    <span>${t("library_stats_ignored", ignored)}</span>
-    <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px;">
-      <div style="width:${widthPct}%; height:100%; background:var(--color-green); border-radius:3px;"></div>
+    <span>学习: ${learning} (${learningPct}%)</span>
+    <span>${t("library_stats_mastered", mastered, masteredPct)}</span>
+    <span>忽略: ${ignored} (${ignoredPct}%)</span>
+    <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px; overflow:hidden; display:flex;">
+        <div style="width:${masteredBar}%; height:100%; background:var(--color-green); border-radius:3px 0 0 3px; flex-shrink:0;"></div>
+        <div style="width:${ignoredBar}%; height:100%; background:var(--text-muted); border-radius:0 3px 3px 0; flex-shrink:0;"></div>
+        <div style="flex:1; height:100%; background:transparent;"></div>
     </div>
-  `;
+    `;
   }
 
   // ---------- 渲染（虚拟滚动） ----------
@@ -6265,16 +6364,42 @@ class StudyView extends ItemView {
       return;
     }
 
-    // 处理按键
+    // 数字键 1-9 切换标签（仅背面）
+    if (e.key >= '1' && e.key <= '9') {
+      if (!this.isFlipped) return;
+      const cardEl = this.cardContainer;
+      if (!cardEl) return;
+      const tabBar = cardEl.querySelector('.study-card-tab-bar');
+      if (!tabBar) return;
+      const tabs = tabBar.querySelectorAll('.study-card-tab');
+      const idx = parseInt(e.key) - 1;
+      if (idx < tabs.length) {
+        e.preventDefault();
+        e.stopPropagation();
+        tabs[idx].click();
+        tabs[idx].focus();
+      }
+      return;
+    }
+    // 空格翻转
     if (e.key === " " || e.key === "Space") {
       e.preventDefault();
       this.toggleCardFlip();
+      // Ctrl + ←/→ 上一个/下一个
+    } else if (e.key === "ArrowLeft" && e.ctrlKey) {
+      e.preventDefault();
+      this.goToPrevCard();
+    } else if (e.key === "ArrowRight" && e.ctrlKey) {
+      e.preventDefault();
+      this.goToNextCard();
+      // 左右箭头
     } else if (e.key === "ArrowRight") {
       e.preventDefault();
       this.handleRemember('good');
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       this.handleForget();
+      // 上下箭头（精细反馈模式）
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
       const enableFineFeedback = this.plugin.settings.study.enableFineFeedback || false;
@@ -6345,8 +6470,31 @@ class StudyView extends ItemView {
     this._keyHandler = null;
   }
 
-  // ----- 刷新当前标签 -----
+  // ----- 刷新视图 -----
   async refresh() {
+    // 刷新顶部标题栏
+    const titleEl = this.containerEl?.querySelector('.study-title');
+    if (titleEl) {
+      titleEl.textContent = t("study_view_title");
+    }
+
+    // 刷新标签栏文字
+    const tabMap = [
+      { id: "review", key: "study_tab_review" },
+      { id: "mastered", key: "study_tab_mastered" },
+      { id: "levels", key: "study_tab_levels" },
+      { id: "stats", key: "study_tab_stats" },
+      { id: "settings", key: "study_tab_settings" }
+    ];
+    for (const tab of tabMap) {
+      const tabEl = this.containerEl?.querySelector(`.study-tab[data-tab="${tab.id}"]`);
+      if (tabEl) {
+        tabEl.textContent = t(tab.key);
+      }
+    }
+    this.updateTopBar();
+
+    // 刷新当前标签
     if (this.currentTab === "review") this.renderReviewTab();
     else if (this.currentTab === "mastered") this.renderMasteredTab();
     else if (this.currentTab === "levels") this.renderLevelsTab();
@@ -6599,7 +6747,12 @@ class StudyView extends ItemView {
 
     // 退出按钮
     const exitRow = container.createDiv({ cls: "study-exit-row" });
-    const exitBtn = exitRow.createEl("button", { text: "🚪 " + t("study_btn_exit"), cls: "study-exit-btn" });
+    const exitBtn = exitRow.createEl("button", { cls: "study-exit-btn" });
+    exitBtn.style.display = "flex";
+    exitBtn.style.alignItems = "center";
+    exitBtn.style.gap = "4px";
+    setIcon(exitBtn, "log-out");
+    exitBtn.appendText(t("study_btn_exit"));
     exitBtn.addEventListener("click", () => {
       if (this._autoFlipTimer) {
         clearTimeout(this._autoFlipTimer);
@@ -6782,25 +6935,27 @@ class StudyView extends ItemView {
 
     // 上一个按钮
     const prevBtn = btnWrapper.createEl("button", { text: "◀ " + t("study_btn_prev"), cls: "study-nav-btn" });
+    prevBtn.setAttribute("title", "Ctrl + ←");
     prevBtn.addEventListener("click", () => {
-      if (this.currentIndex > 0) {
-        this.currentIndex--;
-        this.renderReviewSession(this.contentEl);
-      }
+      this.goToPrevCard();
     });
 
     if (enableFineFeedback) {
       // 4 按钮模式
       const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-forget" });
+      forgetBtn.setAttribute("title", "←");
       forgetBtn.addEventListener("click", () => this.handleForget());
 
       const hardBtn = btnWrapper.createEl("button", { text: t("study_btn_hard"), cls: "mod-hard" });
+      hardBtn.setAttribute("title", "↓");
       hardBtn.addEventListener("click", () => this.handleHard());
 
       const goodBtn = btnWrapper.createEl("button", { text: t("study_btn_good"), cls: "mod-good" });
+      goodBtn.setAttribute("title", "→");
       goodBtn.addEventListener("click", () => this.handleRemember('good'));
 
       const easyBtn = btnWrapper.createEl("button", { text: t("study_btn_easy"), cls: "mod-easy" });
+      easyBtn.setAttribute("title", "↑");
       easyBtn.addEventListener("click", () => this.handleEasy());
 
       // 禁用已掌握单词的所有按钮
@@ -6827,9 +6982,11 @@ class StudyView extends ItemView {
     } else {
       // 2 按钮模式（默认）
       const forgetBtn = btnWrapper.createEl("button", { text: t("study_btn_forget"), cls: "mod-forget" });
+      forgetBtn.setAttribute("title", "←");
       forgetBtn.addEventListener("click", () => this.handleForget());
 
       const rememberBtn = btnWrapper.createEl("button", { text: t("study_btn_remember"), cls: "mod-good" });
+      rememberBtn.setAttribute("title", "→");
       rememberBtn.addEventListener("click", () => this.handleRemember('good'));
 
       // 禁用已掌握单词的按钮
@@ -6851,11 +7008,9 @@ class StudyView extends ItemView {
 
     // 下一个按钮
     const nextBtn = btnWrapper.createEl("button", { text: t("study_btn_next") + " ▶", cls: "study-nav-btn" });
+    nextBtn.setAttribute("title", "Ctrl + →");
     nextBtn.addEventListener("click", () => {
-      if (this.currentIndex < this.reviewQueue.length - 1) {
-        this.currentIndex++;
-        this.renderReviewSession(this.contentEl);
-      }
+      this.goToNextCard();
     });
 
     // 根据索引禁用导航按钮（视觉反馈）
@@ -7025,6 +7180,20 @@ class StudyView extends ItemView {
     await this.handleRemember('easy');
   }
 
+  // ----- 复习卡片导航（上一个/下一个） -----
+  goToPrevCard() {
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      this.renderReviewTab();
+    }
+  }
+  goToNextCard() {
+    if (this.currentIndex < this.reviewQueue.length - 1) {
+      this.currentIndex++;
+      this.renderReviewTab();
+    }
+  }
+
   // ----- 开始复习 -----
   startReviewWithWords(dueWords) {
     this.reviewQueue = dueWords;
@@ -7100,10 +7269,12 @@ class StudyView extends ItemView {
           const phonetic = (card.phonetic || "").toLowerCase();
           const definition = (card.definition || "").toLowerCase();
           const source = card.sourceFile.split('/').pop().toLowerCase();
+          const aliases = (card.aliases || []).join(' ').toLowerCase();
           return word.includes(q) ||
             phonetic.includes(q) ||
             definition.includes(q) ||
-            source.includes(q);
+            source.includes(q) ||
+            aliases.includes(q);
         });
       }
 
@@ -7370,10 +7541,12 @@ class StudyView extends ItemView {
           const phonetic = (card.phonetic || "").toLowerCase();
           const definition = (card.definition || "").toLowerCase();
           const source = card.sourceFile.split('/').pop().toLowerCase();
+          const aliases = (card.aliases || []).join(' ').toLowerCase();
           return word.includes(q) ||
             phonetic.includes(q) ||
             definition.includes(q) ||
-            source.includes(q);
+            source.includes(q) ||
+            aliases.includes(q);
         });
       }
 
@@ -7604,6 +7777,7 @@ class StudyView extends ItemView {
     const overview = container.createDiv({ cls: "study-stats-overview" });
     const items = [
       { label: t("study_stats_total"), value: stats.total },
+      { label: t("study_stats_learning_rate"), value: stats.learningRate.toFixed(1) + "%" },
       { label: t("study_stats_mastered_rate"), value: stats.masteredRate.toFixed(1) + "%" },
       { label: t("study_stats_ignored_rate"), value: stats.ignoredRate.toFixed(1) + "%" },
       { label: t("study_stats_today_progress"), value: (this.studyStore.getTodayStats().reviewed || 0) },
@@ -7641,17 +7815,6 @@ class StudyView extends ItemView {
 
     const legend = dist.createDiv({ cls: "chart-legend" });
 
-    // 已掌握 - 绿色色块
-    const masteredItem = legend.createSpan();
-    const masteredDot = masteredItem.createSpan({ cls: "color-dot" });
-    masteredDot.style.backgroundColor = "var(--color-green)";
-    masteredDot.style.display = "inline-block";
-    masteredDot.style.width = "12px";
-    masteredDot.style.height = "12px";
-    masteredDot.style.borderRadius = "3px";
-    masteredDot.style.marginRight = "4px";
-    masteredItem.append(` ${t("library_status_mastered")} (${mastered})`);
-
     // 学习中 - 蓝色色块
     const learningItem = legend.createSpan();
     const learningDot = learningItem.createSpan({ cls: "color-dot" });
@@ -7662,6 +7825,17 @@ class StudyView extends ItemView {
     learningDot.style.borderRadius = "3px";
     learningDot.style.marginRight = "4px";
     learningItem.append(` ${t("library_status_learning")} (${learning})`);
+
+    // 已掌握 - 绿色色块
+    const masteredItem = legend.createSpan();
+    const masteredDot = masteredItem.createSpan({ cls: "color-dot" });
+    masteredDot.style.backgroundColor = "var(--color-green)";
+    masteredDot.style.display = "inline-block";
+    masteredDot.style.width = "12px";
+    masteredDot.style.height = "12px";
+    masteredDot.style.borderRadius = "3px";
+    masteredDot.style.marginRight = "4px";
+    masteredItem.append(` ${t("library_status_mastered")} (${mastered})`);
 
     // 已忽略 - 灰色色块
     const ignoredItem = legend.createSpan();
@@ -7692,16 +7866,23 @@ class StudyView extends ItemView {
       const height = 130;
       const padding = { top: 12, bottom: 18 };
       const chartH = height - padding.top - padding.bottom;
+      const margin = 10;
+
+      // 计算 x 坐标（左右对称边距）
+      const getX = (index, total) => {
+        const denom = total - 1 || 1;
+        return (index / denom) * (width - margin * 2) + margin;
+      };
+
+      // 计算 y 坐标
+      const getY = (count) => {
+        return padding.top + chartH - (count / max) * chartH * 0.9;
+      };
 
       // 创建 SVG
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("class", "trend-svg");
       svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-      svg.style.width = "100%";
-      svg.style.height = `${height}px`;
-      svg.style.background = "var(--background-secondary)";
-      svg.style.borderRadius = "8px";
-      svg.style.padding = "4px 0";
       container.appendChild(svg);
 
       // 网格线
@@ -7718,16 +7899,24 @@ class StudyView extends ItemView {
         svg.appendChild(line);
       }
 
+      // 找出峰值（复习数量的最大值）
+      let maxCountValue = -1;
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].count > maxCountValue) {
+          maxCountValue = data[i].count;
+        }
+      }
+
       // X 轴刻度与日期标签
       const xLabelStep = 7; // 每 7 天显示一个标签
       const dataLen = data.length;
 
       for (let i = 0; i < dataLen; i++) {
         // 只在步长点或最后一天（今天）显示标签
-        if (i % xLabelStep === 0 || i === dataLen - 1) {
-          const x = (i / (dataLen - 1 || 1)) * (width - 10) + 5;
+        if (i % xLabelStep === 0 || i === dataLen - 1 || (maxCountValue >= 1 && data[i].count === maxCountValue)) {
+          const x = getX(i, dataLen);
           const yBase = padding.top + chartH; // 网格线底部Y坐标
-          const dataY = padding.top + chartH - (data[i].count / max) * chartH * 0.9; // 数据点Y坐标
+          const dataY = getY(data[i].count); // 数据点Y坐标
 
           // 1. 垂直网格线（浅色虚线）
           const vLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -7754,10 +7943,15 @@ class StudyView extends ItemView {
           text.setAttribute("fill", "var(--text-muted)");
           text.textContent = label;
 
-          // 今天的日期特殊高亮（加粗或改色）
+          // 今日或峰值加粗高亮
           if (i === dataLen - 1) {
+            // 今日：主题色
             text.setAttribute("font-weight", "bold");
             text.setAttribute("fill", "var(--text-accent)");
+          } else if (maxCountValue >= 1 && data[i].count === maxCountValue) {
+            // 峰值：绿色
+            text.setAttribute("font-weight", "bold");
+            text.setAttribute("fill", "var(--color-green)");
           }
 
           svg.appendChild(text);
@@ -7771,18 +7965,26 @@ class StudyView extends ItemView {
           countText.setAttribute("fill", "var(--text-muted)");
           countText.setAttribute("opacity", "0.8");
           countText.textContent = data[i].count;
+
+          // 今日或峰值加粗高亮
           if (i === dataLen - 1) {
+            // 今日：主题色
             countText.setAttribute("font-weight", "bold");
             countText.setAttribute("fill", "var(--text-accent)");
+          } else if (maxCountValue >= 1 && data[i].count === maxCountValue) {
+            // 峰值：绿色
+            countText.setAttribute("font-weight", "bold");
+            countText.setAttribute("fill", "var(--color-green)");
           }
+
           svg.appendChild(countText);
         }
       }
 
       // 计算折线坐标
       const points = data.map((d, i) => {
-        const x = (i / (data.length - 1 || 1)) * (width - 10) + 5;
-        const y = padding.top + chartH - (d.count / max) * chartH * 0.9;
+        const x = getX(i, data.length);
+        const y = getY(d.count);
         return `${x.toFixed(2)},${y.toFixed(2)}`;
       }).join(" ");
 
@@ -7827,14 +8029,14 @@ class StudyView extends ItemView {
 
       // 数据点
       data.forEach((d, i) => {
-        const x = (i / (data.length - 1 || 1)) * (width - 10) + 5;
-        const y = padding.top + chartH - (d.count / max) * chartH * 0.9;
+        const x = getX(i, data.length);
+        const y = getY(d.count);
 
         // 外发光
         const glow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         glow.setAttribute("cx", x.toFixed(2));
         glow.setAttribute("cy", y.toFixed(2));
-        glow.setAttribute("r", "4");
+        glow.setAttribute("r", "6");
         glow.setAttribute("fill", "var(--interactive-accent)");
         glow.setAttribute("opacity", "0.15");
         svg.appendChild(glow);
@@ -7849,14 +8051,23 @@ class StudyView extends ItemView {
         circle.setAttribute("stroke-width", "2");
         svg.appendChild(circle);
 
-        // 今天高亮
-        if (i === data.length - 1) {
+        // 今日 + 峰值高亮（空心虚线圆）
+        if (i === data.length - 1 || (maxCountValue >= 1 && d.count === maxCountValue)) {
           const highlight = document.createElementNS("http://www.w3.org/2000/svg", "circle");
           highlight.setAttribute("cx", x.toFixed(2));
           highlight.setAttribute("cy", y.toFixed(2));
           highlight.setAttribute("r", "8");
           highlight.setAttribute("fill", "none");
-          highlight.setAttribute("stroke", "var(--interactive-accent)");
+
+          // 今日或峰值高亮
+          if (i === data.length - 1) {
+            // 今日：主题色
+            highlight.setAttribute("stroke", "var(--interactive-accent)");
+          } else if (maxCountValue >= 1 && d.count === maxCountValue) {
+            // 峰值：绿色
+            highlight.setAttribute("stroke", "var(--color-green)");
+          }
+
           highlight.setAttribute("stroke-width", "1.5");
           highlight.setAttribute("stroke-dasharray", "3,3");
           highlight.setAttribute("opacity", "0.6");
@@ -7956,7 +8167,12 @@ class StudyView extends ItemView {
     for (const [col, count] of Object.entries(colorData)) {
       const row = colorList.createDiv({ cls: "color-item" });
 
-      // 文字
+      // 色块 + 颜色名称
+      const leftGroup = row.createSpan({ cls: "color-item-left" });
+      const dot = leftGroup.createSpan({ cls: "color-dot" });
+      const colVal = colorMap[col] || 'var(--interactive-accent)';
+      dot.style.backgroundColor = colVal;
+
       let colorName;
       if (col === 'default' || col === '') {
         colorName = t("color_default");
@@ -7964,12 +8180,10 @@ class StudyView extends ItemView {
         const translated = t("color_" + col);
         colorName = (translated !== "color_" + col) ? translated : col;
       }
-      const textSpan = row.createSpan({ text: `${colorName}: ${count}` });
+      leftGroup.append(` ${colorName}`);
 
-      // 色块
-      const dot = row.createSpan({ cls: "color-dot" });
-      const colVal = colorMap[col] || 'var(--interactive-accent)';
-      dot.style.backgroundColor = colVal;
+      // 计数
+      const countSpan = row.createSpan({ cls: "count", text: count });
     }
   }
 
@@ -8049,53 +8263,6 @@ class StudyView extends ItemView {
       }
     });
 
-    // 复习排序
-    const orderSetting = container.createDiv({ cls: "study-setting-item" });
-    orderSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_review_order") });
-    const orderControl = orderSetting.createDiv({ cls: "study-setting-control" });
-    const orderSelect = orderControl.createEl("select");
-    orderSelect.createEl("option", { value: "due_first", text: t("study_settings_review_order_due") });
-    orderSelect.createEl("option", { value: "level_high_first", text: t("study_settings_review_order_high_level") });
-    orderSelect.createEl("option", { value: "level_low_first", text: t("study_settings_review_order_low_level") });
-    orderSelect.value = settings.reviewOrder || "due_first";
-    orderSelect.addEventListener("change", async (e) => {
-      settings.reviewOrder = e.target.value;
-      this.plugin.settings.study.reviewOrder = settings.reviewOrder;
-      await this.plugin.saveSettings();
-    });
-
-    // 显示音标（开关）
-    const phoneticSetting = container.createDiv({ cls: "study-setting-item" });
-    phoneticSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_phonetic") });
-    phoneticSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_phonetic_desc") });
-    const phoneticControl = phoneticSetting.createDiv({ cls: "study-setting-control" });
-    const phoneticToggle = phoneticControl.createDiv({ cls: "checkbox-container" });
-    if (settings.flashcardShowPhonetic !== false) phoneticToggle.addClass("is-enabled");
-    phoneticToggle.createDiv({ cls: "checkbox-handle" });
-    phoneticToggle.addEventListener("click", async () => {
-      const newVal = !settings.flashcardShowPhonetic;
-      settings.flashcardShowPhonetic = newVal;
-      this.plugin.settings.study.flashcardShowPhonetic = newVal;
-      await this.plugin.saveSettings();
-      phoneticToggle.toggleClass("is-enabled", newVal);
-    });
-
-    // 释义以标签页显示（开关）
-    const tabsSetting = container.createDiv({ cls: "study-setting-item" });
-    tabsSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_tabs") });
-    tabsSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_tabs_desc") });
-    const tabsControl = tabsSetting.createDiv({ cls: "study-setting-control" });
-    const tabsToggle = tabsControl.createDiv({ cls: "checkbox-container" });
-    if (settings.flashcardShowTabs !== false) tabsToggle.addClass("is-enabled");
-    tabsToggle.createDiv({ cls: "checkbox-handle" });
-    tabsToggle.addEventListener("click", async () => {
-      const newVal = !settings.flashcardShowTabs;
-      settings.flashcardShowTabs = newVal;
-      this.plugin.settings.study.flashcardShowTabs = newVal;
-      await this.plugin.saveSettings();
-      tabsToggle.toggleClass("is-enabled", newVal);
-    });
-
     // 自动翻转（秒）
     const autoFlipSetting = container.createDiv({ cls: "study-setting-item" });
     autoFlipSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_autoflip") });
@@ -8114,12 +8281,75 @@ class StudyView extends ItemView {
       await this.plugin.saveSettings();
     });
 
+    // 新词补充顺序
+    const newWordOrderSetting = container.createDiv({ cls: "study-setting-item" });
+    newWordOrderSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_new_word_order") });
+    newWordOrderSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_new_word_order_desc") });
+    const newWordOrderControl = newWordOrderSetting.createDiv({ cls: "study-setting-control" });
+    const newWordOrderSelect = newWordOrderControl.createEl("select");
+    newWordOrderSelect.createEl("option", { value: "sequential", text: t("study_new_word_order_sequential") });
+    newWordOrderSelect.createEl("option", { value: "random", text: t("study_new_word_order_random") });
+    newWordOrderSelect.value = settings.newWordOrder || "sequential";
+    newWordOrderSelect.addEventListener("change", async (e) => {
+      settings.newWordOrder = e.target.value;
+      this.plugin.settings.study.newWordOrder = settings.newWordOrder;
+      await this.plugin.saveSettings();
+    });
+
+    // 复习排序
+    const orderSetting = container.createDiv({ cls: "study-setting-item" });
+    orderSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_review_order") });
+    orderSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_review_order_desc") }); 
+    const orderControl = orderSetting.createDiv({ cls: "study-setting-control" });
+    const orderSelect = orderControl.createEl("select");
+    orderSelect.createEl("option", { value: "due_first", text: t("study_settings_review_order_due") });
+    orderSelect.createEl("option", { value: "level_high_first", text: t("study_settings_review_order_high_level") });
+    orderSelect.createEl("option", { value: "level_low_first", text: t("study_settings_review_order_low_level") });
+    orderSelect.value = settings.reviewOrder || "due_first";
+    orderSelect.addEventListener("change", async (e) => {
+      settings.reviewOrder = e.target.value;
+      this.plugin.settings.study.reviewOrder = settings.reviewOrder;
+      await this.plugin.saveSettings();
+    });
+
+    // 显示音标（开关）
+    const phoneticSetting = container.createDiv({ cls: "study-setting-item" });
+    phoneticSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_phonetic") });
+    phoneticSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_phonetic_desc") });
+    const phoneticControl = phoneticSetting.createDiv({ cls: "study-setting-control" });
+    const phoneticToggle = phoneticControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.flashcardShowPhonetic !== false) phoneticToggle.addClass("is-enabled");
+    phoneticToggle.createDiv({ cls: "checkbox-handle" });
+    phoneticToggle.addEventListener("click", async () => {
+      const newVal = !settings.flashcardShowPhonetic;
+      settings.flashcardShowPhonetic = newVal;
+      this.plugin.settings.study.flashcardShowPhonetic = newVal;
+      await this.plugin.saveSettings();
+      phoneticToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 释义以标签页显示（开关）
+    const tabsSetting = container.createDiv({ cls: "study-setting-item" });
+    tabsSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_flashcard_tabs") });
+    tabsSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_flashcard_tabs_desc") });
+    const tabsControl = tabsSetting.createDiv({ cls: "study-setting-control" });
+    const tabsToggle = tabsControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.flashcardShowTabs !== false) tabsToggle.addClass("is-enabled");
+    tabsToggle.createDiv({ cls: "checkbox-handle" });
+    tabsToggle.addEventListener("click", async () => {
+      const newVal = !settings.flashcardShowTabs;
+      settings.flashcardShowTabs = newVal;
+      this.plugin.settings.study.flashcardShowTabs = newVal;
+      await this.plugin.saveSettings();
+      tabsToggle.toggleClass("is-enabled", newVal);
+    });
+
     // 启用精细反馈（4 按钮）
     const fineFeedbackSetting = container.createDiv({ cls: "study-setting-item" });
     fineFeedbackSetting.createDiv({ cls: "study-setting-label", text: t("settings_enable_fine_feedback") });
     fineFeedbackSetting.createDiv({ cls: "study-setting-desc", text: t("settings_enable_fine_feedback_desc") });
     const fineFeedbackControl = fineFeedbackSetting.createDiv({ cls: "study-setting-control" });
-    const fineFeedbackToggle = fineFeedbackControl.createDiv({ cls: "checkbox-container" });
+    const fineFeedbackToggle = fineFeedbackControl.createDiv({ cls: "checkbox-container2" });
     if (this.plugin.settings.study.enableFineFeedback) fineFeedbackToggle.addClass("is-enabled");
     fineFeedbackToggle.createDiv({ cls: "checkbox-handle" });
     fineFeedbackToggle.addEventListener("click", async () => {
@@ -9129,7 +9359,7 @@ class SentencePickerModal extends Modal {
               }
             } else {
               if (this.editDiv) {
-                this.editDiv.innerHTML = '<span style="color: var(--text-muted);">未提取到内容，请手动输入。</span>';
+                this.editDiv.innerHTML = `<span style="color: var(--text-muted);">${t("example_no_content")}</span>`;
               }
             }
           });
@@ -9698,20 +9928,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // ===== GitHub 链接 =====
     const githubContainer = container.createDiv({ cls: "wordbook-github-link" });
     githubContainer.style.cssText = "margin-top: 20px; padding-top: 12px; border-top: 1px solid var(--background-modifier-border); text-align: center; font-size: 0.85em; color: var(--text-muted);";
-
-    // 根据语言选择文案
-    const isZh = getLocale() === locale.zh;
-    let htmlContent;
-    if (isZh) {
-      htmlContent = `
-        点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐
-    `;
-    } else {
-      htmlContent = `
-        Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it
-    `;
-    }
-    githubContainer.innerHTML = htmlContent;
+    githubContainer.innerHTML = t("github_link_text");
 
     // 为所有链接添加悬停效果
     githubContainer.querySelectorAll('.github-link').forEach(link => {
@@ -9727,6 +9944,44 @@ class WordbookSettingTab extends PluginSettingTab {
   }
 
   buildGeneralTab(container) {
+    // ===== 插件语言 =====
+    container.createEl("h3", { text: t("plugin_language") });
+
+    // ---- 插件语言选择 ----
+    new Setting(container)
+      .setName(t("plugin_language"))
+      .setDesc(t("plugin_language_desc"))
+      .addDropdown(async (drop) => {
+        drop.addOption("auto", t("language_follow_obsidian"));
+        drop.addOption("en", "English");
+        drop.addOption("zh", "简体中文");
+        drop.setValue(this.plugin.settings.pluginLanguage || "auto");
+        drop.onChange(async (val) => {
+          this.plugin.settings.pluginLanguage = val;
+          await this.plugin.saveSettings();
+
+          // 刷新所有视图内容
+          const viewTypes = [
+            VIEW_TYPE_SIDEBAR,
+            VIEW_TYPE_LOOKUP,
+            VIEW_TYPE_LIBRARY,
+            VIEW_TYPE_STUDY
+          ];
+          for (const type of viewTypes) {
+            const leaves = this.app.workspace.getLeavesOfType(type);
+            for (const leaf of leaves) {
+              const view = leaf.view;
+              if (view && typeof view.refresh === 'function') {
+                await view.refresh();
+              }
+            }
+          }
+
+          // 刷新设置面板自身
+          this.display();
+        });
+      });
+
     // ===== 高亮与预览 =====
     container.createEl("h3", { text: t("settings_highlight_preview") });
 
@@ -9744,7 +9999,7 @@ class WordbookSettingTab extends PluginSettingTab {
       await this.plugin.saveSettings();
       this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
     }));
-    // ===== 启用折叠释义 =====
+    // ---- 启用折叠释义 ----
     new Setting(container)
       .setName(t("settings_enable_fold"))
       .setDesc(t("settings_enable_fold_desc"))
@@ -9767,7 +10022,7 @@ class WordbookSettingTab extends PluginSettingTab {
           }
         })
       );
-    // 启用/禁用 掌握/忽略 按钮
+    // ---- 启用/禁用 掌握/忽略 按钮 ----
     new Setting(container)
       .setName(t("settings_enable_mastery"))
       .setDesc(t("settings_enable_mastery_desc"))
@@ -9977,13 +10232,13 @@ class WordbookSettingTab extends PluginSettingTab {
       .setName(t("settings_md_opacity"))
       .setDesc(t("settings_md_opacity_desc"))
       .addSlider(slider => {
-        slider.setValue(this.plugin.settings.mdHighlightOpacity)
-          .setDynamicTooltip()
+        slider.setDynamicTooltip()
           .setLimits(0, 100, 5)
+          .setValue(this.plugin.settings.mdHighlightOpacity)
           .onChange(async (value) => {
             this.plugin.settings.mdHighlightOpacity = value;
             await this.plugin.saveSettings();
-            // 刷新所有高亮（MD + PDF 都会重建）
+            // 刷新所有高亮
             this.plugin.highlighter.refresh();
           });
         return slider;
@@ -9994,13 +10249,13 @@ class WordbookSettingTab extends PluginSettingTab {
       .setName(t("settings_pdf_opacity"))
       .setDesc(t("settings_pdf_opacity_desc"))
       .addSlider(slider => {
-        slider.setValue(this.plugin.settings.pdfHighlightOpacity)
-          .setDynamicTooltip()
+        slider.setDynamicTooltip()
           .setLimits(0, 100, 5)
+          .setValue(this.plugin.settings.pdfHighlightOpacity)
           .onChange(async (value) => {
             this.plugin.settings.pdfHighlightOpacity = value;
             await this.plugin.saveSettings();
-            // 仅刷新 PDF 高亮（避免重建 Trie，性能更好）
+            // 仅刷新 PDF 高亮
             this.plugin.highlighter.applyToPDFs(0);
           });
         return slider;
@@ -10583,7 +10838,7 @@ class WordbookSettingTab extends PluginSettingTab {
           .onClick(async () => {
             const word = testWordInput ? testWordInput.getValue().trim() : 'hello';
             if (!word) {
-              new Notice('Please enter a word to test.');
+              new Notice(t("tts_test_enter_word"));
               return;
             }
             // 临时禁用系统TTS，强制使用网络TTS
@@ -10787,14 +11042,13 @@ class WordbookSettingTab extends PluginSettingTab {
       .setDesc(t("tts_system_rate_desc"))
       .addSlider(slider => {
         const rate = Number(settings.systemTTSSpeechRate) || 1.0;
-        slider.setValue(rate)
-          .setDynamicTooltip()
+        slider.setDynamicTooltip()
           .setLimits(0.5, 2.0, 0.1)
+          .setValue(rate)
           .onChange(async (value) => {
             settings.systemTTSSpeechRate = value;
             await plugin.saveSettings();
           });
-        slider.sliderEl.value = rate;
         return slider;
       });
 
@@ -10804,14 +11058,13 @@ class WordbookSettingTab extends PluginSettingTab {
       .setDesc(t("tts_system_pitch_desc"))
       .addSlider(slider => {
         const pitch = Number(settings.systemTTSPitch) || 1.0;
-        slider.setValue(pitch)
-          .setDynamicTooltip()
+        slider.setDynamicTooltip()
           .setLimits(0.5, 2.0, 0.1)
+          .setValue(pitch)
           .onChange(async (value) => {
             settings.systemTTSPitch = value;
             await plugin.saveSettings();
           });
-        slider.sliderEl.value = pitch;
         return slider;
       });
 
@@ -12676,7 +12929,7 @@ class ExportSingleWordModal extends Modal {
 
       this.close();
     } catch (e) {
-      console.error("导出失败:", e);
+      console.error("Export failed:", e);
       new Notice(t("export_failed"));
     }
   }
@@ -14002,7 +14255,7 @@ class SimpleWordbookPlugin extends Plugin {
         lang
       );
     } catch (e) {
-      console.warn('发音失败:', e);
+      console.warn('Pronunciation failed:', e);
       new Notice(t("notice_tts_playback_failed"));
     }
   }
@@ -14021,6 +14274,11 @@ class SimpleWordbookPlugin extends Plugin {
     const rawData = await this.loadData();  // 先获取原始数据
     this.settings = Object.assign({}, DEFAULT_SETTINGS, rawData);
     let needsSave = false;  // 添加保存标志
+
+    // 确保插件语言设置有默认值
+    if (this.settings.pluginLanguage === undefined) {
+      this.settings.pluginLanguage = "auto";
+    }
 
     // 确保 studyParams 存在
     if (!this.settings.studyParams) {

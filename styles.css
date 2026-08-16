@@ -1029,20 +1029,35 @@
     border-radius: 8px;
 }
 
-/* 部件：工具栏中的输入框和下拉菜单 */
-.library-toolbar input,
+/* 部件：工具栏中下拉菜单 */
 .library-toolbar select {
-    padding: 4px 8px;
-    border-radius: 4px;
+    padding: 0 2.4em 0 0.8em;
+    /*border-radius: 4px;*/
     border: 1px solid var(--background-modifier-border);
     background: var(--background-primary);
     color: var(--text-normal);
+    font-size: 0.9em;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8em center;
+    background-size: 10px;
+}
+/* 暗色模式 */
+.theme-dark .library-toolbar select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FFF' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
 }
 
 /* 部件：工具栏中的搜索框（占据剩余宽度） */
 .library-toolbar input {
     flex: 1;
     min-width: 120px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+    color: var(--text-normal);
 }
 
 /* 部件：批量操作栏（默认隐藏，有选中项时显示） */
@@ -1248,7 +1263,7 @@
 .study-content {
     flex: 1;
     overflow-y: auto;
-    padding: 4px 0;
+    padding: 4px 4px;
 }
 
 /* 部件：复习准备界面 */
@@ -1267,25 +1282,25 @@
 .study-prep-select-row select {
     flex: 0 0 auto;
     width: auto;
-    min-width: 120px;
-    max-width: 80%;
-    padding: 4px 24px 4px 10px;
-    border-radius: 4px;
+    /*min-width: 120px;*/
+    padding: 0 2.4em 0 0.8em;
+    /*border-radius: 4px;*/
     border: 1px solid var(--background-modifier-border);
     background: var(--background-primary);
     color: var(--text-normal);
     font-size: 0.9em;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 8px center;
+    background-position: right 0.8em center;
+    background-size: 10px;
 }
-@media (prefers-color-scheme: dark) {
-    .study-prep-select-row select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    }
+/* 暗色模式 */
+.theme-dark .study-prep-select-row select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FFF' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
 }
+
 /* 统计行 */
 .study-prep-stats {
     display: flex;
@@ -1388,7 +1403,7 @@
     cursor: pointer;
     position: relative;
     display: flex;
-    align-items: center;
+    /*align-items: center;*/
     justify-content: center;
     padding: 20px;
     transition: transform 0.2s;
@@ -1402,7 +1417,7 @@
 /* 部件：复习卡片词源名 */
 .study-card-source {
     position: absolute;
-    bottom: 2px;
+    bottom: 4px;
     /*right: 12px;*/
     left: 50%;                    /* 水平居中 */
     transform: translateX(-50%);  /* 修正偏移 */
@@ -1423,6 +1438,7 @@
     display: flex;              /* 初始已由 JS 控制显示 */
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 6px;
 }
 .study-card-word {
@@ -1710,14 +1726,15 @@
 .chart-legend span {
     display: inline-flex;
     align-items: center;
-    gap: 4px;
+    /*gap: 4px;*/
 }
 
 /* 部件：趋势图 SVG */
 .trend-svg {
     width: 100%;
-    height: 100px;
-    background: transparent;
+    /*height: 130px;*/
+    padding: 4px 50px;
+    box-sizing: border-box;
 }
 
 /* 部件：条形图（等级分布） */
@@ -1766,20 +1783,29 @@
 .color-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 2px 0;
     border-bottom: 1px solid var(--background-modifier-border);
     font-size: 0.9em;
 }
+/* 颜色分布：色块 + 文字 */
+.color-item-left {
+    display: flex;
+    /*align-items: center;*/
+    gap: 6px;
+}
+/* 计数 */
 .source-item .count,
 .color-item .count {
     color: var(--text-muted);
 }
+/* 色块 */
 .color-item .color-dot {
     display: inline-block;
     width: 16px;
     height: 16px;
     border-radius: 4px;
-    margin-right: 6px;
+   /*margin-right: 6px;*/
     vertical-align: middle;
 }
 
@@ -1819,55 +1845,58 @@
 }
 /* 设置项下拉选择框 */
 .study-setting-item select {
-    padding: 4px 24px 4px 10px;
-    border-radius: 4px;
+    padding: 0 2.4em 0 0.8em;
+    /*border-radius: 4px;*/
     border: 1px solid var(--background-modifier-border);
     background: var(--background-primary);
     color: var(--text-normal);
     font-size: 0.9em;
     cursor: pointer;
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right 8px center;
-    min-width: 80px;
+    background-position: right 0.8em center;
+    /*min-width: 100px;*/
+    background-size: 10px;
 }
-@media (prefers-color-scheme: dark) {
-    .study-setting-item select {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-    }
+/* 暗色模式 */
+.theme-dark .study-setting-item select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FFF' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
 }
 
-/* 设置项开关组件容器（复用 checkbox-container） */
-.study-setting-item .checkbox-container {
+/* 设置项开关组件容器 */
+.study-setting-item .checkbox-container2 {
     width: 40px;
-    height: 24px;
+    height: 22px;
     border-radius: 12px;
-    background: var(--background-modifier-border);
     cursor: pointer;
-    position: relative;
-    transition: background 0.15s;
+    background-color: var(--toggle-track-color);
+    box-shadow: var(--toggle-track-shadow);
     flex-shrink: 0;
+    position: relative;
+    user-select: none;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, outline 0.15s ease-in-out, border 0.15s ease-in-out, opacity 0.15s ease-in-out;
+    outline: 0 solid var(--background-modifier-border-focus);
 }
-/* 开关组件（启用状态） */
-.study-setting-item .checkbox-container.is-enabled {
-    background: var(--interactive-accent);
+/* 开启状态轨道背景 */
+.study-setting-item .checkbox-container2.is-enabled {
+    background-color: var(--interactive-accent);
 }
-/* 开关滑块 */
-.study-setting-item .checkbox-container .checkbox-handle {
+/* 滑块圆球 */
+.study-setting-item .checkbox-container2 .checkbox-handle {
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
-    background: white;
-    transition: transform 0.15s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    background: var(--text-on-accent);
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.28);
+    transition: transform 0.15s ease;
 }
-/* 开关滑块（启用状态） */
-.study-setting-item .checkbox-container.is-enabled .checkbox-handle {
-    transform: translateX(16px);
+/* 开启滑块位移 */
+.study-setting-item .checkbox-container2.is-enabled .checkbox-handle {
+    transform: translateX(18px);
 }
 
 /* 部件：间隔天数设置 */
@@ -1902,17 +1931,9 @@
 }
 /* 数字输入框 */
 .study-setting-item .study-interval-input {
-  padding: 2px 4px;
-  border: 1px solid var(--background-modifier-border);
+  width: 50px;
   text-align: center;
-  transition: border-color 0.3s;
-}
-.study-setting-item .study-interval-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-.study-setting-item .study-interval-input[type="number"] {
-  -moz-appearance: textfield;
+  margin-right: 4px;
 }
 /* 间隔天数恢复默认按钮 */
 .study-setting-item .study-interval-reset-btn {
@@ -2045,25 +2066,23 @@
 
 /* 部件：下拉筛选器 */
 .study-level-filter-row select {
-  padding: 4px 24px 4px 10px;
-  border-radius: 4px;
-  border: 1px solid var(--background-modifier-border);
-  background: var(--background-primary);
-  color: var(--text-normal);
-  font-size: 0.9em;
-  cursor: pointer;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b6b6b' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 8px center;
-  min-width: 100px;
+    padding: 0 2.4em 0 0.8em;
+    /*border-radius: 4px;*/
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    font-size: 0.9em;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23000' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.8em center;
+    /*min-width: 100px;*/
+    background-size: 10px;
 }
-
-/* 暗色主题下拉箭头 */
-@media (prefers-color-scheme: dark) {
-  .study-level-filter-row select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239e9e9e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  }
+/* 暗色模式 */
+.theme-dark .study-level-filter-row select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23FFF' stroke-width='1.5' fill='none' stroke-linecap='round' opacity='0.6'/%3E%3C/svg%3E");
 }
 
 /* 部件：等级列表表格主体 */
@@ -2318,5 +2337,15 @@
   }
   .export-book-list {
     min-height: 200px;
+  }
+
+  /* ---- 学习中心 ---- */
+  /* 统计趋势图 SVG */
+  .trend-svg {
+      padding: 4px 4px;
+  }
+  /* 设置标签页高级设置输入框 */
+  .study-param-input {
+      width: 80px;
   }
 }
