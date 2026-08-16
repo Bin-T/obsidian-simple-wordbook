@@ -5968,9 +5968,9 @@ class LibraryView extends ItemView {
 
     this.statsBar.innerHTML = `
     <span>${t("library_stats_total", total)}</span>
-    <span>学习: ${learning} (${learningPct}%)</span>
+    <span>${t("library_stats_learning", learning, learningPct)}</span>
     <span>${t("library_stats_mastered", mastered, masteredPct)}</span>
-    <span>忽略: ${ignored} (${ignoredPct}%)</span>
+    <span>${t("library_stats_ignored", ignored, ignoredPct)}</span>
     <div style="flex:1; height:6px; background:var(--background-modifier-border); border-radius:3px; margin:0 10px; overflow:hidden; display:flex;">
         <div style="width:${masteredBar}%; height:100%; background:var(--color-green); border-radius:3px 0 0 3px; flex-shrink:0;"></div>
         <div style="width:${ignoredBar}%; height:100%; background:var(--text-muted); border-radius:0 3px 3px 0; flex-shrink:0;"></div>
