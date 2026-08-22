@@ -5860,6 +5860,7 @@ class LookupView extends ItemView {
     const clearBtn = headerActions.createEl("button", { cls: "lookup-history-clear-btn" });
     setIcon(clearBtn, "trash-2");
     clearBtn.setAttribute("aria-label", t("lookup_history_clear"));
+    clearBtn.setAttribute("title", t("lookup_history_clear"));
     clearBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.clearHistory();
@@ -5873,14 +5874,18 @@ class LookupView extends ItemView {
     }
     const pinIcon = this.isPinned ? "pin" : "pin-off";
     setIcon(pinBtn, pinIcon);
-    pinBtn.setAttribute("aria-label", this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin"));
+    const pinTooltip = this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin");
+    pinBtn.setAttribute("aria-label", pinTooltip);
+    pinBtn.setAttribute("title", pinTooltip);
     pinBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       this.isPinned = !this.isPinned;
       pinBtn.toggleClass("is-pinned", this.isPinned);
       const newIcon = this.isPinned ? "pin" : "pin-off";
       setIcon(pinBtn, newIcon);
-      pinBtn.setAttribute("aria-label", this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin"));
+      const newTooltip = this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin");
+      pinBtn.setAttribute("aria-label", newTooltip);
+      pinBtn.setAttribute("title", newTooltip);
       // 重新设置关闭监听
       this.addCloseHandler();
     });
