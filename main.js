@@ -5875,7 +5875,7 @@ class LookupView extends ItemView {
     const pinIcon = this.isPinned ? "pin" : "pin-off";
     setIcon(pinBtn, pinIcon);
     const pinTooltip = this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin");
-    pinBtn.setAttribute("aria-label", pinTooltip);
+    //pinBtn.setAttribute("aria-label", pinTooltip);
     pinBtn.setAttribute("title", pinTooltip);
     pinBtn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -5884,7 +5884,7 @@ class LookupView extends ItemView {
       const newIcon = this.isPinned ? "pin" : "pin-off";
       setIcon(pinBtn, newIcon);
       const newTooltip = this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin");
-      pinBtn.setAttribute("aria-label", newTooltip);
+      //pinBtn.setAttribute("aria-label", newTooltip);
       pinBtn.setAttribute("title", newTooltip);
       // 重新设置关闭监听
       this.addCloseHandler();
