@@ -298,7 +298,7 @@ const locale = {
     api_key_placeholder: "Enter API Key",
     api_model_placeholder: "Model name",
     settings_prompts: "Prompts",
-    settings_system_prompts: "System Prompts",
+    settings_system_prompts: "Custom System Prompts",
     settings_system_prompt_desc: "Set AI's persona (style/format of AI responses)",
     settings_builtin_prompts: "Built-in System Prompts",
     settings_builtin_desc: "Select a preset below to preview its content, then copy it to create a custom version.",
@@ -316,7 +316,7 @@ const locale = {
     settings_system_prompt_duplicate: "Name already exists",
     settings_system_prompt_empty: "Name and content cannot be empty",
     settings_ai_default_prompt: "Default Prompt",
-    settings_ai_default_prompt_desc: "Use {word} as placeholder for the word",
+    settings_ai_default_prompt_desc: "Use {word} and {context} as placeholders in the prompt",
     settings_ai_custom_prompts: "Custom Prompts",
     settings_ai_custom_prompt_name: "Name",
     settings_ai_custom_prompt_content: "Prompt content",
@@ -338,6 +338,11 @@ const locale = {
     api_error_parse: "Invalid data format returned by API, please check API URL",
     api_error_unexpected: "Unexpected API response format, please check your API configuration",
     api_error_config: "Please configure API URL and API Key first",
+    settings_ai_context_mode: "Context Extraction Mode",
+    settings_ai_context_mode_desc: "How to extract context for the {context} placeholder in prompts",
+    settings_pdf_context_chars: "PDF Context Length (chars)",
+    settings_pdf_context_desc: "Number of characters to extract before and after the selected word in PDF files (50-500).",
+    notice_invalid_pdf_chars: "Please enter a number between 50 and 500.",
 
     lookup_view_title: "Lookup",
     lookup_input_placeholder: "Enter word or phrase...",
@@ -372,6 +377,13 @@ const locale = {
     lookup_mode_prefix: "Prefix",
     lookup_mode_contains: "Contains",
     lookup_mode_fuzzy: "Fuzzy (allow spelling errors)",
+    lookup_history_title: "Recent Queries",
+    lookup_history_clear: "Clear All",
+    lookup_history_empty: "No history",
+    lookup_history_btn_tooltip: "Query History",
+    lookup_history_search: "Search history...",
+    lookup_history_pin: "Pin",
+    lookup_history_unpin: "Unpin",
 
     notice_open_editor: "Please open an editor and select a word",
     notice_select_word: "Please select a word or phrase",
@@ -432,8 +444,7 @@ const locale = {
 
     example_fetch_btn: "Fetch example from current document",
     example_picker_title: "Select / Edit Example",
-    example_picker_desc: "The content containing the current word has been auto-detected. You can edit it below, then click 'Confirm' to insert it into the definition.",
-    example_picker_confirm: "Insert Example",
+    example_example_section: "📝 Example Extraction",
     example_appended: "✅ Added to '{0}' section",
     example_no_sentence: "No content detected. Please enter manually or reposition the cursor.",
     example_edit_only: "This feature is only available in edit mode",
@@ -450,6 +461,27 @@ const locale = {
     example_section_title: "Examples",
     example_section_title_label: "Section Title",
     example_no_content: "No content extracted, please enter manually.",
+    example_ai_section: "AI Context Explanation",
+    example_system_prompt: "System Prompt",
+    example_prompt_content: "Prompt Content",
+    example_prompt_desc: "Use {word} and {context} as placeholders",
+    example_ai_default_prompt: 'Please give an accurate and concise explanation of "{word}" based on the following context: {context}',
+    example_ai_explain_btn: "AI Explain",
+    example_ai_generating: "Calling AI...",
+    example_ai_failed: "AI interpretation failed: {0}",
+    example_ai_empty: "No valid AI interpretation to insert",
+    example_example_empty: "No example to insert",
+    example_insert_ai_only: "Insert AI Only",
+    example_insert_example_only: "Insert Example Only",
+    example_insert_all: "Insert",
+    example_no_content_to_insert: "No content to insert",
+    example_ai_section_title_desc: "Leave empty to append directly at top",
+    example_ai_prompt_saved: "Prompt saved",
+    example_please_extract_first: "Please extract or enter example content first",
+    example_prompt_empty: "Prompt content cannot be empty",
+    example_ai_abort_btn: "Abort",
+    example_ai_aborting: "Aborting...",
+    example_ai_aborted: "AI interpretation aborted",
 
     library_view_title: "Library",
     library_search_placeholder: "Search words or aliases...",
@@ -535,8 +567,8 @@ const locale = {
     study_btn_forget: "😣 Forget",
     study_btn_remember: "😊 Remember",
     study_btn_start: "Let's do this! 💪",
-    study_btn_again: "One more round",
-    study_btn_back: "Back to start",
+    study_btn_again: "One more round (A)",
+    study_btn_back: "Back to start (Q)",
     study_mastered_list_empty: "No mastered words yet.",
     study_stats_retention: "Retention Rate",
     study_stats_learning_distribution: "Learning Distribution",
@@ -644,6 +676,14 @@ const locale = {
     study_settings_new_word_order_desc: "Order to add new words from the wordbook when due words are insufficient.",
     study_new_word_order_sequential: "Sequential",
     study_new_word_order_random: "Random",
+    study_bookmark_tooltip_on: "Unmark (remove extra review) (B)",
+    study_bookmark_tooltip_off: "Bookmark (extra review this round) (B)",
+    study_bookmark_hint: "📌 {0} bookmarked words, review them together?",
+    study_bookmark_review_btn: "Review (R)",
+    study_bookmark_review_again_hint: "📌 {0} bookmarked words still remain, review again?",
+    study_bookmark_review_again_btn: "Review again (R)",
+    study_settings_enable_bookmark: "Bookmark for Review",
+    study_settings_enable_bookmark_desc: "Show bookmark button on review cards to mark words for an extra review round.",
 
     github_link_text: `Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it`,
 
@@ -951,7 +991,7 @@ const locale = {
     api_key_placeholder: "请输入 API Key",
     api_model_placeholder: "模型名称",
     settings_prompts: "提示词",
-    settings_system_prompts: "系统提示词",
+    settings_system_prompts: "自定义系统提示词",
     settings_system_prompt_desc: "设定 AI 的“人设”（AI 回复的风格/格式）",
     settings_builtin_prompts: "内置系统提示词",
     settings_builtin_desc: "选择预设风格预览内容，可一键复制后粘贴到自定义列表中修改。",
@@ -969,7 +1009,7 @@ const locale = {
     settings_system_prompt_duplicate: "名称已存在",
     settings_system_prompt_empty: "名称和内容不能为空",
     settings_ai_default_prompt: "默认提示词",
-    settings_ai_default_prompt_desc: "使用 {word} 作为单词占位符",
+    settings_ai_default_prompt_desc: "在提示词中使用 {word} 和 {context} 作为占位符",
     settings_ai_custom_prompts: "自定义提示词",
     settings_ai_custom_prompt_name: "名称",
     settings_ai_custom_prompt_content: "提示词内容",
@@ -991,6 +1031,11 @@ const locale = {
     api_error_parse: "API 返回的数据格式无效，请检查 API 地址是否正确",
     api_error_unexpected: "API 返回了意外格式，请检查 API 配置是否正确",
     api_error_config: "请先配置 API 地址和密钥",
+    settings_ai_context_mode: "上下文提取方式",
+    settings_ai_context_mode_desc: "提示词中 {context} 占位符的上下文提取方式",
+    settings_pdf_context_chars: "PDF 上下文长度（字符）",
+    settings_pdf_context_desc: "在 PDF 文件中，选中单词前后各提取的字符数（50-500）。",
+    notice_invalid_pdf_chars: "请输入 50-500 之间的数字。",
 
     lookup_view_title: "查词面板",
     lookup_input_placeholder: "输入单词或短语...",
@@ -1025,6 +1070,13 @@ const locale = {
     lookup_mode_prefix: "前缀匹配",
     lookup_mode_contains: "包含匹配",
     lookup_mode_fuzzy: "模糊匹配（允许拼写错误）",
+    lookup_history_title: "历史记录",
+    lookup_history_clear: "清空历史记录",
+    lookup_history_empty: "暂无记录",
+    lookup_history_btn_tooltip: "历史记录",
+    lookup_history_search: "搜索记录...",
+    lookup_history_pin: "固定",
+    lookup_history_unpin: "取消固定",
 
     notice_open_editor: "请先打开一个编辑器并选中单词",
     notice_select_word: "请选中一个单词或短语",
@@ -1085,8 +1137,7 @@ const locale = {
 
     example_fetch_btn: "获取当前文档例句",
     example_picker_title: "选择 / 编辑例句",
-    example_picker_desc: "下方已自动提取当前单词所在的内容，你可自由修改或删减，然后点击“确认”插入到释义中。",
-    example_picker_confirm: "确认插入例句",
+    example_example_section: "📝 例句提取",
     example_appended: "✅ 已添加内容到「{0}」章节",
     example_no_sentence: "未提取到内容，请手动输入或重新定位光标。",
     example_edit_only: "该功能仅在编辑模式下可用",
@@ -1103,6 +1154,27 @@ const locale = {
     example_section_title: "例句",
     example_section_title_label: "章节标题",
     example_no_content: "未提取到内容，请手动输入。",
+    example_ai_section: "🤖 AI 语境解释",
+    example_system_prompt: "系统提示词",
+    example_prompt_content: "提示词内容",
+    example_prompt_desc: "使用 {word} 和 {context} 作为占位符",
+    example_ai_default_prompt: '请根据 {context} ，准确简洁的解释 "{word}" 的含义。',
+    example_ai_explain_btn: "AI 解释",
+    example_ai_generating: "正在调用 AI ...",
+    example_ai_failed: "AI 解释失败：{0}",
+    example_ai_empty: "没有有效的 AI 解释可插入",
+    example_example_empty: "没有例句可插入",
+    example_insert_ai_only: "仅插入语境释义",
+    example_insert_example_only: "仅插入例句",
+    example_insert_all: "插入",
+    example_no_content_to_insert: "没有内容可插入",
+    example_ai_section_title_desc: "留空直接追加到释义最上方",
+    example_ai_prompt_saved: "提示词已保存",
+    example_please_extract_first: "请先提取或输入例句内容",
+    example_prompt_empty: "提示词内容不能为空",
+    example_ai_abort_btn: "中断",
+    example_ai_aborting: "中断中...",
+    example_ai_aborted: "已中断 AI 解释",
 
     library_view_title: "词库管理",
     library_search_placeholder: "搜索单词或别名...",
@@ -1188,8 +1260,8 @@ const locale = {
     study_btn_forget: "😣 忘记",
     study_btn_remember: "😊 记得",
     study_btn_start: "开干！💪",
-    study_btn_again: "再来一轮",
-    study_btn_back: "返回准备",
+    study_btn_again: "再来一轮 (A)",
+    study_btn_back: "返回准备 (Q)",
     study_mastered_list_empty: "还没有已掌握的单词。",
     study_stats_retention: "记忆保持率",
     study_stats_learning_distribution: "学习状态分布",
@@ -1297,6 +1369,14 @@ const locale = {
     study_settings_new_word_order_desc: "当到期词不足时，从词库中补充新词的顺序。",
     study_new_word_order_sequential: "顺序",
     study_new_word_order_random: "随机",
+    study_bookmark_tooltip_on: "取消标记（取消本轮额外复习）(B)",
+    study_bookmark_tooltip_off: "标记（本轮额外复习）(B)",
+    study_bookmark_hint: "📌 本轮有 {0} 个标记词，是否集中复习？",
+    study_bookmark_review_btn: "集中复习 (R)",
+    study_bookmark_review_again_hint: "📌 仍有 {0} 个标记词，是否再复习一轮？",
+    study_bookmark_review_again_btn: "再复习 (R)",
+    study_settings_enable_bookmark: "再复习标记",
+    study_settings_enable_bookmark_desc: "在复习卡片上显示标记按钮，标记的单词本轮结束后可再复习一轮。",
 
     github_link_text: `点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐`,
 
@@ -1540,10 +1620,13 @@ const DEFAULT_SETTINGS = {
     encryptedData: null,           // { ciphertext, salt } 或 null
   },
   apiModel: "gpt-3.5-turbo",
-  systemPrompts: [],          // [{ name: "词典助手", content: "You are a dictionary assistant..." }]
+  aiContextMode: "line",
+  pdfContextChars: 150,
+  systemPrompts: [],
   defaultSystemPrompt: "",    // 默认提示词关联的系统提示词名称
-  defaultPrompt: "用中文解释单词 {word}的释义。",
-  customPrompts: [],          // [{ name: "快速释义", content: "给出 {word} 的中文释义", system_prompt: ""  }]
+  defaultPrompt: "",
+  customPrompts: [],
+  aiContextPrompt: "",  //AI语境解释的自定义提示词
   selectedPrompt: "默认",     // 当前选中的提示词名称
 
   // ===== 学习中心设置 =====
@@ -1556,6 +1639,7 @@ const DEFAULT_SETTINGS = {
     flashcardShowPhonetic: true,
     flashcardShowTabs: true,
     enableFineFeedback: false,
+    enableBookmark: false,
     intervalDays: [1, 2, 4, 8, 16],
     selectedWordbook: "all",
   },
@@ -2023,6 +2107,19 @@ function fixInternalLinks(container, app, sourcePath) {
   }
 }
 
+// ========== 逐级创建目录（确保父目录存在后再创建子目录） ==========
+async function ensureDir(adapter, dir) {
+  if (!dir) return;
+  const parts = dir.split('/');
+  let current = '';
+  for (const part of parts) {
+    current = current ? `${current}/${part}` : part;
+    if (!(await adapter.exists(current))) {
+      await adapter.mkdir(current);
+    }
+  }
+}
+
 // ========== Trie ==========
 class WordTrieNode {
   constructor() {
@@ -2371,9 +2468,7 @@ class MasteryStore {
     const adapter = this.plugin.app.vault.adapter;
     try {
       const dir = path.substring(0, path.lastIndexOf('/'));
-      if (dir && !(await adapter.exists(dir))) {
-        await adapter.mkdir(dir, { recursive: true });
-      }
+      await ensureDir(adapter, dir);
 
       if (Object.keys(this.masteryData).length === 0) {
         if (await adapter.exists(path)) {
@@ -2396,9 +2491,7 @@ class MasteryStore {
     const adapter = this.plugin.app.vault.adapter;
     try {
       const dir = path.substring(0, path.lastIndexOf('/'));
-      if (dir && !(await adapter.exists(dir))) {
-        await adapter.mkdir(dir, { recursive: true });
-      }
+      await ensureDir(adapter, dir);
 
       if (Object.keys(this.ignoredData).length === 0) {
         if (await adapter.exists(path)) {
@@ -2562,9 +2655,7 @@ class StudyStore {
     const adapter = this.plugin.app.vault.adapter;
     const path = this.getFilePath();
     const dir = path.substring(0, path.lastIndexOf('/'));
-    if (dir && !(await adapter.exists(dir))) {
-      await adapter.mkdir(dir, { recursive: true });
-    }
+    await ensureDir(adapter, dir);
     await adapter.write(path, JSON.stringify(this.data, null, 2));
   }
 
@@ -3302,8 +3393,8 @@ class Highlighter {
       this.applyToMarkdownPreviews();
       // 多次延迟重试，确保手机端渲染完成
       setTimeout(() => this.applyToMarkdownPreviews(), 150);
-      setTimeout(() => this.applyToMarkdownPreviews(), 400);
-      setTimeout(() => this.applyToMarkdownPreviews(), 800);
+      //setTimeout(() => this.applyToMarkdownPreviews(), 400);
+      //setTimeout(() => this.applyToMarkdownPreviews(), 800);
     });
     // 编辑模式刷新
     if (this.decorationField) {
@@ -3341,8 +3432,31 @@ class Highlighter {
     const activeFile = this.plugin.app.workspace.getActiveFile();
     const activeLeaf = this.plugin.app.workspace.activeLeaf;
 
+    // 检测当前选区所在容器
+    let selectionContainer = null;
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.anchorNode) {
+      const node = sel.anchorNode.nodeType === Node.TEXT_NODE ? sel.anchorNode.parentElement : sel.anchorNode;
+      if (node) {
+        const container = node.closest ? node.closest('.markdown-preview-view, .markdown-reading-view') : null;
+        if (container) selectionContainer = container;
+      }
+    }
+
     for (const container of containers) {
       if (!(container instanceof HTMLElement) || !container.isConnected) continue;
+
+      // 跳过含有当前选区的容器
+      if (selectionContainer && container.contains(selectionContainer)) {
+        continue;
+      }
+
+      // 跳过不可见容器（优化性能）
+      const rect = container.getBoundingClientRect();
+      const isVisible = rect.width > 0 && rect.height > 0 &&
+        rect.bottom >= -200 && rect.top <= window.innerHeight + 200;
+      if (!isVisible) continue;
+
 
       let path = null;
       // 判断容器是否属于活动 leaf（优先使用活动文件路径，确保可靠）
@@ -3684,18 +3798,27 @@ class Highlighter {
     return fragment;
   }
 
-  highlightPDFLayer(layer) {
+  highlightPDFLayer(layer, path) {
     if (!layer.isConnected) return;
 
-    const container = layer.closest('.pdf-container') || layer.closest('.mod-pdf');
-    let path = container ? this.getPathForContainer(container) : null;
+    // 如果未传入 path，尝试自动获取
     if (!path) {
-      const activeFile = this.plugin.app.workspace.getActiveFile();
-      if (activeFile && activeFile.extension === 'pdf') {
-        path = activeFile.path;
+      const container = layer.closest('.pdf-container') || layer.closest('.mod-pdf');
+      if (container) {
+        // 通过 container 查找所属 leaf，获取文件路径
+        const pdfLeaves = this.plugin.app.workspace.getLeavesOfType('pdf');
+        for (const leaf of pdfLeaves) {
+          if (leaf.view && leaf.view.containerEl && leaf.view.containerEl.contains(container)) {
+            path = leaf.view.file?.path;
+            break;
+          }
+        }
       }
+      // 若仍无路径，则放弃
+      if (!path) return;
     }
-    if (!path || !this.shouldHighlightPath(path)) {
+
+    if (!this.shouldHighlightPath(path)) {
       const oldHighlights = layer.querySelectorAll('.simple-wordbook-pdf-highlight');
       oldHighlights.forEach(el => el.remove());
       return;
@@ -3765,7 +3888,6 @@ class Highlighter {
   }
 
   _setupPDFScrollListeners() {
-    // 如果已经初始化过 IntersectionObserver，则不再重复
     if (this._intersectionObserver) return;
 
     // 创建 IntersectionObserver，仅观察进入视口的 textLayer
@@ -3774,9 +3896,22 @@ class Highlighter {
         const layer = entry.target;
         if (entry.isIntersecting) {
           // 层进入视口 → 应用高亮
-          this.highlightPDFLayer(layer);
+          // 尝试获取该 layer 所属 PDF 叶子的路径，确保焦点切换不影响高亮
+          let path = null;
+          const container = layer.closest('.pdf-container') || layer.closest('.mod-pdf');
+          if (container) {
+            const pdfLeaves = this.plugin.app.workspace.getLeavesOfType('pdf');
+            for (const leaf of pdfLeaves) {
+              if (leaf.view && leaf.view.containerEl && leaf.view.containerEl.contains(container)) {
+                path = leaf.view.file?.path;
+                break;
+              }
+            }
+          }
+          // 传入路径
+          this.highlightPDFLayer(layer, path);
         } else {
-          // 层离开视口 → 移除高亮以释放内存（可选）
+          // 层离开视口 → 移除高亮以释放内存
           const highlights = layer.querySelectorAll('.simple-wordbook-pdf-highlight');
           highlights.forEach(el => el.remove());
         }
@@ -4980,6 +5115,12 @@ class LookupView extends ItemView {
     this.resultMarkdown = "";
     this.isLoading = false;
     this.currentMode = "local";
+    this._aiController = null;
+    this.history = [];
+    this.maxHistory = 100;
+    this.historyDropdown = null;
+    this.isPinned = false;
+    this._closeHandler = null;
   }
 
   getViewType() { return VIEW_TYPE_LOOKUP; }
@@ -5016,6 +5157,28 @@ class LookupView extends ItemView {
         }
       }
     }
+  }
+
+  onClose() {
+    // 取消未完成的 AI 请求
+    if (this._aiController) {
+      this._aiController.abort();
+      this._aiController = null;
+    }
+    // 移除外部点击监听
+    if (this._closeHandler) {
+      document.removeEventListener("click", this._closeHandler);
+      this._closeHandler = null;
+    }
+    // 清理历史下拉浮层
+    if (this.historyDropdown) {
+      this.historyDropdown.remove();
+      this.historyDropdown = null;
+    }
+    // 清空历史
+    this.history = [];
+    // 重置固定状态
+    this.isPinned = false;
   }
 
   // 刷新视图
@@ -5075,6 +5238,16 @@ class LookupView extends ItemView {
     });
     this.clearInputBtn = clearInputBtn;
 
+    // 历史按钮
+    const historyBtn = inputRow.createEl("button", { cls: "lookup-history-btn" });
+    setIcon(historyBtn, "history");
+    historyBtn.setAttribute("aria-label", t("lookup_history_btn_tooltip"));
+    historyBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.toggleHistoryDropdown(historyBtn);
+    });
+    this.historyBtn = historyBtn;
+
     // 按钮行
     const buttonRow = container.createDiv({ cls: "lookup-button-row" });
     const localBtn = buttonRow.createEl("button", { text: t("lookup_local_button"), cls: "mod-cta" });
@@ -5118,7 +5291,7 @@ class LookupView extends ItemView {
     this.saveBtn = saveBtn;
   }
 
-  // === 本地查询相关方法 ===
+  // --- 本地查询相关方法 ---
   createLocalCard(card, container) {
     const cardDiv = container.createDiv({ cls: "word-card" });
     const colorMap = {
@@ -5402,6 +5575,12 @@ class LookupView extends ItemView {
   }
 
   doLocalLookup(word) {
+    // 取消未完成的 AI 请求
+    if (this._aiController) {
+      this._aiController.abort();
+      this._aiController = null;
+    }
+
     if (!word || !word.trim()) {
       new Notice(t("lookup_empty_word"));
       return;
@@ -5449,6 +5628,9 @@ class LookupView extends ItemView {
     }
     this.localNotFound = false;
 
+    // 记录历史（本地查词）
+    this.addHistory(this.currentWord, "local");
+
     // 渲染卡片
     for (const card of matches) {
       const stateKey = this.plugin.settings.masteryMode === "global" ? card.word : `${card.sourceFile}::${card.word}`;
@@ -5458,6 +5640,12 @@ class LookupView extends ItemView {
   }
 
   async doAILookup(word) {
+    // 取消未完成的 AI 请求
+    if (this._aiController) {
+      this._aiController.abort();
+      this._aiController = null;
+    }
+
     if (!word || !word.trim()) {
       new Notice(t("lookup_empty_word"));
       return;
@@ -5471,20 +5659,30 @@ class LookupView extends ItemView {
     let systemName = "";
 
     // 获取提示词内容
+    const defaultFallback = t("example_ai_default_prompt");
     let promptContent;
     if (promptName === "默认") {
-      promptContent = this.plugin.settings.defaultPrompt || "请解释单词 {word}";
+      promptContent = this.plugin.settings.defaultPrompt || defaultFallback;
       systemName = this.plugin.settings.defaultSystemPrompt || "";
     } else {
       const custom = this.plugin.settings.customPrompts.find(p => p.name === promptName);
-      promptContent = custom ? custom.content : this.plugin.settings.defaultPrompt;
+      promptContent = custom ? custom.content : this.plugin.settings.defaultPrompt || defaultFallback;
       systemName = custom ? custom.system_prompt || "" : "";
     }
     if (!promptContent) {
       new Notice(t("notice_prompt_empty"));
       return;
     }
-    const finalPrompt = promptContent.replace(/{word}/g, this.currentWord);
+
+    // 获取上下文
+    const contextMode = this.plugin.settings.aiContextMode || "line";
+    const context = this.plugin.getSelectedSentence(contextMode, this.currentWord) || '';
+
+    // 替换占位符
+    let finalPrompt = promptContent.replace(/{word}/g, this.currentWord);
+    if (context && finalPrompt.includes('{context}')) {
+      finalPrompt = finalPrompt.replace(/{context}/g, context);
+    }
 
     // 获取系统提示词内容
     let systemContent = null;
@@ -5492,23 +5690,57 @@ class LookupView extends ItemView {
       systemContent = getSystemPromptContent(systemName, this.plugin.settings);
     }
 
+    // 构造带取消按钮的加载 UI
     this.setLoading(true);
     this.resultContainer.empty();
-    this.resultContainer.setText(t("lookup_loading"));
+
+    // 创建 AbortController
+    this._aiController = new AbortController();
+    const signal = this._aiController.signal;
+
+    // 创建加载提示包装器
+    const loadWrapper = this.resultContainer.createDiv({ cls: "lookup-loading-wrapper" });
+    const loadingText = loadWrapper.createSpan({ text: t("lookup_loading") });
+
+    // 创建取消按钮
+    const cancelBtn = loadWrapper.createEl("button", {
+      text: t("example_ai_abort_btn"),
+      cls: "lookup-loading-cancel-btn"
+    });
+    cancelBtn.addEventListener("click", () => {
+      if (this._aiController) {
+        this._aiController.abort();
+      }
+    });
 
     try {
-      const response = await this.plugin.callAI(finalPrompt, systemContent);
-      this.resultMarkdown = response || "";
+      // 发起请求（传入 signal）
+      const response = await this.plugin.callAI(finalPrompt, systemContent, signal);
+
+      // 记录历史（AI查词）
+      this.addHistory(this.currentWord, "ai", response);
+
+      // 请求成功 → 清空加载 UI，渲染结果
       this.resultContainer.empty();
-      // 如果需要显示回退提示，先添加提示
+      this.resultMarkdown = response || "";
+
+      // 本地优先的回退提示
       if (this._showFallbackHint) {
         const hint = document.createElement("div");
         hint.className = "lookup-fallback-hint";
         hint.textContent = t("local_not_found_ai_fallback");
-        hint.style.cssText = "background: var(--background-secondary); padding: 6px 10px; border-radius: 4px; margin-bottom: 8px; font-size: 0.9em; color: var(--text-muted);";
         this.resultContainer.appendChild(hint);
         this._showFallbackHint = false;
       }
+
+      // 显示上下文预览
+      if (context && finalPrompt.includes('{context}')) {
+        const contextPreview = this.resultContainer.createDiv();
+        contextPreview.className = 'lookup-ai-context-preview';
+        contextPreview.textContent = context;
+      }
+
+      // 渲染 AI 结果
       await MarkdownRenderer.render(
         this.plugin.app,
         this.resultMarkdown,
@@ -5518,9 +5750,18 @@ class LookupView extends ItemView {
       );
       fixInternalLinks(this.resultContainer, this.plugin.app, "");
     } catch (err) {
-      new Notice(t("lookup_error_prefix") + err.message);
-      this.resultContainer.setText(t("lookup_error_prefix") + err.message);
+      // 请求失败或取消
+      this.resultContainer.empty();
+      if (err.message === 'Aborted') {
+        // 用户主动取消 → 显示取消提示
+        this.resultContainer.setText(t("example_ai_aborted"));
+      } else {
+        new Notice(t("lookup_error_prefix") + err.message);
+        this.resultContainer.setText(t("lookup_error_prefix") + err.message);
+      }
     } finally {
+      // 清理控制器，恢复按钮状态
+      this._aiController = null;
       this.setLoading(false);
     }
   }
@@ -5536,6 +5777,272 @@ class LookupView extends ItemView {
     if (this.saveBtn) {
       this.saveBtn.disabled = loading;
     }
+  }
+
+  // 添加历史记录
+  addHistory(word, mode, result = null) {
+    if (mode === "local") {
+      // 本地查词：去重
+      const index = this.history.findIndex(
+        h => h.word === word && h.mode === mode
+      );
+      if (index > -1) {
+        // 已存在，移到最前面
+        const [record] = this.history.splice(index, 1);
+        this.history.unshift(record);
+      } else {
+        // 不存在，新增
+        this.history.unshift({ word, mode, result });
+      }
+    } else {
+      // AI 查词：不去重，直接新增
+      this.history.unshift({ word, mode, result });
+    }
+
+    // 限制数量
+    if (this.history.length > this.maxHistory) {
+      this.history.pop();
+    }
+
+    // 如果浮层打开，刷新列表
+    if (this.historyDropdown && this.historyDropdown.style.display !== "none") {
+      if (this._updateHistoryList) {
+        this._updateHistoryList(this._historySearchFilter || '');
+      }
+    }
+  }
+
+  // 清空历史
+  clearHistory() {
+    this.history = [];
+    this._historySearchFilter = '';
+    if (this._updateHistoryList) {
+      this._updateHistoryList('');
+    }
+    if (this.historyDropdown) {
+      this.historyDropdown.style.display = 'none';
+    }
+    // 关闭时清除监听
+    if (this._closeHandler) {
+      document.removeEventListener("click", this._closeHandler);
+      this._closeHandler = null;
+    }
+  }
+
+  // 切换下拉
+  toggleHistoryDropdown(btn) {
+    if (this.historyDropdown && this.historyDropdown.style.display !== "none") {
+      this.historyDropdown.style.display = "none";
+      btn.classList.remove("is-active");
+      return;
+    }
+    this.renderHistoryDropdown();
+  }
+
+  // 渲染下拉浮层
+  renderHistoryDropdown() {
+    if (this.historyDropdown) {
+      this.historyDropdown.remove();
+      this.historyDropdown = null;
+    }
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "lookup-history-dropdown";
+
+    // 标题行
+    const header = dropdown.createDiv({ cls: "lookup-history-header" });
+    const title = header.createSpan({ text: t("lookup_history_title"), cls: "lookup-history-title" });
+
+    // 右侧操作按钮组（固定/清空）
+    const headerActions = header.createDiv({ cls: "lookup-history-header-actions" });
+
+    // 清空按钮
+    const clearBtn = headerActions.createEl("button", { cls: "lookup-history-clear-btn" });
+    setIcon(clearBtn, "trash-2");
+    clearBtn.setAttribute("aria-label", t("lookup_history_clear"));
+    clearBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.clearHistory();
+      dropdown.style.display = "none";
+    });
+
+    // 固定按钮
+    const pinBtn = headerActions.createEl("button", { cls: "lookup-history-pin-btn" });
+    if (this.isPinned) {
+      pinBtn.addClass("is-pinned");
+    }
+    const pinIcon = this.isPinned ? "pin" : "pin-off";
+    setIcon(pinBtn, pinIcon);
+    pinBtn.setAttribute("aria-label", this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin"));
+    pinBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      this.isPinned = !this.isPinned;
+      pinBtn.toggleClass("is-pinned", this.isPinned);
+      const newIcon = this.isPinned ? "pin" : "pin-off";
+      setIcon(pinBtn, newIcon);
+      pinBtn.setAttribute("aria-label", this.isPinned ? t("lookup_history_unpin") : t("lookup_history_pin"));
+      // 重新设置关闭监听
+      this.addCloseHandler();
+    });
+
+    // 搜索框
+    const searchRow = dropdown.createDiv({ cls: "lookup-history-search-row" });
+    const searchInput = searchRow.createEl("input", {
+      type: "text",
+      placeholder: t("lookup_history_search"),
+      cls: "lookup-history-search-input"
+    });
+
+    // ---- 列表容器 ----
+    const listContainer = dropdown.createDiv({ cls: "lookup-history-list-container" });
+
+    const renderList = (filter = "") => {
+      listContainer.empty();
+      const lowerFilter = filter.toLowerCase().trim();
+      let filtered = this.history;
+      if (lowerFilter) {
+        filtered = this.history.filter(item =>
+          item.word.toLowerCase().includes(lowerFilter)
+        );
+      }
+      if (filtered.length === 0) {
+        const empty = listContainer.createDiv({ cls: "lookup-history-empty" });
+        empty.textContent = t("lookup_history_empty");
+        return;
+      }
+      for (let i = 0; i < filtered.length; i++) {
+        const item = filtered[i];
+        const entry = listContainer.createDiv({ cls: "lookup-history-item" });
+
+        // 模式图标
+        const modeIcon = entry.createSpan({ cls: "history-mode" });
+        modeIcon.dataset.mode = item.mode;
+        setIcon(modeIcon, item.mode === "ai" ? "sparkles" : "book-a");
+
+        // 单词
+        entry.createSpan({ text: item.word, cls: "history-word" });
+
+        // 缓存标记
+        if (item.mode === "ai" && item.result) {
+          const cached = entry.createSpan({ cls: "history-cached" });
+          setIcon(cached, "database");
+        }
+
+        entry.addEventListener("click", () => {
+          const index = this.history.indexOf(item);
+          if (index > -1) {
+            const [record] = this.history.splice(index, 1);
+            this.history.unshift(record);
+          }
+
+          this.searchInput.value = item.word;
+          if (item.mode === "ai" && item.result) {
+            this.resultContainer.empty();
+            this.resultMarkdown = item.result;
+            MarkdownRenderer.render(
+              this.plugin.app,
+              item.result,
+              this.resultContainer,
+              "",
+              this.plugin
+            );
+            fixInternalLinks(this.resultContainer, this.plugin.app, "");
+            this.currentWord = item.word;
+            this.currentMode = "ai";
+          } else if (item.mode === "ai") {
+            this.doAILookup(item.word);
+          } else {
+            this.doLocalLookup(item.word);
+          }
+          if (!this.isPinned) {
+            dropdown.style.display = "none";
+          }
+
+          if (this._updateHistoryList) {
+            this._updateHistoryList(this._historySearchFilter || '');
+          }
+        });
+      }
+    };
+
+    this._updateHistoryList = renderList;
+    this._historySearchFilter = '';
+
+    searchInput.addEventListener("input", (e) => {
+      this._historySearchFilter = e.target.value;
+      renderList(this._historySearchFilter);
+    });
+    renderList();
+
+    document.body.appendChild(dropdown);
+    this.historyDropdown = dropdown;
+    this.positionDropdown();
+    this.addCloseHandler();
+    setTimeout(() => searchInput.focus(), 50);
+
+    // 激活历史按钮
+    if (this.historyBtn) {
+      this.historyBtn.classList.add("is-active");
+    }
+  }
+
+  // 定位浮层
+  positionDropdown() {
+    if (!this.historyDropdown || !this.historyBtn) return;
+
+    // 获取历史按钮在屏幕上的相对位置
+    const btnRect = this.historyBtn.getBoundingClientRect();
+    const dropdown = this.historyDropdown;
+    const dropdownWidth = dropdown.offsetWidth || 200;
+
+    // 水平定位
+    let left = btnRect.right; // 浮层左边缘 = 按钮右边缘
+    // 如果浮层右边缘超出屏幕右边界，则改为左对齐按钮左边缘
+    if (left + dropdownWidth > window.innerWidth - 10) {
+      left = btnRect.left;
+    }
+    // 如果左对齐仍然超出，则靠右对齐屏幕
+    if (left + dropdownWidth > window.innerWidth - 10) {
+      left = window.innerWidth - dropdownWidth - 10;
+    }
+    if (left < 10) left = 10;
+
+    // 垂直定位
+    let top = btnRect.bottom + 4;
+    if (top + 400 > window.innerHeight - 10) {
+      top = btnRect.top - 400 - 4;
+    }
+
+    dropdown.style.left = left + "px";
+    dropdown.style.top = top + "px";
+  }
+
+  // 点击外部关闭
+  addCloseHandler() {
+    // 移除之前绑定的监听
+    if (this._closeHandler) {
+      document.removeEventListener("click", this._closeHandler);
+      this._closeHandler = null;
+    }
+    // 固定状态下不添加关闭监听
+    if (this.isPinned) return;
+    const dropdown = this.historyDropdown;
+    if (!dropdown) return;
+    const closeHandler = (e) => {
+      if (!dropdown.contains(e.target) && e.target !== this.historyBtn) {
+        dropdown.style.display = "none";
+        if (this.historyBtn) {
+          this.historyBtn.classList.remove("is-active");
+        }
+        // 关闭后移除监听，防止内存泄漏
+        document.removeEventListener("click", closeHandler);
+        this._closeHandler = null;
+      }
+    };
+    this._closeHandler = closeHandler;
+    setTimeout(() => {
+      document.addEventListener("click", closeHandler);
+    }, 10);
   }
 
   // 从文本中提取音标（支持多种格式）
@@ -6338,6 +6845,9 @@ class StudyView extends ItemView {
     this._statsCache = null;
     this._statsCacheTime = 0;
     this._rendering = false;
+    this.bookmarkedCards = [];
+    this._isBookmarkRound = false;
+    this._tempBookmarkedQueue = [];
   }
 
   getViewType() { return VIEW_TYPE_STUDY; }
@@ -6361,6 +6871,86 @@ class StudyView extends ItemView {
 
     // 排除 Obsidian 编辑器（编辑模式 & 阅读模式）
     if (e.target.closest('.cm-editor, .markdown-source-view, .markdown-preview-view')) {
+      return;
+    }
+
+    // 如果单词复习完成
+    if (this.currentIndex >= this.reviewQueue.length) {
+      // R → 集中复习/再复习
+      if (e.key === 'r' || e.key === 'R') {
+        if (this.bookmarkedCards.length > 0) {
+          this.startBookmarkRound();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+
+      // A → 再来一轮
+      if (e.key === 'a' || e.key === 'A') {
+        const againBtn = Array.from(document.querySelectorAll('.study-done-buttons button'))
+          .find(btn => btn.textContent.trim() === t("study_btn_again"));
+        if (againBtn) {
+          againBtn.click();
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+
+      // Q → 返回准备
+      if (e.key === 'q' || e.key === 'Q') {
+        this.bookmarkedCards = [];
+        this._isBookmarkRound = false;
+        this._tempBookmarkedQueue = [];
+        this.reviewing = false;
+        this.renderReviewTab();
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+
+      return;
+    }
+
+    // 按 B 键切换标记
+    if (e.key === 'b' || e.key === 'B') {
+      // 检查标记功能是否开启
+      if (!this.plugin.settings.study.enableBookmark) return;
+
+      // 获取当前卡片数据
+      const item = this.reviewQueue[this.currentIndex];
+      if (!item) return;
+      const card = item.card;
+
+      // 找到卡片上的标记按钮元素
+      const btn = this.cardContainer?.querySelector('.study-card-bookmark-btn');
+
+      // 切换标记状态
+      const idx = this.bookmarkedCards.findIndex(c =>
+        c.word === card.word && c.sourceFile === card.sourceFile
+      );
+
+      if (idx > -1) {
+        // 已标记 → 取消标记
+        this.bookmarkedCards.splice(idx, 1);
+        if (btn) {
+          setIcon(btn, "star-off");
+          btn.removeClass("is-bookmarked");
+          btn.setAttribute("title", t("study_bookmark_tooltip_off"));
+        }
+      } else {
+        // 未标记 → 添加标记
+        this.bookmarkedCards.push({ ...card });
+        if (btn) {
+          setIcon(btn, "star");
+          btn.addClass("is-bookmarked");
+          btn.setAttribute("title", t("study_bookmark_tooltip_on"));
+        }
+      }
+
+      e.preventDefault();
+      e.stopPropagation();
       return;
     }
 
@@ -6443,7 +7033,26 @@ class StudyView extends ItemView {
     this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => {
       // 清除统计缓存，确保下次渲染时重新计算
       this._statsCacheTime = 0;
-      this.refresh();
+      // 如果正在复习，刷新当前卡片数据
+      if (this.reviewing && this.reviewQueue.length > 0 && this.currentIndex < this.reviewQueue.length) {
+        const currentItem = this.reviewQueue[this.currentIndex];
+        if (currentItem && currentItem.card) {
+          // 从所有卡片中重新查找最新的卡片数据
+          const allCards = this.plugin.getAllCards();
+          const updatedCard = allCards.find(c =>
+            c.word === currentItem.card.word &&
+            c.sourceFile === currentItem.card.sourceFile
+          );
+          if (updatedCard) {
+            // 更新 reviewQueue 中的卡片引用
+            currentItem.card = updatedCard;
+            // 重新渲染当前卡片
+            this.renderReviewTab();
+          }
+        }
+      } else {
+        this.refresh();
+      }
     }));
     this.registerEvent(this.plugin.app.vault.on("modify", (file) => {
       if (file instanceof TFile && file.extension === "json") {
@@ -6462,12 +7071,20 @@ class StudyView extends ItemView {
   }
 
   onClose() {
+    // 清理定时器
     if (this._autoFlipTimer) {
       clearTimeout(this._autoFlipTimer);
       this._autoFlipTimer = null;
     }
     // 清除键盘事件引用
     this._keyHandler = null;
+    // 重置所有复习状态
+    this.reviewing = false;
+    this.reviewQueue = [];
+    this.currentIndex = 0;
+    this.bookmarkedCards = [];
+    this._isBookmarkRound = false;
+    this._tempBookmarkedQueue = [];
   }
 
   // ----- 刷新视图 -----
@@ -6702,6 +7319,104 @@ class StudyView extends ItemView {
 
     container.empty();
     if (this.currentIndex >= this.reviewQueue.length) {
+
+      // 主轮次完成，有标记词时
+      if (this.bookmarkedCards.length > 0 && !this._isBookmarkRound) {
+        const done = container.createDiv({ cls: "study-done" });
+        const todayTotal = this.studyStore.getTodayStats().reviewed || 0;
+        done.createEl("p", { text: t("study_review_done", this.totalReviewed, todayTotal) });
+
+        done.createEl("p", {
+          text: t("study_bookmark_hint", this.bookmarkedCards.length),
+          cls: "study-bookmark-hint"
+        });
+
+        const buttonGroup = done.createDiv({ cls: "study-done-buttons" });
+
+        const reviewBtn = buttonGroup.createEl("button", {
+          text: t("study_bookmark_review_btn", this.bookmarkedCards.length),
+          cls: "mod-cta"
+        });
+        reviewBtn.addEventListener("click", () => {
+          this.startBookmarkRound();
+        });
+
+        const againBtn = buttonGroup.createEl("button", { text: t("study_btn_again") });
+        againBtn.addEventListener("click", async () => {
+          const filteredCards = this.getFilteredCards();
+          const due = await this.studyStore.getDueWords(filteredCards, this.plugin.settings.study.dailyReviewLimit || 20);
+          if (due.length === 0) {
+            this.reviewing = false;
+            this.renderReviewTab();
+            return;
+          }
+          this.bookmarkedCards = [];
+          this.startReviewWithWords(due);
+        });
+
+        const backBtn = buttonGroup.createEl("button", { text: t("study_btn_back") });
+        backBtn.addEventListener("click", () => {
+          // 清理标记状态
+          this.bookmarkedCards = [];
+          this._isBookmarkRound = false;
+          this._tempBookmarkedQueue = [];
+
+          this.reviewing = false;
+          this.renderReviewTab();
+        });
+
+        return;
+      }
+
+      // 小轮次完成，有标记词时
+      if (this._isBookmarkRound && this.bookmarkedCards.length > 0) {
+        const done = container.createDiv({ cls: "study-done" });
+        const todayTotal = this.studyStore.getTodayStats().reviewed || 0;
+        done.createEl("p", { text: t("study_review_done", this.totalReviewed, todayTotal) });
+
+        done.createEl("p", {
+          text: t("study_bookmark_review_again_hint", this.bookmarkedCards.length),
+          cls: "study-bookmark-hint"
+        });
+
+        const buttonGroup = done.createDiv({ cls: "study-done-buttons" });
+
+        const reviewBtn = buttonGroup.createEl("button", {
+          text: t("study_bookmark_review_again_btn", this.bookmarkedCards.length),
+          cls: "mod-cta"
+        });
+        reviewBtn.addEventListener("click", () => {
+          this.startBookmarkRound();
+        });
+
+        const againBtn = buttonGroup.createEl("button", { text: t("study_btn_again") });
+        againBtn.addEventListener("click", async () => {
+          const filteredCards = this.getFilteredCards();
+          const due = await this.studyStore.getDueWords(filteredCards, this.plugin.settings.study.dailyReviewLimit || 20);
+          if (due.length === 0) {
+            this.reviewing = false;
+            this.renderReviewTab();
+            return;
+          }
+          this.bookmarkedCards = [];
+          this._isBookmarkRound = false;
+          this.startReviewWithWords(due);
+        });
+
+        const backBtn = buttonGroup.createEl("button", { text: t("study_btn_back") });
+        backBtn.addEventListener("click", () => {
+          // 清理标记状态
+          this.bookmarkedCards = [];
+          this._isBookmarkRound = false;
+          this._tempBookmarkedQueue = [];
+     
+          this.reviewing = false;
+          this.renderReviewTab();
+        });
+
+        return;
+      }
+
       // 复习完成
       const done = container.createDiv({ cls: "study-done" });
       const todayTotal = this.studyStore.getTodayStats().reviewed || 0; // 获取今日累计数
@@ -6758,6 +7473,11 @@ class StudyView extends ItemView {
         clearTimeout(this._autoFlipTimer);
         this._autoFlipTimer = null;
       }
+      // 清理标记状态
+      this.bookmarkedCards = [];
+      this._isBookmarkRound = false;
+      this._tempBookmarkedQueue = [];
+
       this.reviewing = false;
       this.reviewQueue = [];
       this.currentIndex = 0;
@@ -6779,6 +7499,11 @@ class StudyView extends ItemView {
       cyan: 'var(--color-cyan)'
     };
     cardEl.style.setProperty('--study-card-color', colorMap[card.color] || 'var(--interactive-accent)');
+
+    // 标记按钮
+    if (this.plugin.settings.study.enableBookmark === true) {
+      this._createBookmarkBtn(cardEl, card);
+    }
 
     // 词源名
     cardEl.style.position = 'relative';
@@ -7194,9 +7919,73 @@ class StudyView extends ItemView {
     }
   }
 
+  // ----- 创建复习卡片上的标记按钮 -----
+  _createBookmarkBtn(container, card) {
+    if (this.plugin.settings.study.enableBookmark === false) {
+      return null;
+    }
+
+    const btn = container.createDiv({ cls: "study-card-bookmark-btn" });
+
+    const isBookmarked = this.bookmarkedCards.some(c =>
+      c.word === card.word && c.sourceFile === card.sourceFile
+    );
+    setIcon(btn, isBookmarked ? "star" : "star-off");
+    btn.setAttribute("title", isBookmarked ? t("study_bookmark_tooltip_on") : t("study_bookmark_tooltip_off"));
+    if (isBookmarked) btn.addClass("is-bookmarked");
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const idx = this.bookmarkedCards.findIndex(c =>
+        c.word === card.word && c.sourceFile === card.sourceFile
+      );
+      if (idx > -1) {
+        this.bookmarkedCards.splice(idx, 1);
+        setIcon(btn, "star-off");
+        btn.removeClass("is-bookmarked");
+        btn.setAttribute("title", t("study_bookmark_tooltip_off"));
+      } else {
+        this.bookmarkedCards.push({ ...card });
+        setIcon(btn, "star");
+        btn.addClass("is-bookmarked");
+        btn.setAttribute("title", t("study_bookmark_tooltip_on"));
+      }
+    });
+
+    return btn;
+  }
+
   // ----- 开始复习 -----
   startReviewWithWords(dueWords) {
+    // 清空所有复习单词的相关标记状态
+    this.bookmarkedCards = [];
+    this._isBookmarkRound = false;
+    this._tempBookmarkedQueue = [];
+
     this.reviewQueue = dueWords;
+    this.currentIndex = 0;
+    this.totalReviewed = 0;
+    this.totalMastered = 0;
+    this.reviewing = true;
+    this.renderReviewTab();
+  }
+
+  // ----- 开始标记词的小轮次 -----
+  startBookmarkRound() {
+    if (this.bookmarkedCards.length === 0) {
+      this.reviewing = false;
+      this.renderReviewTab();
+      return;
+    }
+
+    this._tempBookmarkedQueue = [...this.bookmarkedCards];
+    this.bookmarkedCards = [];
+    this._isBookmarkRound = true;
+
+    this.reviewQueue = this._tempBookmarkedQueue.map(card => {
+      const review = this.studyStore.getReview(card.word, card.sourceFile);
+      return { card, review };
+    });
     this.currentIndex = 0;
     this.totalReviewed = 0;
     this.totalMastered = 0;
@@ -8359,6 +9148,21 @@ class StudyView extends ItemView {
       fineFeedbackToggle.toggleClass("is-enabled", newVal);
     });
 
+    // 启用标记功能（开关）
+    const bookmarkSetting = container.createDiv({ cls: "study-setting-item" });
+    bookmarkSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_enable_bookmark") });
+    bookmarkSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_enable_bookmark_desc") });
+    const bookmarkControl = bookmarkSetting.createDiv({ cls: "study-setting-control" });
+    const bookmarkToggle = bookmarkControl.createDiv({ cls: "checkbox-container2" });
+    if (this.plugin.settings.study.enableBookmark === true) bookmarkToggle.addClass("is-enabled");
+    bookmarkToggle.createDiv({ cls: "checkbox-handle" });
+    bookmarkToggle.addEventListener("click", async () => {
+      const newVal = !this.plugin.settings.study.enableBookmark;
+      this.plugin.settings.study.enableBookmark = newVal;
+      await this.plugin.saveSettings();
+      bookmarkToggle.toggleClass("is-enabled", newVal);
+    });
+
     // 间隔天数自定义
     const intervalSetting = container.createDiv({ cls: "study-setting-item" });
     const headerRow = intervalSetting.createDiv({ cls: "study-interval-header" });
@@ -8719,7 +9523,7 @@ class StudyView extends ItemView {
   }
 }
 
-// ========== 辅助类 ==========
+// ========== 辅助确认弹窗类 ==========
 class ConfirmModal extends Modal {
   constructor(app, onConfirm, onCancel, message = null, confirmText = null, cancelText = null, title = null) {
     super(app);
@@ -9065,7 +9869,7 @@ class WordModal extends Modal {
   transition: background 0.15s, color 0.15s;
 `;
 
-    // ---- 检测当前是否在编辑模式（使用 getMode） ----
+    // ---- 检测当前是否在编辑模式 ----
     const leaf = this.app.workspace.activeLeaf;
     let isEditMode = false;
     if (leaf && leaf.view) {
@@ -9108,10 +9912,17 @@ class WordModal extends Modal {
           this.plugin,
           sentence,
           this.word,
-          (finalText, customTitle) => {
-            this.appendExample(finalText, customTitle);
+          (input, customTitle) => {
+            // 支持数组（多片段）或单个字符串
+            if (Array.isArray(input)) {
+              for (const seg of input) {
+                this.appendExample(seg.text, seg.title);
+              }
+            } else {
+              this.appendExample(input, customTitle);
+            }
           },
-          'paragraph', // 默认模式，按空行分隔提取
+          'paragraph',
           defaultTitle
         ).open();
       });
@@ -9215,8 +10026,19 @@ class WordModal extends Modal {
   appendExample(text, customTitle = null) {
     if (!text) return;
 
-    // 优先使用自定义标题，否则使用语言包默认标题
-    const sectionTitle = customTitle && customTitle.trim() ? customTitle.trim() : t("example_section_title");
+    // 无标题：直接追加到释义最上方
+    if (!customTitle || !customTitle.trim()) {
+      if (this.definition && this.definition.trim()) {
+        this.definition = text + '\n\n' + this.definition;
+      } else {
+        this.definition = text;
+      }
+      if (this.defTextArea) this.defTextArea.value = this.definition;
+      return;
+    }
+
+    // 有标题：使用自定义标题
+    const sectionTitle = customTitle.trim();
     const titlePattern = `**${sectionTitle}**`;
 
     let currentDef = this.definition || '';
@@ -9252,7 +10074,7 @@ class WordModal extends Modal {
         : newSection;
     }
 
-    // 3. 刷新文本域
+    // 刷新文本域
     if (this.defTextArea) {
       this.defTextArea.value = this.definition;
     }
@@ -9330,9 +10152,13 @@ class SentencePickerModal extends Modal {
     contentEl.empty();
     this.titleEl.setText(t("example_picker_title"));
 
-    // ---- 描述文字 ----
-    const desc = contentEl.createEl('p', { text: t("example_picker_desc") });
-    desc.style.cssText = 'color: var(--text-muted); font-size: 0.9em; margin-bottom: 12px;';
+    // ==== 例句提取模块 ====
+    const exampleDivider = contentEl.createEl('hr');
+    exampleDivider.style.cssText = 'border: none; border-top: 1px solid var(--background-modifier-border); margin: 12px 0;';
+
+    const exampleHeader = contentEl.createEl('div');
+    exampleHeader.style.cssText = 'font-weight: 600; font-size: 0.95em; margin-bottom: 8px;';
+    exampleHeader.textContent = t("example_example_section");
 
     // ---- 提取模式下拉选择器 ----
     let currentMode = this.extractMode || 'paragraph';
@@ -9392,8 +10218,18 @@ class SentencePickerModal extends Modal {
       if (!text) return text;
       let result = text;
       if (this.word && this.word.trim()) {
-        const wordLower = this.word.trim().toLowerCase();
-        const regex = new RegExp(`\\b(${this.escapeRegex(wordLower)})\\b`, 'gi');
+        const word = this.word.trim();
+        const escaped = this.escapeRegex(word);
+        // 检测是否包含非 ASCII 字符
+        const isNonEnglish = /[^\x00-\x7F]/.test(word);
+        let regex;
+        if (isNonEnglish) {
+          // 非英文：不用边界匹配
+          regex = new RegExp(`(${escaped})`, 'gi');
+        } else {
+          // 英文：使用边界匹配
+          regex = new RegExp(`\\b(${escaped})\\b`, 'gi');
+        }
         result = result.replace(regex, (match) => {
           return `<span style="color: var(--text-accent); font-weight: 500;">${match}</span>`;
         });
@@ -9462,6 +10298,7 @@ class SentencePickerModal extends Modal {
     // ---- 章节标题输入框 ----
     const sectionTitleSetting = new Setting(contentEl)
       .setName(t("example_section_title_label") || "Section Title")
+      .setDesc(t("example_ai_section_title_desc"))
       .addText(text => {
         text.setValue(this.defaultSectionTitle || t("example_section_title"));
         text.inputEl.placeholder = t("example_section_title");
@@ -9471,29 +10308,262 @@ class SentencePickerModal extends Modal {
         this.sectionTitleInput = text;
         return text;
       });
+    this.customSectionTitle = (this.defaultSectionTitle || t("example_section_title")).trim() || null;
 
-    // ---- 按钮 ----
+    // ==== AI 语境解释模块 ====
+    const aiDivider = contentEl.createEl('hr');
+    aiDivider.style.cssText = 'border: none; border-top: 1px solid var(--background-modifier-border); margin: 12px 0;';
+
+    const aiHeader = contentEl.createEl('div');
+    aiHeader.style.cssText = 'font-weight: 600; font-size: 0.95em; margin-bottom: 8px;';
+    aiHeader.textContent = t("example_ai_section");
+
+    // ---- 系统提示词下拉 ----
+    const systemPromptSetting = new Setting(contentEl)
+      .setName(t("example_system_prompt"))
+      .addDropdown(drop => {
+        const allOptions = getAllSystemPromptOptions(this.plugin.settings);
+        drop.addOption('', t("settings_system_prompt_none"));
+        for (const opt of allOptions) {
+          const label = opt.type === 'builtin' ? `${opt.name}（${t("builtin_label")}）` : opt.name;
+          drop.addOption(opt.key, label);
+        }
+        const builtinKeys = getBuiltinPromptKeys();
+        const defaultKey = builtinKeys.length > 0 ? `builtin_${builtinKeys[0]}` : '';
+        drop.setValue(defaultKey);
+        drop.onChange(val => {
+          this.selectedSystemPrompt = val;
+        });
+        this.systemPromptDropdown = drop;
+        return drop;
+      });
+
+    // ---- AI 提示词文本框 ----
+    const promptSetting = new Setting(contentEl)
+      .setName(t("example_prompt_content"))
+      .setDesc(t("example_prompt_desc"))
+      .addTextArea(text => {
+        const savedPrompt = this.plugin.settings.aiContextPrompt || '';
+        const defaultPrompt = t("example_ai_default_prompt");
+        text.setValue(savedPrompt || defaultPrompt);
+        text.inputEl.placeholder = defaultPrompt;
+        text.inputEl.rows = 4;
+        text.inputEl.style.width = '100%';
+        text.inputEl.style.resize = 'vertical';
+        text.inputEl.style.fontSize = '0.9em';
+        text.inputEl.style.minHeight = '80px';
+        text.onChange(val => {
+          this.customPrompt = val;
+        });
+        text.inputEl.addEventListener('blur', async () => {
+          const val = text.getValue().trim();
+          if (val) {
+            this.plugin.settings.aiContextPrompt = val;
+            await this.plugin.saveSettings();
+            new Notice(t("example_ai_prompt_saved"));
+          }
+        });
+        this.promptTextArea = text;
+        return text;
+      });
+
+    // ---- AI 解释按钮 + 中断按钮 ----
+    const aiBtnRow = contentEl.createDiv();
+    aiBtnRow.style.cssText = 'display: flex; gap: 8px; margin: 6px 0 8px 0; align-items: center; flex-wrap: wrap;';
+
+    const aiExplainBtn = aiBtnRow.createEl('button', {
+      text: t("example_ai_explain_btn"),
+      cls: 'mod-cta'
+    });
+    aiExplainBtn.style.cssText = 'flex-shrink: 0;';
+
+    const abortBtn = aiBtnRow.createEl('button', {
+      text: t("example_ai_abort_btn"),
+      cls: 'mod-warning'
+    });
+    abortBtn.style.cssText = 'flex-shrink: 0; display: none;';  // 默认隐藏
+    this.abortBtn = abortBtn;
+    this.aiExplainBtn = aiExplainBtn;  // 保存引用以便后续更新文本
+
+    // ---- AI 结果框 ----
+    const aiResultDiv = contentEl.createEl('textarea');
+    aiResultDiv.style.cssText = `
+    width: 100%;
+    min-height: 80px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    background: var(--background-primary);
+    color: var(--text-normal);
+    resize: vertical;
+    font-family: var(--font-text);
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin: 4px 0 8px 0;
+    display: none;
+  `;
+    aiResultDiv.readOnly = false;
+    this.aiResultDiv = aiResultDiv;
+
+    // ---- AI 章节标题输入框 ----
+    const aiSectionTitleSetting = new Setting(contentEl)
+      .setName(t("example_section_title_label"))
+      .setDesc(t("example_ai_section_title_desc"))
+      .addText(text => {
+        text.setValue('');
+        text.inputEl.placeholder = '';
+        text.onChange(val => {
+          this.aiSectionTitle = val.trim() || null;
+        });
+        this.aiSectionTitleInput = text;
+        return text;
+      });
+    aiSectionTitleSetting.settingEl.style.display = 'none';
+    this.aiSectionTitleSetting = aiSectionTitleSetting;
+
+    // ---- 两个插入按钮 ----
+    const extraBtnRow = contentEl.createDiv();
+    extraBtnRow.style.cssText = 'display: none; gap: 8px; margin: 4px 0 8px 0; flex-wrap: wrap;';
+    const insertAIOnlyBtn = extraBtnRow.createEl('button', { text: t("example_insert_ai_only") });
+    const insertExampleOnlyBtn = extraBtnRow.createEl('button', { text: t("example_insert_example_only") });
+    this.extraBtnRow = extraBtnRow;
+    this.insertAIOnlyBtn = insertAIOnlyBtn;
+    this.insertExampleOnlyBtn = insertExampleOnlyBtn;
+
+
+    // ---- AI 解释按钮点击逻辑 ----
+    aiExplainBtn.addEventListener('click', async () => {
+      const contextText = this.editDiv.innerText.trim();
+      if (!contextText) {
+        new Notice(t("example_please_extract_first"));
+        return;
+      }
+
+      const word = this.word?.trim();
+      if (!word) {
+        new Notice(t("notice_select_word"));
+        return;
+      }
+      const defaultPrompt = t("example_ai_default_prompt");
+      let prompt = this.promptTextArea?.getValue()?.trim() || defaultPrompt;
+      prompt = prompt.replace(/{word}/g, word).replace(/{context}/g, contextText);
+
+      const systemKey = this.selectedSystemPrompt || '';
+      let systemContent = null;
+      if (systemKey) {
+        systemContent = getSystemPromptContent(systemKey, this.plugin.settings);
+      }
+
+      // 创建 AbortController
+      this._aiController = new AbortController();
+      const signal = this._aiController.signal;
+
+      // 切换按钮状态
+      aiExplainBtn.disabled = true;
+      aiExplainBtn.textContent = t("example_ai_generating");
+      abortBtn.style.display = 'inline-block';
+      abortBtn.textContent = t("example_ai_abort_btn");        // 重置文本
+      abortBtn.disabled = false;
+      this.aiResultDiv.style.display = 'block';
+      this.aiResultDiv.value = t("example_ai_generating");
+      this.aiResultDiv.readOnly = true;
+
+      try {
+        const result = await this.plugin.callAI(prompt, systemContent, signal);
+        this.aiResultDiv.value = result;
+        this.aiResultDiv.readOnly = false;
+        // 显示额外按钮和AI章节标题
+        extraBtnRow.style.display = 'flex';
+        this.aiSectionTitleSetting.settingEl.style.display = '';
+      } catch (err) {
+        if (err.message === 'Aborted') {
+          this.aiResultDiv.value = t("example_ai_aborted");
+          new Notice(t("example_ai_aborted"));
+        } else {
+          this.aiResultDiv.value = t("example_ai_failed", err.message);
+          console.error('AI context explanation error:', err);
+        }
+        this.aiResultDiv.readOnly = false;
+      } finally {
+        aiExplainBtn.disabled = false;
+        aiExplainBtn.textContent = t("example_ai_explain_btn");
+        abortBtn.style.display = 'none';
+        this._aiController = null;
+      }
+    });
+    // ---- 中断AI 解释点击事件 ----
+    abortBtn.addEventListener('click', () => {
+      if (this._aiController) {
+        this._aiController.abort();
+        abortBtn.disabled = true;
+        abortBtn.textContent = t("example_ai_aborting");   // 使用国际化
+      }
+    });
+
+    // ---- 「仅插入语境释义」按钮 ----
+    insertAIOnlyBtn.addEventListener('click', () => {
+      const aiText = this.aiResultDiv.value.trim();
+      if (!aiText || aiText.startsWith('❌') || aiText.startsWith(t("example_ai_generating"))) {
+        new Notice(t("example_ai_empty"));
+        return;
+      }
+      const title = this.aiSectionTitle || null;  // 用户自定义标题，默认为 null
+      this.onConfirm(aiText, title);  // 传递给父级 appendExample
+      this.close();
+    });
+
+    // ---- 「仅插入例句」按钮 ----
+    insertExampleOnlyBtn.addEventListener('click', () => {
+      const exampleText = this.editDiv.innerText.trim();
+      if (!exampleText) {
+        new Notice(t("example_example_empty"));
+        return;
+      }
+      const title = this.customSectionTitle || null;
+      this.onConfirm(exampleText, title);  // 传递给父级 appendExample
+      this.close();
+    });
+
+    // ---- 底部按钮 ----
     const buttonDiv = contentEl.createDiv({ cls: 'modal-button-container' });
     buttonDiv.style.cssText = 'display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;';
 
     const cancelBtn = buttonDiv.createEl('button', { text: t('cancel') });
     cancelBtn.addEventListener('click', () => this.close());
 
-    const confirmBtn = buttonDiv.createEl('button', { text: t("example_picker_confirm"), cls: 'mod-cta' });
-    confirmBtn.addEventListener('click', () => {
-      refreshHighlight();
-      const finalText = this.editDiv.innerText.trim();
-      if (finalText) {
-        const customTitle = this.sectionTitleInput ? this.sectionTitleInput.getValue().trim() : null;
-        this.onConfirm(finalText, customTitle || null);
+    const insertBtn = buttonDiv.createEl('button', { text: t("example_insert_all"), cls: 'mod-cta' });
+    insertBtn.addEventListener('click', () => {
+      const exampleText = this.editDiv.innerText.trim();
+      const aiText = this.aiResultDiv.value.trim();
+      const hasAI = aiText && !aiText.startsWith('❌') && !aiText.startsWith(t("example_ai_generating"));
+
+      const fragments = [];
+
+      // 1. 添加 AI 片段（如果有且有效）
+      if (hasAI) {
+        fragments.push({
+          text: aiText,
+          title: this.aiSectionTitle || null
+        });
       }
+
+      // 2. 添加例句片段（如果有）
+      if (exampleText) {
+        fragments.push({
+          text: exampleText,
+          title: this.customSectionTitle || null
+        });
+      }
+
+      if (fragments.length === 0) {
+        new Notice(t("example_no_content_to_insert"));
+        return;
+      }
+
+      // 传递给父级，父级会遍历数组逐个调用 appendExample
+      this.onConfirm(fragments, null);
       this.close();
     });
-
-    // ---- 延迟执行使编辑区域失焦，以显示高亮 ----
-    setTimeout(() => {
-      if (editDiv) editDiv.blur();
-    }, 10);
   }
 }
 
@@ -11481,8 +12551,60 @@ class WordbookSettingTab extends PluginSettingTab {
         return btn;
       });
 
-    // ===== 提示词分组标题 =====
+    // ===== 提示词分组 =====
     container.createEl("h3", { text: t("settings_prompts") });
+
+    // 上下文提取方式
+    new Setting(container)
+      .setName(t("settings_ai_context_mode"))
+      .setDesc(t("settings_ai_context_mode_desc"))
+      .addDropdown(drop => {
+        drop.addOption("paragraph", t("example_mode_paragraph"))
+          .addOption("line", t("example_mode_line"))
+          .addOption("sentence", t("example_mode_sentence"))
+          .addOption("list", t("example_mode_list"))
+          .setValue(this.plugin.settings.aiContextMode || "line")
+          .onChange(async (val) => {
+            this.plugin.settings.aiContextMode = val;
+            await this.plugin.saveSettings();
+          });
+        return drop;
+      });
+
+    // PDF 上下文长度
+    new Setting(container)
+      .setName(t("settings_pdf_context_chars"))
+      .setDesc(t("settings_pdf_context_desc"))
+      .addText(text => {
+        const currentValue = this.plugin.settings.pdfContextChars || 150;
+        text.setValue(String(currentValue));
+        text.inputEl.type = "number";
+        text.inputEl.min = 50;
+        text.inputEl.max = 500;
+        text.inputEl.step = 10;
+        text.inputEl.style.width = "80px";
+
+        // 保存当前有效值，用于失焦恢复
+        let lastValidValue = currentValue;
+
+        const validateAndSave = async () => {
+          const val = parseInt(text.getValue());
+          if (val >= 50 && val <= 500) {
+            this.plugin.settings.pdfContextChars = val;
+            await this.plugin.saveSettings();
+            lastValidValue = val;
+          } else {
+            new Notice(t("notice_invalid_pdf_chars"));
+            // 恢复为上次有效值
+            text.setValue(String(lastValidValue));
+          }
+        };
+
+        // 失焦时验证保存
+        text.inputEl.addEventListener('blur', validateAndSave);
+
+        return text;
+      });
 
     // ======== 内置系统提示词 ======== //
 
@@ -11757,7 +12879,9 @@ class WordbookSettingTab extends PluginSettingTab {
     new Setting(container)
       .setDesc(t("settings_ai_default_prompt_desc"))
       .addTextArea(text => {
-        text.setValue(settings.defaultPrompt || "");
+        const defaultPrompt = t("example_ai_default_prompt");
+        text.setValue(settings.defaultPrompt || defaultPrompt);
+        text.inputEl.placeholder = defaultPrompt;
         text.inputEl.rows = 4;
         text.inputEl.style.width = "100%";
         text.onChange(async (val) => {
@@ -13432,9 +14556,8 @@ class SimpleWordbookPlugin extends Plugin {
       await this.saveSettings();
     }
     const adapter = this.app.vault.adapter;
-    if (!(await adapter.exists(pluginDir))) {
-      await adapter.mkdir(pluginDir, { recursive: true });
-    }
+    await ensureDir(adapter, pluginDir);
+
     // 兼容旧设置
     if (this.settings.highlightStyles) {
       if (this.settings.highlightStyles.underline !== undefined) {
@@ -13658,6 +14781,11 @@ class SimpleWordbookPlugin extends Plugin {
       this.removeCommand(id);
     }
     this.dynamicCommandIds = [];
+
+    // 5. 清理全局变量
+    if (globalThis.__simpleWordbookPlugin === this) {
+      delete globalThis.__simpleWordbookPlugin;
+    }
   }
 
   // ===== 获取 API Key（支持两种模式） =====
@@ -13684,7 +14812,7 @@ class SimpleWordbookPlugin extends Plugin {
   }
 
   // 调用 AI API
-  async callAI(prompt, systemContent = null) {
+  async callAI(prompt, systemContent = null, signal = null) {
     const settings = this.settings;
     const url = settings.apiBaseUrl;
     const apiKey = await this.getApiKeyPlaintext();
@@ -13719,9 +14847,13 @@ class SimpleWordbookPlugin extends Plugin {
       response = await fetch(url, {
         method: "POST",
         headers: headers,
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: signal
       });
     } catch (networkError) {
+      if (networkError.name === 'AbortError') {
+        throw new Error('Aborted');   // 用于上层识别中断
+      }
       // 网络层错误（DNS 解析失败、连接拒绝、超时等）
       console.error("Network error:", networkError);
       throw new Error(t("api_error_network"));
@@ -13985,204 +15117,225 @@ class SimpleWordbookPlugin extends Plugin {
     }
   }
 
-  // 统一获取选中文本（编辑模式优先，阅读模式fallback）
+  // 统一获取选中文本
   getSelectedText() {
-    // 1. 优先从活动编辑器获取（编辑模式）
-    const activeEditor = this.app.workspace.activeEditor;
-    if (activeEditor && activeEditor.editor) {
-      const selection = activeEditor.editor.getSelection();
+    const activeLeaf = this.app.workspace.activeLeaf;
+    const view = activeLeaf?.view;
+
+    // 判断当前视图是否为 Markdown 编辑模式
+    let isSourceMode = false;
+    if (view && view.getViewType && view.getViewType() === 'markdown') {
+      if (typeof view.getMode === 'function') {
+        isSourceMode = (view.getMode() === 'source');
+      } else {
+        // 降级方案：检查是否有 editor 属性
+        isSourceMode = !!view.editor;
+      }
+    }
+
+    // 仅在编辑模式下从编辑器获取选择
+    if (isSourceMode && view?.editor) {
+      const selection = view.editor.getSelection();
       if (selection && selection.trim()) return selection.trim();
     }
-    // 2. 从阅读模式的 DOM 选中获取
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      const text = selection.toString();
+
+    // 其他情况（阅读模式或没有编辑器）一律从 DOM 获取
+    const domSelection = window.getSelection();
+    if (domSelection && domSelection.rangeCount > 0) {
+      const text = domSelection.toString();
       if (text && text.trim()) return text.trim();
     }
+
     return null;
+  }
+
+  // ===== 工具函数：按句子切分 =====
+  _splitIntoSentences(text) {
+    if (!text) return [];
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+      try {
+        // 直接检测整个段落文本识别文本语言（标点符号 + 字符范围）
+        const isCJK = /[。！？]/.test(text) || /[\u4e00-\u9fff\u3040-\u30FF\uAC00-\uD7AF]/.test(text);
+        const langKey = isCJK ? 'zh' : 'en';
+        const segmenter = new Intl.Segmenter(langKey, { granularity: 'sentence' });
+        const segments = segmenter.segment(text);
+        const result = [];
+        for (const seg of segments) {
+          const sentence = seg.segment.trim();
+          if (sentence) result.push(sentence);
+        }
+        return result;
+      } catch (e) { /* fallback */ }
+    }
+    // 降级方案：按常见标点切分，保留最后一个无标点的句子
+    const matches = text.match(/[^。！？.!?]+[。！？.!?]+|[^。！？.!?]+$/g);
+    return matches ? matches.map(s => s.trim()).filter(s => s) : [text.trim()];
   }
 
   // ===== 获取单词所在的段落/句子/列表项 =====
   getSelectedSentence(mode = 'paragraph', targetWord = null) {
-    // 编辑模式（CodeMirror）
-    const activeEditor = this.app.workspace.activeEditor;
-    if (!activeEditor || !activeEditor.editor) {
-      return '';
-    }
-
-    const editor = activeEditor.editor;
-    const cursor = editor.getCursor('from');
-    const lineCount = editor.lineCount();
-
-    // ---- 工具函数：判断行是否为 Markdown 块 ----
-    const isMarkdownBlock = (lineText) => {
-      const trimmed = lineText.trim();
-      if (!trimmed) return false;
-      return /^(\s*[-*+]\s|\s*\d+\.\s|#{1,6}\s|```|>\s|---|\*\*\*|___|\[TOC\])/.test(trimmed);
-    };
-
-    // ---- 工具函数：按句子切分 ----
-    const splitIntoSentences = (text) => {
-      if (!text) return [];
-      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
-        try {
-          // 直接检测整个段落文本识别文本语言（标点符号 + 字符范围）
-          const isCJK = /[。！？]/.test(text) || /[\u4e00-\u9fff\u3040-\u30FF\uAC00-\uD7AF]/.test(text);
-          const langKey = isCJK ? 'zh' : 'en';
-          const segmenter = new Intl.Segmenter(langKey, { granularity: 'sentence' });
-          const segments = segmenter.segment(text);
-          const result = [];
-          for (const seg of segments) {
-            const sentence = seg.segment.trim();
-            if (sentence) result.push(sentence);
-          }
-          return result;
-        } catch (e) { /* fallback */ }
-      }
-      // 降级方案：按常见标点切分，保留最后一个无标点的句子
-      const matches = text.match(/[^。！？.!?]+[。！？.!?]+|[^。！？.!?]+$/g);
-      return matches ? matches.map(s => s.trim()).filter(s => s) : [text.trim()];
-    };
-
-    // ---- 按空行划定上下文（光标所在的完整段落） ----
-    let paraStart = cursor.line;
-    let paraEnd = cursor.line;
-
-    // 向上找空行
-    for (let i = cursor.line - 1; i >= 0; i--) {
-      if (editor.getLine(i).trim() === '') break;
-      paraStart = i;
-    }
-    // 向下找空行
-    for (let i = cursor.line + 1; i < lineCount; i++) {
-      if (editor.getLine(i).trim() === '') break;
-      paraEnd = i;
-    }
-
-    // 提取整个段落的文本和各行数组
-    const paragraphLines = [];
-    let paragraphText = '';
-    for (let i = paraStart; i <= paraEnd; i++) {
-      const line = editor.getLine(i);
-      paragraphLines.push(line);
-      paragraphText += line + '\n';
-    }
-    paragraphText = paragraphText.trim();
-
-    if (!paragraphText) return '';
-
-    // ---- 模式分发 ----
-    // 按空行分隔（直接返回整个段落）
-    if (mode === 'paragraph') {
-      return paragraphText;
-    }
-
-    // 按换行分隔（在段落内取光标所在的行）
-    if (mode === 'line') {
-      const currentLine = editor.getLine(cursor.line);
-      // 如果当前行是 Markdown 块，在段落内找最近的普通正文行
-      if (isMarkdownBlock(currentLine)) {
-        // 在段落范围内查找
-        for (let i = cursor.line - 1; i >= paraStart; i--) {
-          const line = editor.getLine(i);
-          if (!isMarkdownBlock(line) && line.trim()) {
-            return line.trim();
-          }
-        }
-        for (let i = cursor.line + 1; i <= paraEnd; i++) {
-          const line = editor.getLine(i);
-          if (!isMarkdownBlock(line) && line.trim()) {
-            return line.trim();
-          }
-        }
-        return '';
-      }
-      return currentLine.trim();
-    }
-
-    // 按句子边界（在段落内提取光标所在的句子）
-    if (mode === 'sentence') {
-      const sentences = splitIntoSentences(paragraphText);
-      if (sentences.length === 0) return '';
-
-      // 计算光标在段落文本中的字符位置
-      let charPos = 0;
-      for (let i = paraStart; i < cursor.line; i++) {
-        charPos += editor.getLine(i).length + 1;
-      }
-      charPos += cursor.ch;
-
-      // 找到光标所在的句子
-      let currentSentenceIndex = 0;
-      let accumulatedLength = 0;
-      for (let i = 0; i < sentences.length; i++) {
-        const sentence = sentences[i];
-        const sentenceStart = paragraphText.indexOf(sentence, accumulatedLength);
-        if (sentenceStart === -1) {
-          accumulatedLength += sentence.length + 1;
-          continue;
-        }
-        const sentenceEnd = sentenceStart + sentence.length;
-        if (charPos >= sentenceStart && charPos <= sentenceEnd) {
-          currentSentenceIndex = i;
-          break;
-        }
-        accumulatedLength = sentenceEnd;
-      }
-
-      const currentSentence = sentences[currentSentenceIndex] || sentences[0];
-
-      // 检查目标词
-      if (targetWord && targetWord.trim()) {
-        const lowerTarget = targetWord.toLowerCase();
-        // 当前句子包含目标词，直接返回
-        if (currentSentence.toLowerCase().includes(lowerTarget)) {
-          return currentSentence;
-        }
-        // 向前查找
-        for (let i = currentSentenceIndex - 1; i >= 0; i--) {
-          if (sentences[i].toLowerCase().includes(lowerTarget)) {
-            return sentences[i];
-          }
-        }
-        // 向后查找
-        for (let i = currentSentenceIndex + 1; i < sentences.length; i++) {
-          if (sentences[i].toLowerCase().includes(lowerTarget)) {
-            return sentences[i];
-          }
-        }
-      }
-
-      // 回退到光标所在的句子
-      return currentSentence || sentences[0] || '';
-    }
-
-    // 按列表项（在段落内提取光标所在的列表项）
-    if (mode === 'list') {
-      const currentLine = editor.getLine(cursor.line);
-      const listItemRegex = /^\s*[-*+]\s|\s*\d+\.\s/;
-
-      // 在段落内查找列表项
-      let targetLine = cursor.line;
-      let found = false;
-
-      if (listItemRegex.test(currentLine.trim())) {
-        // 当前行就是列表项
-        targetLine = cursor.line;
-        found = true;
+    // ---- 优先检测阅读模式 ----
+    const activeLeaf = this.app.workspace.activeLeaf;
+    const view = activeLeaf?.view;
+    let isReadingMode = false;
+    if (view && view.getViewType && view.getViewType() === 'markdown') {
+      if (typeof view.getMode === 'function') {
+        isReadingMode = (view.getMode() === 'preview');
       } else {
-        // 在段落范围内向上查找
-        for (let i = cursor.line - 1; i >= paraStart; i--) {
-          const line = editor.getLine(i);
-          if (listItemRegex.test(line.trim())) {
-            targetLine = i;
-            found = true;
+        isReadingMode = !view.editor;
+      }
+    }
+
+    // 阅读模式 _getContextFromDOM
+    if (isReadingMode) {
+      return this._getContextFromDOM(mode, targetWord);
+    }
+
+      // ---- 编辑模式（CodeMirror） ----
+    const activeEditor = this.app.workspace.activeEditor;
+    if (activeEditor && activeEditor.editor) {
+      const editor = activeEditor.editor;
+      const cursor = editor.getCursor('from');
+      const lineCount = editor.lineCount();
+
+      // ---- 工具函数：判断行是否为 Markdown 块 ----
+      const isMarkdownBlock = (lineText) => {
+        const trimmed = lineText.trim();
+        if (!trimmed) return false;
+        return /^(\s*[-*+]\s|\s*\d+\.\s|#{1,6}\s|```|>\s|---|\*\*\*|___|\[TOC\])/.test(trimmed);
+      };
+
+      // ---- 按空行划定上下文（光标所在的完整段落） ----
+      let paraStart = cursor.line;
+      let paraEnd = cursor.line;
+
+      // 向上找空行
+      for (let i = cursor.line - 1; i >= 0; i--) {
+        if (editor.getLine(i).trim() === '') break;
+        paraStart = i;
+      }
+      // 向下找空行
+      for (let i = cursor.line + 1; i < lineCount; i++) {
+        if (editor.getLine(i).trim() === '') break;
+        paraEnd = i;
+      }
+
+      // 提取整个段落的文本和各行数组
+      const paragraphLines = [];
+      let paragraphText = '';
+      for (let i = paraStart; i <= paraEnd; i++) {
+        const line = editor.getLine(i);
+        paragraphLines.push(line);
+        paragraphText += line + '\n';
+      }
+      paragraphText = paragraphText.trim();
+
+      if (!paragraphText) return '';
+
+      // ---- 模式分发 ----
+      // 按空行分隔（直接返回整个段落）
+      if (mode === 'paragraph') {
+        return paragraphText;
+      }
+
+      // 按换行分隔（在段落内取光标所在的行）
+      if (mode === 'line') {
+        const currentLine = editor.getLine(cursor.line);
+        // 列表项直接提取
+        const isListItem = /^\s*[-*+]\s|\s*\d+\.\s/.test(currentLine.trim());
+        // 如果当前行是 Markdown 块，在段落内找最近的普通正文行
+        if (isMarkdownBlock(currentLine) && !isListItem) {
+          // 在段落范围内查找
+          for (let i = cursor.line - 1; i >= paraStart; i--) {
+            const line = editor.getLine(i);
+            if (!isMarkdownBlock(line) && line.trim()) {
+              return line.trim();
+            }
+          }
+          for (let i = cursor.line + 1; i <= paraEnd; i++) {
+            const line = editor.getLine(i);
+            if (!isMarkdownBlock(line) && line.trim()) {
+              return line.trim();
+            }
+          }
+          return '';
+        }
+        return currentLine.trim();
+      }
+
+      // 按句子边界（在段落内提取光标所在的句子）
+      if (mode === 'sentence') {
+        const sentences = this._splitIntoSentences(paragraphText);
+        if (sentences.length === 0) return '';
+
+        // 计算光标在段落文本中的字符位置
+        let charPos = 0;
+        for (let i = paraStart; i < cursor.line; i++) {
+          charPos += editor.getLine(i).length + 1;
+        }
+        charPos += cursor.ch;
+
+        // 找到光标所在的句子
+        let currentSentenceIndex = 0;
+        let accumulatedLength = 0;
+        for (let i = 0; i < sentences.length; i++) {
+          const sentence = sentences[i];
+          const sentenceStart = paragraphText.indexOf(sentence, accumulatedLength);
+          if (sentenceStart === -1) {
+            accumulatedLength += sentence.length + 1;
+            continue;
+          }
+          const sentenceEnd = sentenceStart + sentence.length;
+          if (charPos >= sentenceStart && charPos <= sentenceEnd) {
+            currentSentenceIndex = i;
             break;
           }
+          accumulatedLength = sentenceEnd;
         }
-        if (!found) {
-          // 向下查找
-          for (let i = cursor.line + 1; i <= paraEnd; i++) {
+
+        const currentSentence = sentences[currentSentenceIndex] || sentences[0];
+
+        // 检查目标词
+        if (targetWord && targetWord.trim()) {
+          const lowerTarget = targetWord.toLowerCase();
+          // 当前句子包含目标词，直接返回
+          if (currentSentence.toLowerCase().includes(lowerTarget)) {
+            return currentSentence;
+          }
+          // 向前查找
+          for (let i = currentSentenceIndex - 1; i >= 0; i--) {
+            if (sentences[i].toLowerCase().includes(lowerTarget)) {
+              return sentences[i];
+            }
+          }
+          // 向后查找
+          for (let i = currentSentenceIndex + 1; i < sentences.length; i++) {
+            if (sentences[i].toLowerCase().includes(lowerTarget)) {
+              return sentences[i];
+            }
+          }
+        }
+
+        // 回退到光标所在的句子
+        return currentSentence || sentences[0] || '';
+      }
+
+      // 按列表项（在段落内提取光标所在的列表项）
+      if (mode === 'list') {
+        const currentLine = editor.getLine(cursor.line);
+        const listItemRegex = /^\s*[-*+]\s|\s*\d+\.\s/;
+
+        // 在段落内查找列表项
+        let targetLine = cursor.line;
+        let found = false;
+
+        if (listItemRegex.test(currentLine.trim())) {
+          // 当前行就是列表项
+          targetLine = cursor.line;
+          found = true;
+        } else {
+          // 在段落范围内向上查找
+          for (let i = cursor.line - 1; i >= paraStart; i--) {
             const line = editor.getLine(i);
             if (listItemRegex.test(line.trim())) {
               targetLine = i;
@@ -14190,31 +15343,315 @@ class SimpleWordbookPlugin extends Plugin {
               break;
             }
           }
+          if (!found) {
+            // 向下查找
+            for (let i = cursor.line + 1; i <= paraEnd; i++) {
+              const line = editor.getLine(i);
+              if (listItemRegex.test(line.trim())) {
+                targetLine = i;
+                found = true;
+                break;
+              }
+            }
+          }
         }
+
+        if (!found) return '';
+
+        // 提取列表项（含缩进子项）
+        const targetLineText = editor.getLine(targetLine);
+        const indent = targetLineText.match(/^\s*/)[0];
+        const currentIndent = indent.length;
+        let result = targetLineText.trim();
+
+        // 向下收集缩进更大的子项（限制在段落范围内）
+        for (let i = targetLine + 1; i <= paraEnd; i++) {
+          const line = editor.getLine(i);
+          const lineIndent = line.match(/^\s*/)[0].length;
+          if (lineIndent <= currentIndent && line.trim()) break;
+          if (lineIndent > currentIndent && line.trim()) {
+            result += '\n' + line.trim();
+          }
+        }
+
+        return result;
       }
 
-      if (!found) return '';
-
-      // 提取列表项（含缩进子项）
-      const targetLineText = editor.getLine(targetLine);
-      const indent = targetLineText.match(/^\s*/)[0];
-      const currentIndent = indent.length;
-      let result = targetLineText.trim();
-
-      // 向下收集缩进更大的子项（限制在段落范围内）
-      for (let i = targetLine + 1; i <= paraEnd; i++) {
-        const line = editor.getLine(i);
-        const lineIndent = line.match(/^\s*/)[0].length;
-        if (lineIndent <= currentIndent && line.trim()) break;
-        if (lineIndent > currentIndent && line.trim()) {
-          result += '\n' + line.trim();
-        }
-      }
-
-      return result;
+      return '';
     }
 
-    return '';
+    // 阅读模式：从 DOM 提取
+    return this._getContextFromDOM(mode, targetWord);
+  }
+
+  // ===== 从 DOM 选区提取上下文（阅读模式 & PDF） =====
+  _getContextFromDOM(mode, targetWord) {
+    const sel = window.getSelection();
+    // 没有选区时，返回单词本身
+    if (!sel || !sel.rangeCount || sel.isCollapsed) {
+      return targetWord || '';
+    }
+
+    const range = sel.getRangeAt(0);
+    const selectedText = sel.toString().trim();
+    if (!selectedText) return targetWord || '';
+
+    // ---- 检测是否在 PDF 视图中 ----
+    let node = range.startContainer;
+    if (node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+
+    let isPDF = false;
+    // 方法1：检查 DOM 类名
+    if (node) {
+      isPDF = !!(node.closest?.('.pdf-container') ||
+        node.closest?.('.mod-pdf') ||
+        node.closest?.('.textLayer') ||
+        node.closest?.('.pdf-viewer'));
+    }
+    // 方法2：检查当前活动视图类型
+    if (!isPDF) {
+      const activeLeaf = this.app.workspace.activeLeaf;
+      if (activeLeaf?.view?.getViewType) {
+        const viewType = activeLeaf.view.getViewType();
+        if (viewType === 'pdf' || viewType === 'pdf-viewer') {
+          isPDF = true;
+        }
+      }
+    }
+
+    // ---- PDF 模式 ----
+    if (isPDF) {
+      if (mode === 'list') return '';
+
+      const CONTEXT_CHARS = this.settings.pdfContextChars || 150;
+
+      // 1. 获取文本容器
+      let container = null;
+      if (node) {
+        container = node.closest?.('.textLayer') ||
+          node.closest?.('.pdf-container') ||
+          node.closest?.('.mod-pdf') ||
+          node.closest?.('.pdf-viewer');
+      }
+      // 如果还没找到，用 range 的 commonAncestorContainer
+      if (!container) {
+        let commonNode = range.commonAncestorContainer;
+        if (commonNode.nodeType === Node.TEXT_NODE) commonNode = commonNode.parentElement;
+        if (commonNode) {
+          container = commonNode.closest?.('.textLayer') ||
+            commonNode.closest?.('.pdf-container') ||
+            commonNode.closest?.('.mod-pdf') ||
+            commonNode.closest?.('.pdf-viewer');
+        }
+      }
+      // 最终兜底：用当前 leaf 的容器
+      if (!container) {
+        const activeLeaf = this.app.workspace.activeLeaf;
+        if (activeLeaf?.view?.containerEl) {
+          container = activeLeaf.view.containerEl;
+        }
+      }
+      if (!container) return selectedText || targetWord || '';
+
+      // 2. 精确计算选中文本在容器全文中的起始和结束偏移量
+      let selStart = -1, selEnd = -1;
+      let charCount = 0;
+
+      // ---- 处理边界容器不是文本节点的情况 ----
+      let startNode = range.startContainer;
+      let endNode = range.endContainer;
+      let startOffset = range.startOffset;
+      let endOffset = range.endOffset;
+
+      // 如果起始容器不是文本节点，尝试获取其第一个文本子节点
+      if (startNode.nodeType !== Node.TEXT_NODE) {
+        const walker2 = document.createTreeWalker(startNode, NodeFilter.SHOW_TEXT, null, false);
+        const firstText = walker2.nextNode();
+        if (firstText) {
+          startNode = firstText;
+          startOffset = 0;
+        } else {
+          startNode = null;
+        }
+      }
+      // 如果结束容器不是文本节点，尝试获取其最后一个文本子节点
+      if (endNode.nodeType !== Node.TEXT_NODE) {
+        const walker2 = document.createTreeWalker(endNode, NodeFilter.SHOW_TEXT, null, false);
+        let lastText = null;
+        let node;
+        while ((node = walker2.nextNode())) lastText = node;
+        if (lastText) {
+          endNode = lastText;
+          endOffset = lastText.textContent.length;
+        } else {
+          endNode = null;
+        }
+      }
+
+      // ---- 如果起始或结束节点为 null，直接降级到 indexOf ----
+      if (!startNode || !endNode) {
+        const fullText = container.textContent || '';
+        let idx = fullText.indexOf(selectedText);
+        if (idx === -1) {
+          const lowerFull = fullText.toLowerCase();
+          const lowerSel = selectedText.toLowerCase();
+          idx = lowerFull.indexOf(lowerSel);
+        }
+        if (idx !== -1) {
+          selStart = idx;
+          selEnd = idx + selectedText.length;
+        } else {
+          return selectedText || targetWord || '';
+        }
+      } else {
+        // ---- 正常遍历所有文本节点 ----
+        const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null, false);
+        let textNode;
+        while ((textNode = walker.nextNode())) {
+          const text = textNode.textContent || '';
+          const nodeStart = charCount;
+          const nodeEnd = charCount + text.length;
+
+          if (textNode === startNode) {
+            selStart = nodeStart + startOffset;
+          }
+          if (textNode === endNode) {
+            selEnd = nodeStart + endOffset;
+          }
+
+          charCount = nodeEnd;
+        }
+
+        // ---- 如果仍未获取偏移，降级到 indexOf ----
+        if (selStart === -1 || selEnd === -1) {
+          const fullText = container.textContent || '';
+          let idx = fullText.indexOf(selectedText);
+          if (idx === -1) {
+            const lowerFull = fullText.toLowerCase();
+            const lowerSel = selectedText.toLowerCase();
+            idx = lowerFull.indexOf(lowerSel);
+          }
+          if (idx !== -1) {
+            selStart = idx;
+            selEnd = idx + selectedText.length;
+          } else {
+            return selectedText || targetWord || '';
+          }
+        }
+      }
+
+      // 4. 截取上下文
+      const fullText = container.textContent || '';
+      const contextStart = Math.max(0, selStart - CONTEXT_CHARS);
+      const contextEnd = Math.min(fullText.length, selEnd + CONTEXT_CHARS);
+      let context = fullText.substring(contextStart, contextEnd);
+      if (contextStart > 0) context = '…' + context;
+      if (contextEnd < fullText.length) context = context + '…';
+
+      return context || selectedText || targetWord || '';
+    }
+
+    // ---- 阅读模式 ----
+    let nodeForBlock = range.startContainer;
+    if (nodeForBlock.nodeType === Node.TEXT_NODE) nodeForBlock = nodeForBlock.parentElement;
+
+    const blockTags = ['P', 'DIV', 'LI', 'BLOCKQUOTE', 'SECTION', 'ARTICLE', 'TD', 'TH'];
+    let block = null;
+    let current = nodeForBlock;
+    while (current && current !== document.body) {
+      if (blockTags.includes(current.tagName)) {
+        block = current;
+        break;
+      }
+      current = current.parentElement;
+    }
+    // 如果找不到，用 commonAncestorContainer 降级
+    if (!block) {
+      let commonNode = range.commonAncestorContainer;
+      if (commonNode.nodeType === Node.TEXT_NODE) commonNode = commonNode.parentElement;
+      if (commonNode && commonNode !== document.body) {
+        block = commonNode;
+      }
+    }
+    // 最后降级为 body
+    if (!block) block = document.body;
+
+    const rawText = block.textContent || '';
+    // 块无文本，返回单词本身
+    if (!rawText.trim()) {
+      return selectedText || targetWord || '';
+    }
+
+    // 标准化文本（合并多余空白）
+    const fullText = rawText.replace(/\s+/g, ' ').trim();
+
+    // ---- paragraph 和 line ----
+    if (mode === 'paragraph' || mode === 'line') {
+      return fullText || selectedText || targetWord || '';
+    }
+
+    // ---- sentence ----
+    if (mode === 'sentence') {
+      const sentences = this._splitIntoSentences(fullText);
+
+      // 优先：用 TreeWalker 精确定位选中词的位置
+      let targetStart = -1;
+      let charCount = 0;
+      const walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, null, false);
+      let textNode;
+      while ((textNode = walker.nextNode())) {
+        if (textNode === range.startContainer) {
+          targetStart = charCount + range.startOffset;
+          break;
+        }
+        charCount += (textNode.textContent || '').length;
+      }
+
+      // 定位成功 → 按位置匹配句子
+      if (targetStart !== -1) {
+        const targetEnd = targetStart + selectedText.length;
+        let accLength = 0;
+        for (const sent of sentences) {
+          const sentStart = accLength;
+          const sentEnd = accLength + sent.length;
+          if (targetStart >= sentStart && targetEnd <= sentEnd) {
+            return sent.trim();
+          }
+          accLength = sentEnd;
+        }
+      }
+
+      // 降级：精确匹配 → 宽松匹配
+      const lowerSelected = selectedText.toLowerCase();
+      for (const sent of sentences) {
+        if (sent.toLowerCase().includes(lowerSelected)) {
+          return sent.trim();
+        }
+      }
+      const words = selectedText.split(/\s+/).filter(w => w.length > 0);
+      if (words.length > 0) {
+        for (const sent of sentences) {
+          const lowerSent = sent.toLowerCase();
+          if (words.every(w => lowerSent.includes(w.toLowerCase()))) {
+            return sent.trim();
+          }
+        }
+      }
+      return selectedText || targetWord || '';
+    }
+
+    // ---- list ----
+    if (mode === 'list') {
+      if (block.tagName === 'LI') {
+        return block.textContent.trim();
+      }
+      const li = block.closest ? block.closest('LI') : null;
+      if (li) return li.textContent.trim();
+      return '';
+    }
+
+    // 其他模式返回整个块
+    return fullText || selectedText || targetWord || '';
   }
 
   // ===== 朗读选中的文本 =====
@@ -14390,6 +15827,12 @@ class SimpleWordbookPlugin extends Plugin {
           p.system_prompt = defaultBuiltinKey;
         }
       }
+    }
+
+    // 默认提示词
+    if (!this.settings.defaultPrompt || this.settings.defaultPrompt === "") {
+      this.settings.defaultPrompt = t("example_ai_default_prompt");
+      needsSave = true;
     }
 
     // 迁移：旧明文 → 本地加密

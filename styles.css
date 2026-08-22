@@ -598,9 +598,7 @@
   text-decoration: none;
   /* 如果有下划线，让其颜色也跟随卡片 */
   /*text-decoration-color: var(--card-color);*/
-  /* 保留一点点圆角，视觉更柔和 */
   border-radius: 6px;
-  /* 可选：加一点内边距，让背景不紧贴文字 */
   padding: 0 2px;
 }
 
@@ -809,84 +807,271 @@
   font-size: 0.9em;
   color: var(--text-muted);
 }
-
-/* 查词面板按钮行 */
-.lookup-button-row {
-  display: flex;
-  gap: 18px;
+/* AI 查词上下文预览 */
+.lookup-ai-context-preview {
+  background: var(--background-secondary);
+  padding: 6px 10px;
+  border-radius: 4px;
   margin-bottom: 8px;
-  padding: 0 12px;   /* 左右各留 10px 空白 */
-  justify-content: center; /* 整体居中（但 flex:1 会填满，所以这行不是必须） */
+  font-size: 0.85em;
+  color: var(--text-muted);
+  border: 1px solid var(--background-modifier-border);
+  border-left: 3px solid var(--interactive-accent);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  line-height: 1.6;
+}
+
+/* 查词面板加载状态包装器 */
+.lookup-loading-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    /*padding: 2px 0;*/
+    color: var(--text-muted);
+    font-size: 1em;
+}
+
+/* 中断按钮 */
+.lookup-loading-cancel-btn {
+    background: transparent;
+    border: 1px solid var(--background-modifier-border);
+    padding: 2px 12px;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    line-height: 1.6;
+}
+.lookup-loading-cancel-btn:hover {
+    background: var(--background-modifier-error);
+    color: var(--text-on-accent);
+    border-color: var(--text-error);
+    transform: scale(1.02);
+}
+.lookup-loading-cancel-btn:active {
+    transform: scale(0.95);
+}
+
+/* 查词面板查询按钮行 */
+.lookup-button-row {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 8px;
+    padding: 0 12px;
+    justify-content: center;
 }
 .lookup-button-row button {
-  flex: 1;                       /* 等宽分配 */
-  height: 38px;              /* 固定高度，根据需求调整 */
-  line-height: 1;            /* 配合 height 使用 */
-  padding: 0 30px;           /* 左右内边距控制宽度 */
-  border-radius: 4px;
-  border: 1px solid var(--background-modifier-border);
-  cursor: pointer;
-  font-size: 0.85em;
-  background: var(--background-secondary);
-  color: var(--text-normal);
-  transition: background 0.15s, color 0.15s;
-  text-align: center;
+    flex: 1;                       /* 等宽分配 */
+    height: 38px;              /* 固定高度，根据需求调整 */
+    line-height: 1;            /* 配合 height 使用 */
+    padding: 0 30px;           /* 左右内边距控制宽度 */
+    border-radius: 4px;
+    border: 1px solid var(--background-modifier-border);
+    cursor: pointer;
+    font-size: 0.85em;
+    background: var(--background-secondary);
+    color: var(--text-normal);
+    transition: background 0.15s, color 0.15s;
+    text-align: center;
 }
 .lookup-button-row button:hover {
-  background: var(--background-modifier-hover);
+    background: var(--background-modifier-hover);
 }
 /* AI查询按钮使用更柔和的强调色 */
 .lookup-button-row button:last-child {
-  background: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));
-  border-color: color-mix(in srgb, var(--interactive-accent) 40%, var(--background-modifier-border));
+    background: color-mix(in srgb, var(--interactive-accent) 20%, var(--background-secondary));
+    border-color: color-mix(in srgb, var(--interactive-accent) 40%, var(--background-modifier-border));
 }
 .lookup-button-row button:last-child:hover {
-  background: color-mix(in srgb, var(--interactive-accent) 35%, var(--background-secondary));
+    background: color-mix(in srgb, var(--interactive-accent) 35%, var(--background-secondary));
 }
 
-/* 清空输入按钮 */
+/* 清空输入/历史记录按钮 */
+.lookup-input-row .lookup-history-btn,
 .lookup-input-row .lookup-clear-input-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0.6;
-  font-size: 1.1em;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 0 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+    font-size: 1.1em;
+    transition: opacity 0.15s, color 0.15s;
 }
+.lookup-input-row .lookup-history-btn:hover,
 .lookup-input-row .lookup-clear-input-btn:hover {
-  opacity: 1;
-  color: var(--text-normal);
+    opacity: 1;
+    color: var(--text-normal);
 }
+/* 历史记录按钮 - 激活状态 */
+.lookup-input-row .lookup-history-btn.is-active {
+    background: var(--background-modifier-hover);
+    opacity: 1;
+}
+
 
 /* 底部操作栏 */
 .lookup-bottom-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }
 .lookup-bottom-bar .lookup-clear-output-btn {
-  background: transparent;
-  border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px 8px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.85em;
-  border-radius: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 4px 7px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+    /*border-radius: 4px;*/
 }
 .lookup-bottom-bar .lookup-clear-output-btn:hover {
-  color: var(--text-normal);
-  background: var(--background-modifier-hover);
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
 }
 .lookup-bottom-bar .mod-cta {
-  margin-left: auto; /* 将保存按钮推到右侧 */
+    margin-left: auto; /* 将保存按钮推到右侧 */
+}
+
+/* 查词面板历史下拉浮层 */
+.lookup-history-dropdown {
+    position: fixed;
+    background: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding: 6px 0;
+    min-width: 260px;
+    max-width: 420px;
+    max-height: 400px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+}
+/* 下拉浮层标题行 */
+.lookup-history-dropdown .lookup-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 4px 12px 4px 12px;
+    /*border-bottom: 1px solid var(--background-modifier-border);*/
+    flex-shrink: 0;
+}
+.lookup-history-dropdown .lookup-history-title {
+    font-weight: bold;
+}
+/* 历史记录标题行操作按钮组 */
+.lookup-history-dropdown .lookup-history-header-actions {
+    display: flex;
+    align-items: center;
+    /*gap: 4px;*/
+}
+/* 历史记录标题行按钮组（固定/清空） */
+.lookup-history-dropdown .lookup-history-header-actions button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 2px 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+}
+.lookup-history-dropdown .lookup-history-header-actions button:hover {
+    color: var(--text-normal);
+    background: var(--background-modifier-hover);
+}
+
+/* 固定按钮 - 固定状态（激活） */
+.lookup-history-dropdown .lookup-history-header-actions .lookup-history-pin-btn.is-pinned {
+    color: var(--interactive-accent);
+}
+.lookup-history-dropdown .lookup-history-header-actions .lookup-history-pin-btn.is-pinned:hover {
+    color: var(--interactive-accent-hover);
+}
+
+/* 清空按钮 - 悬停变红 */
+.lookup-history-dropdown .lookup-history-header-actions .lookup-history-clear-btn:hover {
+    color: var(--text-error);
+}
+
+/* 搜索框行 */
+.lookup-history-dropdown .lookup-history-search-row {
+    padding: 4px 8px 6px 8px;
+    border-bottom: 1px solid var(--background-modifier-border);
+    flex-shrink: 0;
+}
+.lookup-history-dropdown .lookup-history-search-input {
+    width: 100%;
+    padding: 4px 8px;
+    color: var(--text-normal);
+    background: var(--background-secondary);
+    font-size: 0.85em;
+}
+
+/* 列表容器 */
+.lookup-history-dropdown .lookup-history-list-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+/* 记录项 */
+.lookup-history-dropdown .lookup-history-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.9em;
+}
+.lookup-history-dropdown .lookup-history-item:hover {
+    background: var(--background-modifier-hover);
+}
+/* 历史记录项 - 模式图标 */
+.lookup-history-dropdown .lookup-history-item .history-mode {
+    font-size: 1.1em;
+    opacity: 0.8;
+    flex-shrink: 0;
+}
+/* AI 查询用强调色 */
+.lookup-history-dropdown .lookup-history-item .history-mode[data-mode="ai"] {
+    color: var(--interactive-accent);
+}
+/* 本地查询用灰色 */
+.lookup-history-dropdown .lookup-history-item .history-mode[data-mode="local"] {
+    color: var(--text-muted);
+}
+/* 历史记录项 - 缓存标记 */
+.lookup-history-dropdown .lookup-history-item .history-cached {
+    font-size: 0.7em;
+    opacity: 0.7;
+    margin-left: 4px;
+    flex-shrink: 0;
+    color: var(--color-green);
+}
+/* 历史记录项 - 单词 */
+.lookup-history-dropdown .lookup-history-item .history-word {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* 空状态 */
+.lookup-history-dropdown .lookup-history-empty {
+    padding: 12px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85em;
 }
 
 
@@ -1614,6 +1799,40 @@
     margin-top: 16px;
 }
 
+/* 复习卡片标记按钮 */
+.study-card-bookmark-btn {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    z-index: 10;
+    cursor: pointer;
+    opacity: 0.4;
+    transition: opacity 0.15s, transform 0.15s;
+    color: var(--text-muted);
+}
+.study-card-bookmark-btn:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+.study-card-bookmark-btn .lucide {
+    width: 20px;
+    height: 20px;
+}
+.study-card-bookmark-btn.is-bookmarked {
+    opacity: 1;
+    color: var(--color-yellow);
+}
+.study-card-bookmark-btn.is-bookmarked:hover {
+    transform: scale(1.15);
+}
+
+/* 复习完成时标记词提示 */
+.study-bookmark-hint {
+    color: var(--text-accent);
+    /*font-weight: bold;*/
+    margin: 8px 0;
+}
+
 /* 部件：已掌握标签 */
 /* 已掌握计数标签 */
 .study-mastered-count {
@@ -1733,7 +1952,7 @@
 .trend-svg {
     width: 100%;
     /*height: 130px;*/
-    padding: 4px 50px;
+    padding: 4px clamp(4px, 2%, 20px);
     box-sizing: border-box;
 }
 
@@ -2340,10 +2559,6 @@
   }
 
   /* ---- 学习中心 ---- */
-  /* 统计趋势图 SVG */
-  .trend-svg {
-      padding: 4px 4px;
-  }
   /* 设置标签页高级设置输入框 */
   .study-param-input {
       width: 80px;
