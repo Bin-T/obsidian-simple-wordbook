@@ -1,7 +1,7 @@
 {
   "id": "simple-wordbook",
   "name": "Simple Wordbook",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "minAppVersion": "1.0.0",
   "description": "Highlight words/phrases in notes & PDFs, with learning tracker.",
   "author": "Bryn",

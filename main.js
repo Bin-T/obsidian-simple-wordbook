@@ -5676,7 +5676,10 @@ class LookupView extends ItemView {
 
     // 获取上下文
     const contextMode = this.plugin.settings.aiContextMode || "line";
-    const context = this.plugin.getSelectedSentence(contextMode, this.currentWord) || '';
+    let context = '';
+    if (promptContent.includes('{context}')) {
+      context = this.plugin.getSelectedSentence(contextMode, this.currentWord) || '';
+    }
 
     // 替换占位符
     let finalPrompt = promptContent.replace(/{word}/g, this.currentWord);
@@ -5718,7 +5721,7 @@ class LookupView extends ItemView {
       const response = await this.plugin.callAI(finalPrompt, systemContent, signal);
 
       // 记录历史（AI查词）
-      this.addHistory(this.currentWord, "ai", response);
+      this.addHistory(this.currentWord, "ai", response, context);
 
       // 请求成功 → 清空加载 UI，渲染结果
       this.resultContainer.empty();
@@ -5734,7 +5737,7 @@ class LookupView extends ItemView {
       }
 
       // 显示上下文预览
-      if (context && finalPrompt.includes('{context}')) {
+      if (context) {
         const contextPreview = this.resultContainer.createDiv();
         contextPreview.className = 'lookup-ai-context-preview';
         contextPreview.textContent = context;
@@ -5780,7 +5783,7 @@ class LookupView extends ItemView {
   }
 
   // 添加历史记录
-  addHistory(word, mode, result = null) {
+  addHistory(word, mode, result = null, context = '') {
     if (mode === "local") {
       // 本地查词：去重
       const index = this.history.findIndex(
@@ -5796,7 +5799,7 @@ class LookupView extends ItemView {
       }
     } else {
       // AI 查词：不去重，直接新增
-      this.history.unshift({ word, mode, result });
+      this.history.unshift({ word, mode, result, context });
     }
 
     // 限制数量
@@ -5943,6 +5946,12 @@ class LookupView extends ItemView {
           this.searchInput.value = item.word;
           if (item.mode === "ai" && item.result) {
             this.resultContainer.empty();
+            // 如果有上下文，先添加上下文预览
+            if (item.context) {
+              const contextPreview = this.resultContainer.createDiv();
+              contextPreview.className = 'lookup-ai-context-preview';
+              contextPreview.textContent = item.context;
+            }
             this.resultMarkdown = item.result;
             MarkdownRenderer.render(
               this.plugin.app,
