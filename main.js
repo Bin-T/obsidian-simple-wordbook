@@ -10,7 +10,9 @@ const VIEW_TYPE_STUDY = "simple-wordbook-study";
 // ========== 国际化语言包 ==========
 const locale = {
   en: {
-    sidebar_title: "Sidebar",
+    sidebar_view_title: "Word Sidebar",
+    sidebar_ribbon_tooltip: "Word Sidebar",
+    sidebar_command_open: "Open Word Sidebar",
     tab_learning: "Learning",
     tab_mastered: "Mastered",
     tab_ignored: "Ignored",
@@ -150,8 +152,8 @@ const locale = {
     export_failed: "Export failed, please check console for errors.",
 
     plugin_language: "Plugin Language",
-    plugin_language_desc: "Choose the display language for the plugin. 'Auto' will automatically sync with Obsidian's interface language.",
-    language_follow_obsidian: "Auto",
+    plugin_language_desc: "Choose the display language (restart required)",
+    language_follow_obsidian: "Auto (Follows Obsidian)",
     settings_highlight_preview: "Highlight & Preview",
     settings_enable_highlight: "Enable auto highlight",
     settings_highlight_color: "Highlight color",
@@ -198,8 +200,8 @@ const locale = {
     settings_scope_title: "Highlight Scope",
     settings_scope_highlight: "Highlight",
     settings_scope_highlight_desc: "When enabled, highlighting only applies to files matching the paths; when disabled, it applies to all files.",
-    settings_scope_sidebar: "Sidebar Display",
-    settings_scope_sidebar_desc: "When enabled, the sidebar only shows words from documents matching the paths; when disabled, shows words from all documents.",
+    settings_scope_sidebar: "Word Sidebar",
+    settings_scope_sidebar_desc: "When enabled, Word Sidebar only shows words from documents matching the paths; when disabled, shows words from all documents.",
     settings_scope_mode: "Scope Mode",
     settings_scope_mode_desc: "If the highlight scope includes wordbook files, matching words in the corresponding card will also be highlighted.",
     settings_scope_mode_include: "Include only these paths",
@@ -703,7 +705,9 @@ const locale = {
     builtin_prompt_literary_content: "Literary aesthetic translation, with prose style, preserving the original mood and emotion, using beautiful and picturesque wording, suitable for essays and lyrical copy. Respond in the same language as the user's query.",
   },
   zh: {
-    sidebar_title: "侧边栏显示",
+    sidebar_view_title: "单词侧边栏",
+    sidebar_ribbon_tooltip: "单词侧边栏",
+    sidebar_command_open: "打开单词侧边栏",
     tab_learning: "学习",
     tab_mastered: "掌握",
     tab_ignored: "忽略",
@@ -843,8 +847,8 @@ const locale = {
     export_failed: "导出失败，请查看控制台错误。",
 
     plugin_language: "插件语言",
-    plugin_language_desc: "选择插件的显示语言。“自动”将自动与 Obsidian 的界面语言同步。",
-    language_follow_obsidian: "自动",
+    plugin_language_desc: "选择插件的显示语言（需重启生效）",
+    language_follow_obsidian: "自动（跟随 Obsidian）",
     settings_highlight_preview: "高亮与预览",
     settings_enable_highlight: "启用自动高亮",
     settings_highlight_color: "高亮颜色",
@@ -891,8 +895,8 @@ const locale = {
     settings_scope_title: "高亮范围",
     settings_scope_highlight: "高亮",
     settings_scope_highlight_desc: "开启后，高亮仅作用于匹配路径的文件；关闭后，高亮作用于所有文件。",
-    settings_scope_sidebar: "侧边栏显示",
-    settings_scope_sidebar_desc: "开启后，侧边栏仅显示匹配路径的文档中的单词；关闭后，显示所有文档的单词。",
+    settings_scope_sidebar: "单词侧边栏",
+    settings_scope_sidebar_desc: "开启后，单词侧边栏仅显示匹配路径的文档中的单词；关闭后，显示所有文档的单词。",
     settings_scope_mode: "高亮模式",
     settings_scope_mode_desc: "如果高亮范围包含词源文件，那么单词卡片中对应的词源匹配词也会高亮。",
     settings_scope_mode_include: "仅包含以下路径",
@@ -4458,14 +4462,14 @@ class HoverPreview {
     document.body.appendChild(tooltip);
     const rect = target.getBoundingClientRect();
     let left = rect.left + window.scrollX;
-    let top = rect.bottom + window.scrollY + 5;
+    let top = rect.bottom + window.scrollY + 3;
 
     const tooltipRect = tooltip.getBoundingClientRect();
     const maxRight = window.innerWidth + window.scrollX - 10;
     if (left + tooltipRect.width > maxRight) left = maxRight - tooltipRect.width;
     if (left < window.scrollX + 10) left = window.scrollX + 10;
     if (top + tooltipRect.height > window.innerHeight + window.scrollY - 10) {
-      top = rect.top + window.scrollY - tooltipRect.height - 5;
+      top = rect.top + window.scrollY - tooltipRect.height - 3;
     }
     tooltip.style.left = `${left}px`;
     tooltip.style.top = `${top}px`;
@@ -4518,7 +4522,7 @@ class SidebarView extends ItemView {
     this.foldState = new Map();
   }
   getViewType() { return VIEW_TYPE_SIDEBAR; }
-  getDisplayText() { return t("sidebar_title"); }
+  getDisplayText() { return t("sidebar_view_title"); }
   getIcon() { return "notepad-text"; }
   async onOpen() {
     this.containerEl.empty();
@@ -5779,6 +5783,9 @@ class LookupView extends ItemView {
     }
     if (this.saveBtn) {
       this.saveBtn.disabled = loading;
+    }
+    if (this.clearOutputBtn) {
+      this.clearOutputBtn.disabled = loading;
     }
   }
 
@@ -10763,6 +10770,9 @@ class WordbookSettingTab extends PluginSettingTab {
           this.display();
         }));
 
+      // 单词本列表项类
+      setting.settingEl.addClass('wordbook-entry');
+
       const nameEl = setting.settingEl.querySelector('.setting-item-name');
       if (nameEl) {
         nameEl.dataset.path = file.path;
@@ -14614,7 +14624,7 @@ class SimpleWordbookPlugin extends Plugin {
     this.registerView(VIEW_TYPE_SIDEBAR, (leaf) => new SidebarView(leaf, this));
     this.registerView(VIEW_TYPE_LOOKUP, (leaf) => new LookupView(leaf, this));
     this.registerView(VIEW_TYPE_LIBRARY, (leaf) => new LibraryView(leaf, this)); // 注册词库管理视图
-    this.addRibbonIcon("notepad-text", t("sidebar_title"), () => this.activateSidebar());
+    this.addRibbonIcon("notepad-text", t("sidebar_ribbon_tooltip"), () => this.activateSidebar());
     this.addRibbonIcon("book-search", t("lookup_view_title"), () => {
       const leaf = this.getLookupLeaf();
       this.app.workspace.revealLeaf(leaf);
@@ -14629,7 +14639,7 @@ class SimpleWordbookPlugin extends Plugin {
       callback: () => this.activateStudy()
     });
 
-    this.addCommand({ id: "open-sidebar", name: t("sidebar_title"), callback: () => this.activateSidebar() });
+    this.addCommand({ id: "open-sidebar", name: t("sidebar_command_open"), callback: () => this.activateSidebar() });
     this.addCommand({
       id: "add-word",
       name: t("add_word_title"),
