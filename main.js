@@ -299,6 +299,10 @@ const locale = {
     api_url_placeholder_preset: "Auto-filled",
     api_key_placeholder: "Enter API Key",
     api_model_placeholder: "Model name",
+    settings_ai_temperature: "Temperature",
+    settings_ai_temperature_desc: "Controls randomness of responses (0-2). Higher = more creative. Some providers cap at 1. Default: 0.5",
+    settings_ai_max_tokens: "Max Output Tokens",
+    settings_ai_max_tokens_desc: "Maximum length of AI response (100-4000). Default: 1500.",
     settings_prompts: "Prompts",
     settings_system_prompts: "Custom System Prompts",
     settings_system_prompt_desc: "Set AI's persona (style/format of AI responses)",
@@ -994,6 +998,10 @@ const locale = {
     api_url_placeholder_preset: "自动填充",
     api_key_placeholder: "请输入 API Key",
     api_model_placeholder: "模型名称",
+    settings_ai_temperature: "温度",
+    settings_ai_temperature_desc: "控制回复的随机性（0-2）。越高越有创意，部分服务商上限为 1。默认值：0.5",
+    settings_ai_max_tokens: "最大输出长度（Token）",
+    settings_ai_max_tokens_desc: "AI 回复的最大长度（100-4000），默认值：1500。",
     settings_prompts: "提示词",
     settings_system_prompts: "自定义系统提示词",
     settings_system_prompt_desc: "设定 AI 的“人设”（AI 回复的风格/格式）",
@@ -1624,6 +1632,8 @@ const DEFAULT_SETTINGS = {
     encryptedData: null,           // { ciphertext, salt } 或 null
   },
   apiModel: "gpt-3.5-turbo",
+  aiTemperature: 0.5,
+  aiMaxTokens: 1500,
   aiContextMode: "line",
   pdfContextChars: 150,
   systemPrompts: [],
@@ -9010,33 +9020,50 @@ class StudyView extends ItemView {
     goalSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_daily_goal") });
     goalSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_daily_goal_desc") });
     const goalControl = goalSetting.createDiv({ cls: "study-setting-control" });
+
     const goalInput = goalControl.createEl("input", { type: "number" });
     goalInput.value = settings.dailyGoal;
     goalInput.min = 1;
     goalInput.max = 999;
     goalInput.step = 1;
     goalInput.style.width = "80px";
-    goalInput.addEventListener("change", async (e) => {
-      let val = parseInt(e.target.value);
-      if (isNaN(val) || val < 1) val = 1;
 
-      // 获取单次复习上限
+    let lastValidGoal = settings.dailyGoal;
+
+    const validateGoal = async () => {
+      let val = parseInt(goalInput.value);
+
+      // 非法值或超出范围 → 上次有效值
+      if (isNaN(val) || val < 1 || val > 999) {
+        goalInput.value = String(lastValidGoal);
+        return;
+      }
+
+      // 超过单次上限 → 单次上限值
       const limit = settings.dailyReviewLimit || 20;
-      // 如果每日目标 > 单次复习上限，强制限制并提示
       if (val > limit) {
         val = limit;
         new Notice(t("study_goal_cannot_exceed_limit", limit));
-        goalInput.value = val;
       }
-      if (val > 999) val = 999;
 
       settings.dailyGoal = val;
       this.plugin.settings.study.dailyGoal = val;
+      lastValidGoal = val;
+      goalInput.value = String(val);
+
       await this.plugin.saveSettings();
       this.studyStore.data.dailyGoal = val;
       await this.studyStore.save();
       this.updateTopBar();
       this.plugin.app.workspace.trigger("simple-wordbook:settings-updated");
+    };
+
+    goalInput.addEventListener("blur", validateGoal);
+    goalInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        goalInput.blur();
+      }
     });
 
     // 单次复习上限
@@ -9044,32 +9071,54 @@ class StudyView extends ItemView {
     limitSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_daily_limit") });
     limitSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_daily_limit_desc") });
     const limitControl = limitSetting.createDiv({ cls: "study-setting-control" });
+
     const limitInput = limitControl.createEl("input", { type: "number" });
     limitInput.value = settings.dailyReviewLimit;
     limitInput.min = 1;
     limitInput.max = 999;
     limitInput.step = 1;
     limitInput.style.width = "80px";
-    limitInput.addEventListener("change", async (e) => {
-      let val = parseInt(e.target.value);
-      if (isNaN(val) || val < 1) val = 1;
-      if (val > 999) val = 999;
+
+    let lastValidLimit = settings.dailyReviewLimit;
+
+    const validateLimit = async () => {
+      let val = parseInt(limitInput.value);
+
+      // 非法值或超出范围 → 上次有效值
+      if (isNaN(val) || val < 1 || val > 999) {
+        limitInput.value = String(lastValidLimit);
+        return;
+      }
 
       settings.dailyReviewLimit = val;
       this.plugin.settings.study.dailyReviewLimit = val;
+      lastValidLimit = val;
+      limitInput.value = String(val);
+
       await this.plugin.saveSettings();
 
-      // 如果每日目标大于新的单次复习上限，自动调低每日目标
+      // 如果新的上限小于每日目标，自动调低两者
       const goal = settings.dailyGoal || 10;
       if (goal > val) {
         settings.dailyGoal = val;
         this.plugin.settings.study.dailyGoal = val;
         this.studyStore.data.dailyGoal = val;
+        lastValidGoal = val;
+        goalInput.value = String(val);
         await this.plugin.saveSettings();
         await this.studyStore.save();
-        goalInput.value = val;
         this.updateTopBar();
         new Notice(t("study_goal_adjusted_to_limit", val));
+      }
+
+      this.plugin.app.workspace.trigger("simple-wordbook:settings-updated");
+    };
+
+    limitInput.addEventListener("blur", validateLimit);
+    limitInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        limitInput.blur();
       }
     });
 
@@ -11517,19 +11566,37 @@ class WordbookSettingTab extends PluginSettingTab {
       .setName(t("lookup_max_results"))
       .setDesc(t("lookup_max_results_desc"))
       .addText(text => {
-        text.setValue(String(this.plugin.settings.maxLocalResults || 10));
+        const currentValue = this.plugin.settings.maxLocalResults || 10;
+        text.setValue(String(currentValue));
         text.inputEl.type = "number";
         text.inputEl.min = 1;
         text.inputEl.max = 100;
-        text.onChange(async (val) => {
-          const num = parseInt(val);
-          if (num > 0 && num <= 100) {
-            this.plugin.settings.maxLocalResults = num;
+
+        let lastValidValue = currentValue;
+
+        const validateAndSave = async () => {
+          const val = parseInt(text.getValue());
+          if (val >= 1 && val <= 100) {
+            this.plugin.settings.maxLocalResults = val;
             await this.plugin.saveSettings();
+            lastValidValue = val;
+            text.setValue(String(val));
           } else {
             new Notice(t("notice_invalid_number"));
+            text.setValue(String(lastValidValue));  // 回滚到上次有效值
+          }
+        };
+
+        text.inputEl.addEventListener('blur', validateAndSave);
+
+        // Enter 键触发验证
+        text.inputEl.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            text.inputEl.blur();
           }
         });
+
         return text;
       });
   }
@@ -12203,8 +12270,8 @@ class WordbookSettingTab extends PluginSettingTab {
       openai: { url: "https://api.openai.com/v1/chat/completions", model: "gpt-3.5-turbo" },
       deepseek: { url: "https://api.deepseek.com/v1/chat/completions", model: "deepseek-chat" },
       glm: { url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", model: "glm-4" },
-      tongyi: { url: "https://dashscope.aliyuncs.com/api/v1/services/aigc/text-generation/generation", model: "qwen-turbo" },
-      ollama: { url: "http://localhost:11434/api/chat", model: "llama2" },
+      tongyi: { url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", model: "qwen-turbo" },
+      ollama: { url: "http://localhost:11434/v1/chat/completions", model: "llama3.2" },    
       custom: { url: "", model: "" }
     };
 
@@ -12557,6 +12624,66 @@ class WordbookSettingTab extends PluginSettingTab {
         return text;
       });
 
+    // ---- temperature ----
+    new Setting(container)
+      .setName(t("settings_ai_temperature"))
+      .setDesc(t("settings_ai_temperature_desc"))
+      .addText(text => {
+        const currentVal = this.plugin.settings.aiTemperature ?? 0.5;
+        text.setValue(String(currentVal));
+        text.inputEl.type = "number";
+        text.inputEl.min = "0";
+        text.inputEl.max = "2";
+        text.inputEl.step = "0.01";
+        text.inputEl.addClass("swb-temperature-input");
+
+        text.onChange(async (val) => {
+          let num = parseFloat(val);
+          if (isNaN(num)) num = 0.5;
+          num = Math.max(0, Math.min(2, num));
+          this.plugin.settings.aiTemperature = num;
+          await this.plugin.saveSettings();
+        });
+
+        // 失焦时格式化：保留两位小数
+        text.inputEl.addEventListener('blur', () => {
+          const val = parseFloat(text.getValue());
+          if (!isNaN(val)) {
+            const clamped = Math.max(0, Math.min(2, val));
+            // 四舍五入到两位小数，然后去掉多余的零
+            const rounded = Math.round(clamped * 100) / 100;
+            // 如果原值小数位超过两位，才更新显示
+            if (String(rounded) !== text.getValue()) {
+              text.setValue(String(rounded));
+            }
+            if (rounded !== this.plugin.settings.aiTemperature) {
+              this.plugin.settings.aiTemperature = rounded;
+              this.plugin.saveSettings();
+            }
+          } else {
+            // 非法值回退到默认
+            text.setValue(String(this.plugin.settings.aiTemperature ?? 0.5));
+          }
+        });
+
+        return text;
+      });
+
+    // ---- 最大输出长度 ----
+    new Setting(container)
+      .setName(t("settings_ai_max_tokens"))
+      .setDesc(t("settings_ai_max_tokens_desc"))
+      .addSlider(slider => {
+        slider.setDynamicTooltip()
+          .setLimits(100, 4000, 50)
+          .setValue(this.plugin.settings.aiMaxTokens ?? 1500)
+          .onChange(async (value) => {
+            this.plugin.settings.aiMaxTokens = value;
+            await this.plugin.saveSettings();
+          });
+        return slider;
+      });
+
     // ---- 测试连接 ----
     new Setting(container)
       .setName(t("settings_ai_test_connection"))
@@ -12606,7 +12733,6 @@ class WordbookSettingTab extends PluginSettingTab {
         text.inputEl.min = 50;
         text.inputEl.max = 500;
         text.inputEl.step = 10;
-        text.inputEl.style.width = "80px";
 
         // 保存当前有效值，用于失焦恢复
         let lastValidValue = currentValue;
@@ -12617,6 +12743,7 @@ class WordbookSettingTab extends PluginSettingTab {
             this.plugin.settings.pdfContextChars = val;
             await this.plugin.saveSettings();
             lastValidValue = val;
+            text.setValue(String(val));
           } else {
             new Notice(t("notice_invalid_pdf_chars"));
             // 恢复为上次有效值
@@ -14842,16 +14969,22 @@ class SimpleWordbookPlugin extends Plugin {
     const apiKey = await this.getApiKeyPlaintext();
     const model = settings.apiModel;
 
-    // 参数校验
-    if (!url || !apiKey) {
+    // 判断是否为 Ollama（根据 URL 或 provider） 
+    const isOllama = settings.apiProvider === 'ollama' ||
+      (url && (url.includes('ollama') || url.includes('localhost:11434')));
+
+    // 参数校验（Ollama 不需要 API Key）
+    if (!url || (!isOllama && !apiKey)) {
       throw new Error(t("api_error_config"));
     }
 
     const headers = {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
+      // Ollama 不发送 Authorization 头
+      ...(isOllama ? {} : { "Authorization": `Bearer ${apiKey}` })
     };
 
+    // 构建消息体
     const messages = [];
     if (systemContent && systemContent.trim()) {
       messages.push({ role: "system", content: systemContent });
@@ -14861,10 +14994,11 @@ class SimpleWordbookPlugin extends Plugin {
     const body = {
       model: model,
       messages: messages,
-      temperature: 0.5,
-      max_tokens: 1500
+      temperature: this.settings.aiTemperature ?? 0.5,
+      max_tokens: this.settings.aiMaxTokens ?? 1500
     };
 
+    // 发起请求
     let response;
     try {
       // 将 fetch 放在 try-catch 中，单独捕获网络层错误
@@ -14904,8 +15038,12 @@ class SimpleWordbookPlugin extends Plugin {
       throw new Error(t("api_error_parse"));
     }
 
-    // 兼容多种返回格式
-    let content = data.choices?.[0]?.message?.content || data.content || data.response || "";
+    // 兼容多种返回格式（OpenAI 格式 + Ollama 原生格式 + 其他）
+    let content = data.choices?.[0]?.message?.content ||  // OpenAI / 兼容端点
+      data.message?.content ||                 // Ollama 原生 `/api/chat`
+      data.content ||                          // 某些代理
+      data.response ||                         // 降级
+      "";
     if (!content) {
       console.warn("Unexpected API response format:", data);
       throw new Error(t("api_error_unexpected"));
