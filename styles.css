@@ -797,7 +797,6 @@
 /* 查词面板提示词下拉选择框 */
 .lookup-prompt-row select {
   flex: 1;
-  background: var(--background-primary);
   padding: 0 2.4em 0 0.8em;
   border-radius: 4px;
   border: 1px solid var(--background-modifier-border);
