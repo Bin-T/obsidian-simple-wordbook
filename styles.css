@@ -1947,6 +1947,201 @@
   padding: 8px 10px;
 }
 
+/* 部件：拼写区 */
+/* 拼写区容器 */
+.study-spell-bar {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 30px 0 0 0;
+  min-height: 42px;
+}
+
+/* 拼写按钮行容器：让所有按钮同行排列 */
+.study-spell-btn-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 拼写触发按钮 */
+.study-card-spell-btn {
+  display: inline-block;
+  padding: 6px 10px;
+  font-size: 1em;
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  color: var(--text-muted);
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+
+.study-card-spell-btn:hover {
+  color: var(--text-normal);
+  background: var(--background-modifier-hover);
+}
+
+/* 格子容器（一排下划线） */
+.study-spell-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 4px 0;
+  width: 100%;
+  max-width: 780px;
+  box-sizing: border-box;
+}
+
+/* 单个格子 */
+.spell-slot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 34px;
+  font-family: var(--font-monospace);
+  font-size: 1.25em;
+  font-weight: 500;
+  color: var(--text-normal);
+  border-bottom: 2px solid var(--background-modifier-border);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+/* 拼写格子占位符 */
+.spell-slot:empty::before {
+  content: var(--spell-slot-placeholder, "");
+  color: var(--text-muted);
+  opacity: 0.35;
+  font-size: 0.95em;
+  line-height: 1;
+  /*transform: translateY(-2px);*/
+}
+/* 显示答案时清掉拼写占位符，避免与答案叠加 */
+.spell-slot.is-revealed:empty::before {
+  content: none;
+}
+
+/* 固定字符（空格、连字符等） */
+.spell-slot.is-fixed {
+  border-bottom-color: transparent;
+  color: var(--text-muted);
+}
+
+/* 当前光标格 */
+/* 默认：静态强调色（失焦状态） */
+.spell-slot.is-active {
+  border-bottom-color: var(--interactive-accent);
+}
+
+/* 输入框聚焦时：当前光标格闪烁 */
+.study-spell-bar:focus-within .spell-slot.is-active:not(.is-wrong) {
+  animation: spell-cursor 1.2s ease-in-out infinite;
+}
+
+/* 动画：当前光标格下划线呼吸式闪烁 */
+@keyframes spell-cursor {
+  0%, 100% { border-bottom-color: var(--interactive-accent); }
+  50%      { border-bottom-color: color-mix(in srgb, var(--interactive-accent) 30%, transparent); }
+}
+
+/* 同一格错 3 次后自动填入正确字母，红色显示 */
+.spell-slot.is-auto-filled {
+  border-bottom-color: var(--color-red);
+  color: var(--color-red);
+}
+
+/* 拼错抖动 */
+.study-spell-bar:focus-within .spell-slot.is-active.is-wrong,
+.spell-slot.is-wrong {
+  border-bottom-color: var(--color-red);
+  color: var(--color-red);
+  animation: spell-shake 0.35s;
+}
+
+/* 动画：拼错抖动 */
+@keyframes spell-shake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-6px); }
+  40%      { transform: translateX(6px); }
+  60%      { transform: translateX(-4px); }
+  80%      { transform: translateX(4px); }
+}
+
+/* 拼对绿色 */
+.spell-slot.is-complete {
+  border-bottom-color: var(--color-green);
+  color: var(--color-green);
+}
+
+/* 显示答案时的半透明提示（叠在格子底层） */
+.spell-slot.is-revealed::after {
+  content: attr(data-answer);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  opacity: 0.3;
+  pointer-events: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  transition: opacity 0.15s;
+}
+
+/* 拼写统计（用时 + 错误次数） */
+.study-spell-stats {
+  /*margin-top: 6px;*/
+  font-size: 0.8em;
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+  text-align: center;
+  opacity: 0.8;
+}
+
+/* 背面单词遮罩 —— 通用基础 */
+.study-card-back-word.spell-mask {
+  user-select: none;
+  /*pointer-events: none;*/
+  transition: filter 0.2s, color 0.2s;
+}
+/* 模糊 */
+.study-card-back-word.spell-mask.mask-blur {
+  filter: blur(5px);
+}
+/* 隐藏 */
+.study-card-back-word.spell-mask.mask-hidden {
+  visibility: hidden;
+}
+/* 透明 */
+.study-card-back-word.spell-mask.mask-transparent {
+  opacity: 0.03;
+  transition: opacity 0.25s;
+}
+/* 占位符 */
+.study-card-back-word.spell-mask.mask-placeholder {
+  font-family: var(--font-monospace);
+  letter-spacing: 0.05em;
+  overflow-wrap: anywhere;
+}
+
+/* 隐藏输入框 */
+.study-spell-hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* 部件：空状态与完成提示 */
 .study-empty,
 .study-done {

@@ -690,6 +690,24 @@ const locale = {
     study_bookmark_review_again_btn: "Review again (R)",
     study_settings_enable_bookmark: "Bookmark for Review",
     study_settings_enable_bookmark_desc: "Show bookmark button on review cards to mark words for an extra review round.",
+    spell_btn: "Spell (S)",
+    spell_again_btn: "Spell again (S)",
+    spell_exit_btn: "Exit",
+    spell_reveal_btn: "Show Answer",
+    spell_hide_btn: "Hide Answer", 
+    study_settings_enable_spell: "Smart Spell Check",
+    study_settings_enable_spell_desc: "Show spell-related buttons and input on the card back. Press Tab to toggle focus on the spell input",
+    study_settings_spell_mask: "Word Mask",
+    study_settings_spell_mask_desc: "How the word is hidden on the flashcard back",
+    study_spell_mask_blur: "Blur",
+    study_spell_mask_hidden: "Hidden",
+    study_spell_mask_transparent: "Transparent",
+    study_spell_mask_placeholder: "Placeholder",
+    study_spell_mask_none: "No Mask",
+    study_settings_spell_placeholder: "Mask Placeholder",
+    study_settings_spell_placeholder_desc: "Character used to replace the word on the flashcard back",
+    study_settings_slot_placeholder: "Slot Placeholder",
+    study_settings_slot_placeholder_desc: "Character shown in empty spell slots during spelling practice (leave empty to hide)",
 
     github_link_text: `Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it`,
 
@@ -1389,6 +1407,24 @@ const locale = {
     study_bookmark_review_again_btn: "再复习 (R)",
     study_settings_enable_bookmark: "再复习标记",
     study_settings_enable_bookmark_desc: "在复习卡片上显示标记按钮，标记的单词本轮结束后可再复习一轮。",
+    spell_btn: "拼写 (S)",
+    spell_again_btn: "再拼一次 (S)",
+    spell_exit_btn: "退出拼写",
+    spell_reveal_btn: "显示答案",
+    spell_hide_btn: "隐藏答案",
+    study_settings_enable_spell: "智能拼写",
+    study_settings_enable_spell_desc: "翻到卡片背面时出现拼写相关按钮和输入框。按 Tab 键可切换聚焦/失焦到拼写输入框",
+    study_settings_spell_mask: "单词遮罩",
+    study_settings_spell_mask_desc: "闪卡背面单词的隐藏方式",
+    study_spell_mask_blur: "模糊",
+    study_spell_mask_hidden: "隐藏",
+    study_spell_mask_transparent: "透明",
+    study_spell_mask_placeholder: "占位符",
+    study_spell_mask_none: "无遮罩",
+    study_settings_spell_placeholder: "单词遮罩占位符",
+    study_settings_spell_placeholder_desc: "用于替换闪卡背面单词的字符",
+    study_settings_slot_placeholder: "拼写格子占位符",
+    study_settings_slot_placeholder_desc: "拼写练习时空白格子显示的字符（留空则不显示）",
 
     github_link_text: `点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐`,
 
@@ -1654,6 +1690,10 @@ const DEFAULT_SETTINGS = {
     flashcardShowTabs: true,
     enableFineFeedback: false,
     enableBookmark: false,
+    enableSpellMode: false,
+    spellMaskMode: "blur",
+    spellMaskPlaceholder: "•",
+    spellSlotPlaceholder: "",
     intervalDays: [1, 2, 4, 8, 16],
     selectedWordbook: "all",
   },
@@ -6894,8 +6934,51 @@ class StudyView extends ItemView {
       return;
     }
 
-    // 不在复习中直接忽略
+    // 只在"复习"标签页生效
+    if (this.currentTab !== 'review') return;
+
+    // 只有进入复习会话（闪卡出现）后生效
     if (!this.reviewing || this.reviewQueue.length === 0) return;
+
+    // Alt + P → 朗读当前卡片单词
+    if (e.altKey && (e.key === 'p' || e.key === 'P')) {
+      if (this.currentIndex < this.reviewQueue.length) {
+        const item = this.reviewQueue[this.currentIndex];
+        if (item?.card) {
+          playPronunciation(
+            item.card.word,
+            this.plugin.settings.ttsUrlTemplate,
+            this.plugin.settings.pronunciationVariant,
+            item.card.lang
+          );
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
+      }
+    }
+
+    // Alt + A → 显示/隐藏答案
+    if (e.altKey && (e.key === 'a' || e.key === 'A')) {
+      const revealBtn = this._revealBtn;
+      // 按钮存在、仍在 DOM 中、且当前可见（= 正在拼写）
+      if (revealBtn && revealBtn.isConnected && revealBtn.style.display !== "none") {
+        revealBtn.click();   // 复用按钮逻辑，自动切换 显示/隐藏
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      return;
+    }
+
+    // Alt + E → 退出拼写
+    if (e.altKey && (e.key === 'e' || e.key === 'E')) {
+      if (this.spellBarEl && this.isFlipped && typeof this._spellReset === "function") {
+        this._spellReset();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      return;
+    }
 
     // 排除所有输入/文本区域
     if (e.target.closest('input, textarea, select')) return;
@@ -6985,6 +7068,36 @@ class StudyView extends ItemView {
       return;
     }
 
+    // 按 S 键：拼写 / 再拼一次
+    if (e.key === 's' || e.key === 'S') {
+      // 只在卡片背面、且拼写功能已启用时有效
+      if (!this.isFlipped || !this.spellBarEl) return;
+
+      // 当前可见的那个按钮（三个按钮互斥：spellBtn / exitBtn / againBtn）
+      const btn = Array.from(this.spellBarEl.querySelectorAll('.study-card-spell-btn'))
+        .find(b => b.style.display !== "none");
+
+      if (btn) {
+        btn.click();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      return;
+    }
+
+    // 按 Tab 键：重新聚焦拼写输入框
+    if (e.key === "Tab") {
+      if (!this.isFlipped || !this.spellBarEl) return;
+
+      const inputEl = this.spellBarEl.querySelector('.study-spell-hidden-input');
+      if (inputEl && document.activeElement !== inputEl) {
+        inputEl.focus();
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      return;
+    }
+
     // 数字键 1-9 切换标签（仅背面）
     if (e.key >= '1' && e.key <= '9') {
       if (!this.isFlipped) return;
@@ -7047,6 +7160,13 @@ class StudyView extends ItemView {
     if (this._autoFlipTimer) {
       clearTimeout(this._autoFlipTimer);
       this._autoFlipTimer = null;
+    }
+    // 拼写区随翻面显示
+    if (this.spellBarEl) {
+      this.spellBarEl.style.display = this.isFlipped ? "flex" : "none";
+      if (!this.isFlipped && typeof this._spellReset === "function") {
+        this._spellReset();   // 回到正面时，重置拼写状态
+      }
     }
   }
 
@@ -7546,6 +7666,7 @@ class StudyView extends ItemView {
     front.style.display = "flex";   // 明确显示
 
     const frontWord = front.createSpan({ cls: "study-card-word library-word", text: card.word });
+    frontWord.setAttribute("title", "Alt + P");
     frontWord.addEventListener("click", (e) => {
       e.stopPropagation();
       playPronunciation(
@@ -7582,6 +7703,7 @@ class StudyView extends ItemView {
     const backTop = back.createDiv({ cls: "study-card-back-top" });
 
     const backWord = backTop.createSpan({ cls: "study-card-back-word library-word", text: card.word });
+    backWord.setAttribute("title", "Alt + P");
     backWord.addEventListener("click", (e) => {
       e.stopPropagation();
       playPronunciation(
@@ -7772,6 +7894,16 @@ class StudyView extends ItemView {
     // 根据索引禁用导航按钮（视觉反馈）
     if (this.currentIndex === 0) prevBtn.disabled = true;
     if (this.currentIndex === this.reviewQueue.length - 1) nextBtn.disabled = true;
+
+    // 拼写区
+    if (this.plugin.settings.study.enableSpellMode) {
+      const backWordEl = back.querySelector(".study-card-back-word");
+      if (backWordEl) this._applySpellMask(backWordEl, card.word);
+      this._createSpellBar(container, card, cardEl);
+    } else {
+      this.spellBarEl = null;
+      this._spellReset = null;
+    }
 
     // 保存引用
     this.cardContainer = cardEl;
@@ -7984,6 +8116,407 @@ class StudyView extends ItemView {
     });
 
     return btn;
+  }
+
+  // ----- 应用拼写遮罩 -----
+  _applySpellMask(el, originalText) {
+    if (!el) return;
+    const mode = this.plugin.settings.study.spellMaskMode || "blur";
+
+    // 清掉旧类
+    el.classList.remove(
+      'spell-mask', 'mask-blur', 'mask-hidden',
+      'mask-transparent', 'mask-placeholder'
+    );
+
+    // 恢复原文
+    el.textContent = originalText;
+
+    if (mode === 'none') return;
+
+    if (mode === 'placeholder') {
+      const ph = this.plugin.settings.study.spellMaskPlaceholder || '•';
+      // 用 NFC 规范化后按码点计数，避免 NFD 组合字符导致占位符个数错乱
+      const normalized = (originalText || '').normalize('NFC');
+      const len = [...normalized].length;
+      el.textContent = ph.repeat(len);
+      el.classList.add('spell-mask', 'mask-placeholder');
+      return;
+    }
+
+    el.classList.add('spell-mask', 'mask-' + mode);
+  }
+
+  // ----- 移除拼写遮罩（显示） -----
+  _removeSpellMask(el, originalText) {
+    if (!el) return;
+    el.classList.remove(
+      'spell-mask', 'mask-blur', 'mask-hidden',
+      'mask-transparent', 'mask-placeholder'
+    );
+    el.textContent = originalText;
+  }
+
+  // ----- 创建拼写练习区 -----
+  _createSpellBar(container, card, cardEl) {
+    const spellBar = container.createDiv({ cls: "study-spell-bar" });
+    this.spellBarEl = spellBar;
+
+    const backWord = cardEl.querySelector(".study-card-back-word");
+
+    let state = "idle";   // idle | typing | done
+    let spellStartTime = 0;   // 首次进入拼写时的时间戳（毫秒）
+    let spellErrorCount = 0;  // 累计错误次数
+    let revealActive = false; // 当前是否正在显示答案提示
+
+    // 按钮行容器（让所有拼写等按钮同一行排列）
+    const btnRow = spellBar.createDiv({ cls: "study-spell-btn-row" });
+
+    // 拼写按钮
+    const spellBtn = btnRow.createEl("button", {
+      text: t("spell_btn"),
+      cls: "study-card-spell-btn"
+    });
+
+    // 退出拼写按钮（拼写过程中显示）
+    const exitBtn = btnRow.createEl("button", {
+      text: t("spell_exit_btn"),
+      cls: "study-card-spell-btn"
+    });
+    exitBtn.setAttribute("title", "Alt + E");
+    exitBtn.style.display = "none";
+
+    // 显示/隐藏答案按钮（拼写过程中显示）
+    const revealBtn = btnRow.createEl("button", {
+      text: t("spell_reveal_btn"),
+      cls: "study-card-spell-btn"
+    });
+    revealBtn.style.display = "none";   // 初始隐藏
+    revealBtn.setAttribute("title", "Alt + A");
+    this._revealBtn = revealBtn;
+
+    // 再拼一次按钮（拼完后显示）
+    const againBtn = btnRow.createEl("button", {
+      text: t("spell_again_btn"),
+      cls: "study-card-spell-btn"
+    });
+    againBtn.style.display = "none";   // 初始隐藏
+
+    // 下划线格子容器
+    const slotsEl = spellBar.createDiv({ cls: "study-spell-slots" });
+    slotsEl.style.display = "none";
+
+    // 拼写统计（用时 + 错误次数），初始隐藏
+    const statsEl = spellBar.createDiv({ cls: "study-spell-stats" });
+    statsEl.style.display = "none";
+
+    // 应用拼写格子占位符（供 :empty::before 使用）
+    const slotPlaceholder = this.plugin.settings.study.spellSlotPlaceholder;
+    if (slotPlaceholder) {
+      slotsEl.style.setProperty('--spell-slot-placeholder', JSON.stringify(slotPlaceholder));
+    } else {
+      slotsEl.style.removeProperty('--spell-slot-placeholder');
+    }
+
+    // 隐藏输入框（仅接收键盘事件）
+    const inputEl = spellBar.createEl("input", {
+      type: "text",
+      cls: "study-spell-hidden-input",
+      attr: {
+        autocapitalize: "off", autocorrect: "off",
+        autocomplete: "off", spellcheck: "false"
+      }
+    });
+
+    // 生成格子
+    // 规范化：NFC 保证每个"可见字符"是一个码点，避免 NFD 组合字符（如 é = e + ´）被拆成多格
+    const normalizedWord = (card.word || '').normalize('NFC');
+    const slots = [];
+    for (const ch of normalizedWord) {
+      const isLetter = /\p{L}/u.test(ch);
+      const slot = slotsEl.createSpan({ cls: "spell-slot" });
+      if (isLetter) {
+        slot.textContent = "";
+        slot.dataset.expected = ch.toLowerCase();
+        slot.dataset.answer = ch;              // 用于 .is-revealed::after 显示
+        slot.dataset.isLetter = "true";
+        slot.dataset.filled = "false";
+        slot.dataset.wrongCount = "0";
+      } else {
+        slot.textContent = ch === " " ? "\u00A0" : ch;
+        slot.addClass("is-fixed");
+        slot.dataset.filled = "true";
+      }
+      slots.push(slot);
+    }
+
+    const findNext = () => {
+      for (let i = 0; i < slots.length; i++) {
+        const s = slots[i];
+        if (s.dataset.isLetter === "true" && s.dataset.filled !== "true") return i;
+      }
+      return -1;
+    };
+
+    const highlightCursor = () => {
+      slots.forEach(s => s.removeClass("is-active"));
+      const idx = findNext();
+      if (idx !== -1) slots[idx].addClass("is-active");
+    };
+
+    const checkComplete = () => {
+      if (findNext() !== -1) return;
+      state = "done";
+      // 移除光标闪烁
+      slots.forEach(s => s.removeClass("is-active"));
+      // 失焦输入框，恢复复习快捷键
+      inputEl.blur();
+      // 拼完恢复单词显示
+      if (backWord) this._removeSpellMask(backWord, card.word);
+      // 隐藏退出/显示答案按钮
+      exitBtn.style.display = "none";
+      revealBtn.style.display = "none";
+      // 显示"再拼一次"按钮
+      againBtn.style.display = "inline-block";
+
+      // 显示本轮的用时和错误次数
+      if (statsEl) {
+        const elapsed = spellStartTime > 0
+          ? ((Date.now() - spellStartTime) / 1000).toFixed(1)
+          : "0.0";
+        statsEl.textContent = `⏱ ${elapsed}s · ✗ ${spellErrorCount}`;
+        statsEl.style.display = "block";
+      }
+    };
+
+    // 重置格子
+    const resetSlotsOnly = () => {
+      for (const s of slots) {
+        if (s.dataset.isLetter === "true") {
+          // 清掉旧的定时器
+          if (s._wrongTimer) {
+            clearTimeout(s._wrongTimer);
+            s._wrongTimer = null;
+          }
+          s.textContent = "";
+          s.dataset.filled = "false";
+          s.dataset.wrongCount = "0";
+          s.removeClass("is-auto-filled", "is-complete", "is-active", "is-wrong", "is-revealed");
+        }
+      }
+    };
+
+    const resetSpell = () => {
+      resetSlotsOnly();
+      state = "idle";
+      revealActive = false;
+      inputEl.value = "";
+      inputEl.blur();
+      spellBtn.style.display = "inline-block";
+      slotsEl.style.display = "none";
+      exitBtn.style.display = "none";
+      revealBtn.style.display = "none";
+      revealBtn.textContent = t("spell_reveal_btn");
+      againBtn.style.display = "none";
+      // 重置统计
+      spellStartTime = 0;
+      spellErrorCount = 0;
+      if (statsEl) statsEl.style.display = "none";
+      if (backWord) this._applySpellMask(backWord, card.word);
+    };
+    this._spellReset = resetSpell;
+
+    // 点击按钮 → 进入拼写
+    spellBtn.addEventListener("click", () => {
+      spellBtn.style.display = "none";
+      slotsEl.style.display = "flex";
+      exitBtn.style.display = "inline-block";
+      revealBtn.style.display = "inline-block";
+      revealBtn.textContent = t("spell_reveal_btn");
+      againBtn.style.display = "none";
+      inputEl.value = "";
+      inputEl.focus();
+      state = "typing";
+      revealActive = false;
+      spellStartTime = Date.now();  // 开始计时
+      highlightCursor();
+      if (backWord) this._applySpellMask(backWord, card.word);
+    });
+
+    // 点击"显示答案"/"隐藏答案"
+    revealBtn.addEventListener("click", () => {
+      if (state !== "typing") return;
+
+      revealActive = !revealActive;
+
+      // 未填对的格子跟着切换 is-revealed
+      for (const s of slots) {
+        if (s.dataset.isLetter === "true" && s.dataset.filled !== "true") {
+          if (revealActive) {
+            s.addClass("is-revealed");
+          } else {
+            s.removeClass("is-revealed");
+          }
+        }
+      }
+
+      // 切换按钮文字
+      revealBtn.textContent = revealActive
+        ? t("spell_hide_btn")
+        : t("spell_reveal_btn");
+
+      // 焦点回输入框，让用户继续拼
+      inputEl.focus();
+    });
+
+    // 处理单个字符输入（keydown 和 input 事件共用）
+    const processChar = (rawChar) => {
+      if (state !== "typing") return;
+      if (!rawChar || rawChar.length === 0) return;
+
+      const ch = rawChar.toLowerCase();
+      const idx = findNext();
+      if (idx === -1) return;
+
+      const slot = slots[idx];
+      const expected = slot.dataset.expected;
+
+      if (ch === expected) {
+        // 清掉旧的定时器
+        if (slot._wrongTimer) {
+          clearTimeout(slot._wrongTimer);
+          slot._wrongTimer = null;
+        }
+        // 拼对：填入，立即变绿，光标前进，清掉提示
+        slot.textContent = rawChar;
+        slot.dataset.filled = "true";
+        slot.removeClass("is-wrong");
+        slot.addClass("is-complete");
+        slot.removeClass("is-revealed");    // 拼对后不再显示提示
+        checkComplete();
+        if (state === "typing") highlightCursor();
+      } else {
+        // 累计错误次数
+        spellErrorCount++;
+
+        // 拼错：计数 +1，抖动，显示错误字母 1 秒后清除
+        slot.textContent = rawChar;
+
+        // 强制重播抖动动画，否则同一格连续输错时，第二次不会触发动画
+        slot.removeClass("is-wrong");
+        void slot.offsetWidth;
+        slot.addClass("is-wrong");
+
+        const wc = parseInt(slot.dataset.wrongCount || "0", 10) + 1;
+        slot.dataset.wrongCount = String(wc);
+
+        // 清掉旧的定时器（连续输错时重置计时）
+        if (slot._wrongTimer) clearTimeout(slot._wrongTimer);
+        slot._wrongTimer = setTimeout(() => {
+          // 只有在这一格还没被填对时，才清除错误字母
+          if (slot.dataset.filled !== "true") {
+            slot.textContent = "";
+            slot.removeClass("is-wrong");
+          } else {
+            // 已经被填对了，只清掉抖动类
+            slot.removeClass("is-wrong");
+          }
+          slot._wrongTimer = null;
+        }, 1000);
+
+        if (wc >= 3) {
+          // 同一格错 3 次：自动填入正确字母，变红
+          if (slot._wrongTimer) {
+            clearTimeout(slot._wrongTimer);
+            slot._wrongTimer = null;
+          }
+          slot.textContent = expected;
+          slot.dataset.filled = "true";
+          slot.removeClass("is-active", "is-wrong");
+          slot.addClass("is-auto-filled");
+          checkComplete();
+          if (state === "typing") highlightCursor();
+        }
+      }
+    };
+
+    // 处理直接按键：英文、俄文、法文等
+    inputEl.addEventListener("keydown", (e) => {
+      // IME 组合中忽略
+      if (e.isComposing || e.keyCode === 229) return;
+
+      // Alt 组合键放行
+      if (e.altKey) return;
+
+      // Esc：退出拼写
+      if (e.key === "Escape") {
+        e.preventDefault();
+        e.stopPropagation();
+        resetSpell();
+        return;
+      }
+
+      // Tab：拼写输入失焦
+      if (e.key === "Tab") {
+        e.preventDefault();
+        e.stopPropagation();
+        inputEl.blur();
+        return;
+      }
+
+      if (state !== "typing") return;
+      // 处理单字符
+      if (e.key.length !== 1) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      processChar(e.key);
+    });
+
+    // 处理中文、日文、韩文等通过输入法提交的字符
+    inputEl.addEventListener("input", (e) => {
+      if (e.isComposing) return;
+      if (state !== "typing") return;
+      const val = inputEl.value.normalize('NFC');
+      if (!val) return;
+
+      // 逐字符处理
+      for (const ch of val) {
+        processChar(ch);
+      }
+
+      // 清空输入框，避免累积
+      inputEl.value = "";
+    });
+
+    // 点击格子区重新聚焦
+    slotsEl.addEventListener("click", () => inputEl.focus());
+
+    // 点击"再拼一次"：原地重置格子，重新进入拼写状态
+    againBtn.addEventListener("click", () => {
+      resetSlotsOnly();
+      againBtn.style.display = "none";
+      // 切回退出按钮和显示答案按钮
+      exitBtn.style.display = "inline-block";
+      revealBtn.style.display = "inline-block";
+      revealBtn.textContent = t("spell_reveal_btn");
+      state = "typing";
+      revealActive = false;
+      inputEl.value = "";
+      inputEl.focus();
+      highlightCursor();
+      // 重置统计并重新开始计时
+      spellStartTime = Date.now();
+      spellErrorCount = 0;
+      if (statsEl) statsEl.style.display = "none";
+      if (backWord) this._applySpellMask(backWord, card.word);
+    });
+
+    // 点击"退出拼写"：完全重置，回到初始态
+    exitBtn.addEventListener("click", () => {
+      resetSpell();
+    });
   }
 
   // ----- 开始复习 -----
@@ -9231,6 +9764,100 @@ class StudyView extends ItemView {
       this.plugin.settings.study.enableBookmark = newVal;
       await this.plugin.saveSettings();
       bookmarkToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 拼写（开关）
+    const spellSetting = container.createDiv({ cls: "study-setting-item" });
+    spellSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_enable_spell") });
+    spellSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_enable_spell_desc") });
+    const spellControl = spellSetting.createDiv({ cls: "study-setting-control" });
+    const spellToggle = spellControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.enableSpellMode) spellToggle.addClass("is-enabled");
+    spellToggle.createDiv({ cls: "checkbox-handle" });
+
+    // 声明为外层变量，供拼写相关设置区域赋值
+    let updateMaskVisibility = () => { };
+
+    spellToggle.addEventListener("click", async () => {
+      const newVal = !settings.enableSpellMode;
+      settings.enableSpellMode = newVal;
+      this.plugin.settings.study.enableSpellMode = newVal;
+      await this.plugin.saveSettings();
+      spellToggle.toggleClass("is-enabled", newVal);
+      updateMaskVisibility();   // 联动拼写相关设置项的显隐
+    });
+
+    // 拼写遮罩方式（仅在启用智能拼写时显示）
+    const maskSetting = container.createDiv({ cls: "study-setting-item" });
+    maskSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_mask") });
+    maskSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_mask_desc") });
+    const maskControl = maskSetting.createDiv({ cls: "study-setting-control" });
+    const maskSelect = maskControl.createEl("select");
+    maskSelect.createEl("option", { value: "blur", text: t("study_spell_mask_blur") });
+    maskSelect.createEl("option", { value: "hidden", text: t("study_spell_mask_hidden") });
+    maskSelect.createEl("option", { value: "transparent", text: t("study_spell_mask_transparent") });
+    maskSelect.createEl("option", { value: "placeholder", text: t("study_spell_mask_placeholder") });
+    maskSelect.createEl("option", { value: "none", text: t("study_spell_mask_none") });
+    maskSelect.value = settings.spellMaskMode || "blur";
+
+    // 单词遮罩占位符字符（仅「占位符」模式显示）
+    const phSetting = container.createDiv({ cls: "study-setting-item" });
+    phSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_placeholder") });
+    phSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_placeholder_desc") });
+    const phControl = phSetting.createDiv({ cls: "study-setting-control" });
+    const phInput = phControl.createEl("input", { type: "text" });
+    phInput.value = settings.spellMaskPlaceholder || "•";
+    phInput.style.width = "80px";
+    phInput.maxLength = 4;
+
+    // 拼写格子占位符字符（智能拼写开启即显示）
+    const slotPhSetting = container.createDiv({ cls: "study-setting-item" });
+    slotPhSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_slot_placeholder") });
+    slotPhSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_slot_placeholder_desc") });
+    const slotPhControl = slotPhSetting.createDiv({ cls: "study-setting-control" });
+    const slotPhInput = slotPhControl.createEl("input", { type: "text" });
+    slotPhInput.value = settings.spellSlotPlaceholder || "";
+    slotPhInput.style.width = "80px";
+    slotPhInput.maxLength = 4;
+
+    // 联动：控制三个设置项的整块显隐
+    updateMaskVisibility = () => {
+      const enabled = settings.enableSpellMode;
+      const isPlaceholder = maskSelect.value === 'placeholder';
+
+      // 遮罩方式：仅拼写开启时显示
+      maskSetting.style.display = enabled ? "flex" : "none";
+
+      // 单词遮罩占位符：仅拼写开启 + 占位符模式时显示
+      phSetting.style.display = (enabled && isPlaceholder) ? "flex" : "none";
+
+      // 拼写格子占位符：仅拼写开启时显示
+      slotPhSetting.style.display = enabled ? "flex" : "none";
+    };
+    updateMaskVisibility();   // 初始渲染时应用一次
+
+    maskSelect.addEventListener("change", async (e) => {
+      settings.spellMaskMode = e.target.value;
+      this.plugin.settings.study.spellMaskMode = settings.spellMaskMode;
+      await this.plugin.saveSettings();
+      updateMaskVisibility();
+    });
+
+    phInput.addEventListener("change", async () => {
+      let val = phInput.value.trim();
+      if (!val) val = "•";
+      settings.spellMaskPlaceholder = val;
+      this.plugin.settings.study.spellMaskPlaceholder = val;
+      phInput.value = val;
+      await this.plugin.saveSettings();
+    });
+
+    slotPhInput.addEventListener("change", async () => {
+      let val = slotPhInput.value.trim();   // 允许为空
+      settings.spellSlotPlaceholder = val;
+      this.plugin.settings.study.spellSlotPlaceholder = val;
+      slotPhInput.value = val;
+      await this.plugin.saveSettings();
     });
 
     // 间隔天数自定义
@@ -15892,6 +16519,21 @@ class SimpleWordbookPlugin extends Plugin {
     // 确保 selectedWordbook 字段存在（兼容旧数据）
     if (this.settings.study && !this.settings.study.hasOwnProperty('selectedWordbook')) {
       this.settings.study.selectedWordbook = "all";
+      needsSave = true;
+    }
+    // 确保 spellMaskMode 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellMaskMode === undefined) {
+      this.settings.study.spellMaskMode = "blur";
+      needsSave = true;
+    }
+    // 确保 spellMaskPlaceholder 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellMaskPlaceholder === undefined) {
+      this.settings.study.spellMaskPlaceholder = "•";
+      needsSave = true;
+    }
+    // 确保 spellSlotPlaceholder 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellSlotPlaceholder === undefined) {
+      this.settings.study.spellSlotPlaceholder = "";
       needsSave = true;
     }
     // 确保 intervalDays 字段存在（兼容旧数据）
