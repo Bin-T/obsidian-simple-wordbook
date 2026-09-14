@@ -529,16 +529,16 @@ For more customization, refer to the namespaces in the plugin's `styles.css`.
 
 ### Lookup Panel & Word Sidebar
 
-![](images/preview_1.png)
+![preview_1](images/preview_1.png)
 
 ### Study Center
 
-![](images/preview_2.png)
-![](images/preview_3.png)
+![preview_2](images/preview_2.png)
+![preview_3](images/preview_3.png)
 
 ### Library Management
 
-![](images/preview_4.png)
+![preview_4](images/preview_4.png)
 
 ---
 
