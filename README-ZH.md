@@ -530,16 +530,16 @@ A: 可以。词库文件可放在 vault 任意位置。若文件被重命名或�
 
 ### 查词面板与单词侧边栏
 
-![](images/preview_1.png)
+![preview_1](images/preview_1.png)
 
 ### 学习中心
 
-![](images/preview_2.png)
-![](images/preview_3.png)
+![preview_2](images/preview_2.png)
+![preview_3](images/preview_3.png)
 
 ### 词库管理
 
-![](images/preview_4.png)
+![preview_4](images/preview_4.png)
 
 ---
 
