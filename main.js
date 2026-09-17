@@ -290,6 +290,7 @@ const locale = {
     settings_ai_api_key: "API Key",
     settings_ai_model: "Model Name",
     provider_openai: "OpenAI",
+    provider_anthropic: "Anthropic (Claude)",
     provider_deepseek: "DeepSeek",
     provider_glm: "GLM (Zhipu)",
     provider_tongyi: "Tongyi Qianwen",
@@ -343,6 +344,7 @@ const locale = {
     api_error_http: "API request failed ({0}): {1}",
     api_error_parse: "Invalid data format returned by API, please check API URL",
     api_error_unexpected: "Unexpected API response format, please check your API configuration",
+    api_error_refusal: "The model declined to answer this request",
     api_error_config: "Please configure API URL and API Key first",
     settings_ai_context_mode: "Context Extraction Mode",
     settings_ai_context_mode_desc: "How to extract context for the {context} placeholder in prompts",
@@ -1007,6 +1009,7 @@ const locale = {
     settings_ai_api_key: "API 密钥",
     settings_ai_model: "模型名称",
     provider_openai: "OpenAI",
+    provider_anthropic: "Anthropic (Claude)",
     provider_deepseek: "DeepSeek",
     provider_glm: "智谱 GLM",
     provider_tongyi: "通义千问",
@@ -1060,6 +1063,7 @@ const locale = {
     api_error_http: "API 请求失败 ({0}): {1}",
     api_error_parse: "API 返回的数据格式无效，请检查 API 地址是否正确",
     api_error_unexpected: "API 返回了意外格式，请检查 API 配置是否正确",
+    api_error_refusal: "模型拒绝回答该请求",
     api_error_config: "请先配置 API 地址和密钥",
     settings_ai_context_mode: "上下文提取方式",
     settings_ai_context_mode_desc: "提示词中 {context} 占位符的上下文提取方式",
@@ -12895,6 +12899,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // 服务商映射
     const providerMap = {
       openai: { url: "https://api.openai.com/v1/chat/completions", model: "gpt-3.5-turbo" },
+      anthropic: { url: "https://api.anthropic.com/v1/messages", model: "claude-haiku-4-5" },
       deepseek: { url: "https://api.deepseek.com/v1/chat/completions", model: "deepseek-chat" },
       glm: { url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", model: "glm-4" },
       tongyi: { url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", model: "qwen-turbo" },
@@ -12909,6 +12914,7 @@ class WordbookSettingTab extends PluginSettingTab {
       .addDropdown(drop => {
         const options = {
           openai: t("provider_openai"),
+          anthropic: t("provider_anthropic"),
           deepseek: t("provider_deepseek"),
           glm: t("provider_glm"),
           tongyi: t("provider_tongyi"),
@@ -15600,6 +15606,10 @@ class SimpleWordbookPlugin extends Plugin {
     const isOllama = settings.apiProvider === 'ollama' ||
       (url && (url.includes('ollama') || url.includes('localhost:11434')));
 
+    // 判断是否为 Anthropic：Messages API 与 OpenAI 格式不兼容，需单独处理
+    const isAnthropic = settings.apiProvider === 'anthropic' ||
+      (url && url.includes('api.anthropic.com'));
+
     // 参数校验（Ollama 不需要 API Key）
     if (!url || (!isOllama && !apiKey)) {
       throw new Error(t("api_error_config"));
@@ -15607,23 +15617,52 @@ class SimpleWordbookPlugin extends Plugin {
 
     const headers = {
       "Content-Type": "application/json",
-      // Ollama 不发送 Authorization 头
-      ...(isOllama ? {} : { "Authorization": `Bearer ${apiKey}` })
+      // Ollama 不发送 Authorization 头；
+      // Anthropic 使用 x-api-key 并要求 anthropic-version；
+      // Obsidian 渲染进程属于浏览器环境，Anthropic 默认拒绝浏览器直连，
+      // 必须显式声明该头，否则请求在拿到 HTTP 响应前就被 CORS 拦下，
+      // 表现为「网络连接失败」而不是 401。
+      ...(isOllama ? {} : isAnthropic
+        ? {
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        }
+        : { "Authorization": `Bearer ${apiKey}` })
     };
 
     // 构建消息体
-    const messages = [];
-    if (systemContent && systemContent.trim()) {
-      messages.push({ role: "system", content: systemContent });
-    }
-    messages.push({ role: "user", content: prompt });
+    let body;
+    if (isAnthropic) {
+      // Anthropic：system 是顶层参数而非消息角色，max_tokens 为必填
+      body = {
+        model: model,
+        max_tokens: this.settings.aiMaxTokens ?? 1500,
+        messages: [{ role: "user", content: prompt }]
+      };
+      if (systemContent && systemContent.trim()) {
+        body.system = systemContent;
+      }
+      // 仅在模型接受采样参数时发送 temperature：
+      // Haiku 等模型支持，Opus 5 / Sonnet 5 等新模型会直接返回 400。
+      // 模型名由用户自由填写，故用白名单，未知模型一律省略（失败方向更安全）。
+      if (/haiku|claude-3|claude-2/i.test(model || "")) {
+        body.temperature = this.settings.aiTemperature ?? 0.5;
+      }
+    } else {
+      const messages = [];
+      if (systemContent && systemContent.trim()) {
+        messages.push({ role: "system", content: systemContent });
+      }
+      messages.push({ role: "user", content: prompt });
 
-    const body = {
-      model: model,
-      messages: messages,
-      temperature: this.settings.aiTemperature ?? 0.5,
-      max_tokens: this.settings.aiMaxTokens ?? 1500
-    };
+      body = {
+        model: model,
+        messages: messages,
+        temperature: this.settings.aiTemperature ?? 0.5,
+        max_tokens: this.settings.aiMaxTokens ?? 1500
+      };
+    }
 
     // 发起请求
     let response;
@@ -15663,6 +15702,26 @@ class SimpleWordbookPlugin extends Plugin {
     } catch (parseError) {
       console.error("Parse error:", parseError);
       throw new Error(t("api_error_parse"));
+    }
+
+    // Anthropic：content 是内容块数组，思考块也在其中且 text 为空，
+    // 因此必须筛选 type === "text"，不能直接取 content[0]。
+    // 注意：下方兼容分支中的 data.content 对 Anthropic 是数组而非字符串，
+    // 若不在此提前返回，会把数组当作正文交给上层渲染。
+    if (isAnthropic) {
+      if (data.stop_reason === "refusal") {
+        throw new Error(t("api_error_refusal"));
+      }
+      const text = (Array.isArray(data.content) ? data.content : [])
+        .filter(block => block && block.type === "text")
+        .map(block => block.text || "")
+        .join("")
+        .trim();
+      if (!text) {
+        console.warn("Unexpected Anthropic API response format:", data);
+        throw new Error(t("api_error_unexpected"));
+      }
+      return text;
     }
 
     // 兼容多种返回格式（OpenAI 格式 + Ollama 原生格式 + 其他）
