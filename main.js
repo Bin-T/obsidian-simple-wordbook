@@ -280,6 +280,7 @@ const locale = {
     tts_system_auto_switched: "Automatically switched to {voice} to support the current language.",
     tts_system_no_voice_for_lang: "No system voice available for {lang}. Please install the language pack or disable System TTS.",
     command_pronounce_selected: "Speak selected text",
+    command_stop_pronunciation: "Stop Reading",
     tts_test_enter_word: "Please enter a word to test.",
 
     settings_tab_ai: "AI",
@@ -290,6 +291,7 @@ const locale = {
     settings_ai_api_key: "API Key",
     settings_ai_model: "Model Name",
     provider_openai: "OpenAI",
+    provider_anthropic: "Anthropic (Claude)",
     provider_deepseek: "DeepSeek",
     provider_glm: "GLM (Zhipu)",
     provider_tongyi: "Tongyi Qianwen",
@@ -343,6 +345,7 @@ const locale = {
     api_error_http: "API request failed ({0}): {1}",
     api_error_parse: "Invalid data format returned by API, please check API URL",
     api_error_unexpected: "Unexpected API response format, please check your API configuration",
+    api_error_refusal: "The model refused to answer this request.",
     api_error_config: "Please configure API URL and API Key first",
     settings_ai_context_mode: "Context Extraction Mode",
     settings_ai_context_mode_desc: "How to extract context for the {context} placeholder in prompts",
@@ -568,7 +571,7 @@ const locale = {
     study_review_motivation: "Today {0} due, {1} words this round, go go go!",
     study_review_empty: "No words due for review today! 🎉",
     study_review_done: "Review complete! {0} words this round, {1} words total today.",
-    study_review_progress: "Word {0}/{1} · Level {2} · Next in {3} days",
+    study_review_progress: "Word {0}/{1} · Level {2} · Last seen {3} days ago",
     study_card_hint: "Double-click or press Space to reveal",
     study_btn_forget: "😣 Forget",
     study_btn_remember: "😊 Remember",
@@ -697,6 +700,10 @@ const locale = {
     spell_hide_btn: "Hide Answer", 
     study_settings_enable_spell: "Smart Spell Check",
     study_settings_enable_spell_desc: "Show spell-related buttons and input on the card back. Press Tab to toggle focus on the spell input",
+    study_settings_spell_pronounce_start: "Pronounce Before Spelling",
+    study_settings_spell_pronounce_start_desc: "Read the word aloud before spelling",
+    study_settings_spell_pronounce_complete: "Pronounce After Spelling",
+    study_settings_spell_pronounce_complete_desc: "Read the word aloud after spelling",
     study_settings_spell_mask: "Word Mask",
     study_settings_spell_mask_desc: "How the word is hidden on the flashcard back",
     study_spell_mask_blur: "Blur",
@@ -706,6 +713,10 @@ const locale = {
     study_spell_mask_none: "No Mask",
     study_settings_spell_placeholder: "Mask Placeholder",
     study_settings_spell_placeholder_desc: "Character used to replace the word on the flashcard back",
+    study_settings_spell_error_reset: "Spell Error Reset",
+    study_settings_spell_error_reset_desc: "Reset mode on spelling error",
+    study_settings_spell_error_reset_per_char: "Reset single slot",
+    study_settings_spell_error_reset_full: "Full reset",
     study_settings_slot_placeholder: "Slot Placeholder",
     study_settings_slot_placeholder_desc: "Character shown in empty spell slots during spelling practice (leave empty to hide)",
 
@@ -997,6 +1008,7 @@ const locale = {
     tts_system_auto_switched: "已自动切换到 {voice} 以支持当前语言。",
     tts_system_no_voice_for_lang: "当前系统缺少 {lang} 语音包，请安装语音包或关闭“系统 TTS”。",
     command_pronounce_selected: "朗读选中的文本",
+    command_stop_pronunciation: "停止朗读",
     tts_test_enter_word: "请输入要测试的单词。",
 
     settings_tab_ai: "AI",
@@ -1007,6 +1019,7 @@ const locale = {
     settings_ai_api_key: "API 密钥",
     settings_ai_model: "模型名称",
     provider_openai: "OpenAI",
+    provider_anthropic: "Anthropic (Claude)",
     provider_deepseek: "DeepSeek",
     provider_glm: "智谱 GLM",
     provider_tongyi: "通义千问",
@@ -1060,6 +1073,7 @@ const locale = {
     api_error_http: "API 请求失败 ({0}): {1}",
     api_error_parse: "API 返回的数据格式无效，请检查 API 地址是否正确",
     api_error_unexpected: "API 返回了意外格式，请检查 API 配置是否正确",
+    api_error_refusal: "模型拒绝了本次请求。",
     api_error_config: "请先配置 API 地址和密钥",
     settings_ai_context_mode: "上下文提取方式",
     settings_ai_context_mode_desc: "提示词中 {context} 占位符的上下文提取方式",
@@ -1285,7 +1299,7 @@ const locale = {
     study_review_motivation: "今日到期{0}个词，本轮复习{1}个词，冲鸭！",
     study_review_empty: "今日没有需要复习的单词 🎉",
     study_review_done: "复习完成！本轮复习了 {0} 个单词，今日累计复习了 {1} 个单词。",
-    study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距下次 {3} 天",
+    study_review_progress: "第 {0}/{1} 个 · 等级 {2} · 距上次 {3} 天",
     study_card_hint: "双击或按空格显示释义",
     study_btn_forget: "😣 忘记",
     study_btn_remember: "😊 记得",
@@ -1414,6 +1428,10 @@ const locale = {
     spell_hide_btn: "隐藏答案",
     study_settings_enable_spell: "智能拼写",
     study_settings_enable_spell_desc: "翻到卡片背面时出现拼写相关按钮和输入框。按 Tab 键可切换聚焦/失焦到拼写输入框",
+    study_settings_spell_pronounce_start: "拼写前发音",
+    study_settings_spell_pronounce_start_desc: "在拼写前朗读该单词",
+    study_settings_spell_pronounce_complete: "拼写后发音",
+    study_settings_spell_pronounce_complete_desc: "在拼写后朗读该单词",
     study_settings_spell_mask: "单词遮罩",
     study_settings_spell_mask_desc: "闪卡背面单词的隐藏方式",
     study_spell_mask_blur: "模糊",
@@ -1423,6 +1441,10 @@ const locale = {
     study_spell_mask_none: "无遮罩",
     study_settings_spell_placeholder: "单词遮罩占位符",
     study_settings_spell_placeholder_desc: "用于替换闪卡背面单词的字符",
+    study_settings_spell_error_reset: "拼错重置",
+    study_settings_spell_error_reset_desc: "拼错后的重置方式",
+    study_settings_spell_error_reset_per_char: "单格重置",
+    study_settings_spell_error_reset_full: "全部重置",
     study_settings_slot_placeholder: "拼写格子占位符",
     study_settings_slot_placeholder_desc: "拼写练习时空白格子显示的字符（留空则不显示）",
 
@@ -1691,8 +1713,11 @@ const DEFAULT_SETTINGS = {
     enableFineFeedback: false,
     enableBookmark: false,
     enableSpellMode: false,
+    spellPronounceOnStart: false,
+    spellPronounceOnComplete: false,
     spellMaskMode: "blur",
     spellMaskPlaceholder: "•",
+    spellErrorResetMode: "perChar",
     spellSlotPlaceholder: "",
     intervalDays: [1, 2, 4, 8, 16],
     selectedWordbook: "all",
@@ -1740,8 +1765,39 @@ function getStudyKey(word, bookPath) {
   return `${bookPath}::${normalized}`;
 }
 
+// ========== 发音播放控制 ==========
+let _currentAudio = null;         // 当前网络 TTS 的 Audio 实例
+let _currentUtterance = null;     // 当前系统 TTS 的 utterance
+let _currentAbort = null;         // 当前 Google TTS fetch 的 AbortController
+
+// 停止当前所有发音
+function stopCurrentPlayback() {
+  // 停止系统 TTS
+  if (typeof window.speechSynthesis !== 'undefined' && window.speechSynthesis) {
+    try { window.speechSynthesis.cancel(); } catch (e) { }
+  }
+  // 停止网络 TTS（Audio）
+  if (_currentAudio) {
+    try {
+      _currentAudio.pause();
+      _currentAudio.currentTime = 0;
+    } catch (e) { }
+    _currentAudio = null;
+  }
+  // 中断正在进行的 Google TTS fetch
+  if (_currentAbort) {
+    try { _currentAbort.abort(); } catch (e) { }
+    _currentAbort = null;
+  }
+  _currentUtterance = null;
+}
+
+// ===== 统一发音入口 ===== 
 async function playPronunciation(word, ttsTemplate, variant, lang = '') {
   const plugin = globalThis.__simpleWordbookPlugin;
+
+  // 打断上一次朗读，重新播放
+  stopCurrentPlayback();
 
   // 获取当前预设和语言列表，计算实际语言代码
   const preset = plugin?.settings?.ttsPreset || 'custom';
@@ -1778,6 +1834,15 @@ async function playPronunciation(word, ttsTemplate, variant, lang = '') {
         // 音高
         const pitch = plugin.settings.systemTTSPitch ?? 1.0;
         utterance.pitch = Math.min(Math.max(pitch, 0.5), 2.0);
+
+        // 记录当前 utterance + 绑定清理回调
+        _currentUtterance = utterance;
+        utterance.onend = () => {
+          if (_currentUtterance === utterance) _currentUtterance = null;
+        };
+        utterance.onerror = () => {
+          if (_currentUtterance === utterance) _currentUtterance = null;
+        };
 
         // 语音选择（若已存储名称）
         const voiceName = plugin.settings.systemTTSVoiceName || "";
@@ -1880,8 +1945,9 @@ async function playPronunciation(word, ttsTemplate, variant, lang = '') {
   const isGoogle = url.includes('translate.google.com');
 
   if (isGoogle) {
-    // ---------- Google TTS: 使用 fetch + AbortController（主动超时提示） ----------
+    // Google TTS: 使用 fetch + AbortController（主动超时提示）
     const controller = new AbortController();
+    _currentAbort = controller;
     const timeoutId = setTimeout(() => {
       controller.abort();
       new Notice(t("notice_tts_playback_failed"));
@@ -1899,14 +1965,29 @@ async function playPronunciation(word, ttsTemplate, variant, lang = '') {
       const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' });
       const blobUrl = URL.createObjectURL(blob);
 
-      const audio = new Audio(blobUrl);
-      await audio.play();
-      URL.revokeObjectURL(blobUrl);
+      // fetch 已完成，_currentAbort 不再需要，交给 _currentAudio 负责后续中断
+      if (_currentAbort === controller) _currentAbort = null;
 
+      const audio = new Audio(blobUrl);
+      _currentAudio = audio;
+      audio.onended = () => {
+        if (_currentAudio === audio) {
+          _currentAudio = null;
+        }
+        URL.revokeObjectURL(blobUrl);
+      };
+      audio.onerror = () => {
+        if (_currentAudio === audio) {
+          _currentAudio = null;
+        }
+        URL.revokeObjectURL(blobUrl);
+      };
+      await audio.play();
     } catch (e) {
       clearTimeout(timeoutId);
+      if (_currentAbort === controller) _currentAbort = null;
       if (e.name === 'AbortError') {
-        console.warn('TTS request aborted due to timeout');
+        console.warn('TTS request aborted');
         return;
       }
       console.warn('TTS playback failed:', e);
@@ -1916,6 +1997,17 @@ async function playPronunciation(word, ttsTemplate, variant, lang = '') {
     // ---------- 其他 TTS (有道、百度、自定义): 使用原有 Audio 方式 ----------
     try {
       const audio = new Audio(url);
+      _currentAudio = audio;
+      audio.onended = () => {
+        if (_currentAudio === audio) {
+          _currentAudio = null;
+        }
+      };
+      audio.onerror = () => {
+        if (_currentAudio === audio) {
+          _currentAudio = null;
+        }
+      };
       await audio.play();
     } catch (e) {
       console.warn("TTS playback failed:", e);
@@ -6960,10 +7052,7 @@ class StudyView extends ItemView {
 
     // Alt + A → 显示/隐藏答案
     if (e.altKey && (e.key === 'a' || e.key === 'A')) {
-      const revealBtn = this._revealBtn;
-      // 按钮存在、仍在 DOM 中、且当前可见（= 正在拼写）
-      if (revealBtn && revealBtn.isConnected && revealBtn.style.display !== "none") {
-        revealBtn.click();   // 复用按钮逻辑，自动切换 显示/隐藏
+      if (this._clickSpellAction("reveal")) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -6972,8 +7061,7 @@ class StudyView extends ItemView {
 
     // Alt + E → 退出拼写
     if (e.altKey && (e.key === 'e' || e.key === 'E')) {
-      if (this.spellBarEl && this.isFlipped && typeof this._spellReset === "function") {
-        this._spellReset();
+      if (this._clickSpellAction("exit")) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -7072,13 +7160,7 @@ class StudyView extends ItemView {
     if (e.key === 's' || e.key === 'S') {
       // 只在卡片背面、且拼写功能已启用时有效
       if (!this.isFlipped || !this.spellBarEl) return;
-
-      // 当前可见的那个按钮（三个按钮互斥：spellBtn / exitBtn / againBtn）
-      const btn = Array.from(this.spellBarEl.querySelectorAll('.study-card-spell-btn'))
-        .find(b => b.style.display !== "none");
-
-      if (btn) {
-        btn.click();
+      if (this._clickSpellAction("start") || this._clickSpellAction("again")) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -7603,13 +7685,17 @@ class StudyView extends ItemView {
     const card = item.card;
     const review = item.review;
     const level = review.level || 0;
-    const interval = this.studyStore.getInterval(level);
-    const nextDays = interval > 0 ? interval : (level >= 5 ? "∞" : "1");
+
+    // 距上次复习的天数（新词回退到首次学习日）
+    const lastDateStr = review.lastReview || review.firstLearned || this.studyStore.getTodayISO();
+    const todayDate = this.studyStore.parseLocalDate(this.studyStore.getTodayISO());
+    const lastDate = this.studyStore.parseLocalDate(lastDateStr);
+    const lastDays = Math.max(0, Math.round((todayDate - lastDate) / 86400000));
 
     // 进度信息
     const progressRow = container.createDiv({ cls: "study-progress-row" });
     const progress = progressRow.createDiv({ cls: "study-progress" });
-    progress.textContent = t("study_review_progress", this.currentIndex + 1, this.reviewQueue.length, level, nextDays);
+    progress.textContent = t("study_review_progress", this.currentIndex + 1, this.reviewQueue.length, level, lastDays);
 
     // 退出按钮
     const exitRow = container.createDiv({ cls: "study-exit-row" });
@@ -8157,6 +8243,15 @@ class StudyView extends ItemView {
     el.textContent = originalText;
   }
 
+  // 查找指定 action 的拼写按钮，若存在且可见则点击，返回是否触发成功
+  _clickSpellAction(action) {
+    if (!this.spellBarEl) return false;
+    const btn = this.spellBarEl.querySelector(`[data-spell-action="${action}"]`);
+    if (!btn || btn.style.display === "none") return false;
+    btn.click();
+    return true;
+  }
+
   // ----- 创建拼写练习区 -----
   _createSpellBar(container, card, cardEl) {
     const spellBar = container.createDiv({ cls: "study-spell-bar" });
@@ -8164,7 +8259,17 @@ class StudyView extends ItemView {
 
     const backWord = cardEl.querySelector(".study-card-back-word");
 
-    let state = "idle";   // idle | typing | done
+    // 发音辅助
+    const pronounceWord = () => {
+      playPronunciation(
+        card.word,
+        this.plugin.settings.ttsUrlTemplate,
+        this.plugin.settings.pronunciationVariant,
+        card.lang
+      );
+    };
+
+    let state = "idle";   // 状态：idle（未开始）| typing（拼写中）| resetting（拼错重置，临时锁定输入）| done（完成）
     let spellStartTime = 0;   // 首次进入拼写时的时间戳（毫秒）
     let spellErrorCount = 0;  // 累计错误次数
     let revealActive = false; // 当前是否正在显示答案提示
@@ -8177,12 +8282,14 @@ class StudyView extends ItemView {
       text: t("spell_btn"),
       cls: "study-card-spell-btn"
     });
+    spellBtn.dataset.spellAction = "start";
 
     // 退出拼写按钮（拼写过程中显示）
     const exitBtn = btnRow.createEl("button", {
       text: t("spell_exit_btn"),
       cls: "study-card-spell-btn"
     });
+    exitBtn.dataset.spellAction = "exit";
     exitBtn.setAttribute("title", "Alt + E");
     exitBtn.style.display = "none";
 
@@ -8191,15 +8298,16 @@ class StudyView extends ItemView {
       text: t("spell_reveal_btn"),
       cls: "study-card-spell-btn"
     });
+    revealBtn.dataset.spellAction = "reveal";
     revealBtn.style.display = "none";   // 初始隐藏
     revealBtn.setAttribute("title", "Alt + A");
-    this._revealBtn = revealBtn;
 
     // 再拼一次按钮（拼完后显示）
     const againBtn = btnRow.createEl("button", {
       text: t("spell_again_btn"),
       cls: "study-card-spell-btn"
     });
+    againBtn.dataset.spellAction = "again";
     againBtn.style.display = "none";   // 初始隐藏
 
     // 下划线格子容器
@@ -8273,6 +8381,10 @@ class StudyView extends ItemView {
       inputEl.blur();
       // 拼完恢复单词显示
       if (backWord) this._removeSpellMask(backWord, card.word);
+
+      // 拼写完成后发音
+      if (this.plugin.settings.study.spellPronounceOnComplete) pronounceWord();
+
       // 隐藏退出/显示答案按钮
       exitBtn.style.display = "none";
       revealBtn.style.display = "none";
@@ -8341,6 +8453,9 @@ class StudyView extends ItemView {
       spellStartTime = Date.now();  // 开始计时
       highlightCursor();
       if (backWord) this._applySpellMask(backWord, card.word);
+
+      // 进入拼写时发音
+      if (this.plugin.settings.study.spellPronounceOnStart) pronounceWord();
     });
 
     // 点击"显示答案"/"隐藏答案"
@@ -8369,12 +8484,19 @@ class StudyView extends ItemView {
       inputEl.focus();
     });
 
+    // 拼错重置模式
+    const isFullReset = (this.plugin.settings.study.spellErrorResetMode || "perChar") === "fullReset";
+
     // 处理单个字符输入（keydown 和 input 事件共用）
     const processChar = (rawChar) => {
       if (state !== "typing") return;
       if (!rawChar || rawChar.length === 0) return;
 
       const ch = rawChar.toLowerCase();
+
+      // 非字母字符（空格、标点、数字等）静默忽略
+      if (!/\p{L}/u.test(ch)) return;
+
       const idx = findNext();
       if (idx === -1) return;
 
@@ -8399,43 +8521,65 @@ class StudyView extends ItemView {
         // 累计错误次数
         spellErrorCount++;
 
-        // 拼错：计数 +1，抖动，显示错误字母 1 秒后清除
-        slot.textContent = rawChar;
+        if (isFullReset) {
+          // ----- 拼写全部重置 -----
+          slot.textContent = rawChar;
+          slot.classList.add("is-wrong");
+          state = "resetting";           // 抖动期间锁定输入
+          setTimeout(() => {
+            if (state !== "resetting") return;
+            resetSlotsOnly();
+            // 如果正在显示答案，重置后保持显示
+            if (revealActive) {
+              for (const s of slots) {
+                if (s.dataset.isLetter === "true" && s.dataset.filled !== "true") {
+                  s.classList.add("is-revealed");
+                }
+              }
+            }
+            state = "typing";
+            highlightCursor();
+          }, 600);
+        } else {
+          // ----- 拼写单格重置 -----
+          // 拼错：计数 +1，抖动，显示错误字母 1 秒后清除
+          slot.textContent = rawChar;
 
-        // 强制重播抖动动画，否则同一格连续输错时，第二次不会触发动画
-        slot.removeClass("is-wrong");
-        void slot.offsetWidth;
-        slot.addClass("is-wrong");
+          // 强制重播抖动动画，否则同一格连续输错时，第二次不会触发动画
+          slot.removeClass("is-wrong");
+          void slot.offsetWidth;
+          slot.addClass("is-wrong");
 
-        const wc = parseInt(slot.dataset.wrongCount || "0", 10) + 1;
-        slot.dataset.wrongCount = String(wc);
+          const wc = parseInt(slot.dataset.wrongCount || "0", 10) + 1;
+          slot.dataset.wrongCount = String(wc);
 
-        // 清掉旧的定时器（连续输错时重置计时）
-        if (slot._wrongTimer) clearTimeout(slot._wrongTimer);
-        slot._wrongTimer = setTimeout(() => {
-          // 只有在这一格还没被填对时，才清除错误字母
-          if (slot.dataset.filled !== "true") {
-            slot.textContent = "";
-            slot.removeClass("is-wrong");
-          } else {
-            // 已经被填对了，只清掉抖动类
-            slot.removeClass("is-wrong");
-          }
-          slot._wrongTimer = null;
-        }, 1000);
-
-        if (wc >= 3) {
-          // 同一格错 3 次：自动填入正确字母，变红
-          if (slot._wrongTimer) {
-            clearTimeout(slot._wrongTimer);
+          // 清掉旧的定时器（连续输错时重置计时）
+          if (slot._wrongTimer) clearTimeout(slot._wrongTimer);
+          slot._wrongTimer = setTimeout(() => {
+            // 只有在这一格还没被填对时，才清除错误字母
+            if (slot.dataset.filled !== "true") {
+              slot.textContent = "";
+              slot.removeClass("is-wrong");
+            } else {
+              // 已经被填对了，只清掉抖动类
+              slot.removeClass("is-wrong");
+            }
             slot._wrongTimer = null;
+          }, 600);
+
+          if (wc >= 3) {
+            // 同一格错 3 次：自动填入正确字母，变红
+            if (slot._wrongTimer) {
+              clearTimeout(slot._wrongTimer);
+              slot._wrongTimer = null;
+            }
+            slot.textContent = slot.dataset.answer;
+            slot.dataset.filled = "true";
+            slot.removeClass("is-active", "is-wrong");
+            slot.addClass("is-auto-filled");
+            checkComplete();
+            if (state === "typing") highlightCursor();
           }
-          slot.textContent = expected;
-          slot.dataset.filled = "true";
-          slot.removeClass("is-active", "is-wrong");
-          slot.addClass("is-auto-filled");
-          checkComplete();
-          if (state === "typing") highlightCursor();
         }
       }
     };
@@ -8449,12 +8593,12 @@ class StudyView extends ItemView {
       if (e.altKey) return;
 
       // Esc：退出拼写
-      if (e.key === "Escape") {
-        e.preventDefault();
-        e.stopPropagation();
-        resetSpell();
-        return;
-      }
+      //if (e.key === "Escape") {
+      //  e.preventDefault();
+      //  e.stopPropagation();
+      //  resetSpell();
+      //  return;
+      //}
 
       // Tab：拼写输入失焦
       if (e.key === "Tab") {
@@ -8477,17 +8621,11 @@ class StudyView extends ItemView {
     // 处理中文、日文、韩文等通过输入法提交的字符
     inputEl.addEventListener("input", (e) => {
       if (e.isComposing) return;
-      if (state !== "typing") return;
       const val = inputEl.value.normalize('NFC');
+      inputEl.value = "";          // 清空，避免非 typing 状态下残留字符累积
+      if (state !== "typing") return;
       if (!val) return;
-
-      // 逐字符处理
-      for (const ch of val) {
-        processChar(ch);
-      }
-
-      // 清空输入框，避免累积
-      inputEl.value = "";
+      for (const ch of val) processChar(ch);  // 逐字符处理
     });
 
     // 点击格子区重新聚焦
@@ -8511,6 +8649,9 @@ class StudyView extends ItemView {
       spellErrorCount = 0;
       if (statsEl) statsEl.style.display = "none";
       if (backWord) this._applySpellMask(backWord, card.word);
+
+      // 进入拼写时发音
+      if (this.plugin.settings.study.spellPronounceOnStart) pronounceWord();
     });
 
     // 点击"退出拼写"：完全重置，回到初始态
@@ -9787,6 +9928,38 @@ class StudyView extends ItemView {
       updateMaskVisibility();   // 联动拼写相关设置项的显隐
     });
 
+    // 拼写前发音（仅在启用智能拼写时显示）
+    const pronounceStartSetting = container.createDiv({ cls: "study-setting-item" });
+    pronounceStartSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_pronounce_start") });
+    pronounceStartSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_pronounce_start_desc") });
+    const pronounceStartControl = pronounceStartSetting.createDiv({ cls: "study-setting-control" });
+    const pronounceStartToggle = pronounceStartControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.spellPronounceOnStart) pronounceStartToggle.addClass("is-enabled");
+    pronounceStartToggle.createDiv({ cls: "checkbox-handle" });
+    pronounceStartToggle.addEventListener("click", async () => {
+      const newVal = !settings.spellPronounceOnStart;
+      settings.spellPronounceOnStart = newVal;
+      this.plugin.settings.study.spellPronounceOnStart = newVal;
+      await this.plugin.saveSettings();
+      pronounceStartToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 拼写后发音（仅在启用智能拼写时显示）
+    const pronounceCompleteSetting = container.createDiv({ cls: "study-setting-item" });
+    pronounceCompleteSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_pronounce_complete") });
+    pronounceCompleteSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_pronounce_complete_desc") });
+    const pronounceCompleteControl = pronounceCompleteSetting.createDiv({ cls: "study-setting-control" });
+    const pronounceCompleteToggle = pronounceCompleteControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.spellPronounceOnComplete) pronounceCompleteToggle.addClass("is-enabled");
+    pronounceCompleteToggle.createDiv({ cls: "checkbox-handle" });
+    pronounceCompleteToggle.addEventListener("click", async () => {
+      const newVal = !settings.spellPronounceOnComplete;
+      settings.spellPronounceOnComplete = newVal;
+      this.plugin.settings.study.spellPronounceOnComplete = newVal;
+      await this.plugin.saveSettings();
+      pronounceCompleteToggle.toggleClass("is-enabled", newVal);
+    });
+
     // 拼写遮罩方式（仅在启用智能拼写时显示）
     const maskSetting = container.createDiv({ cls: "study-setting-item" });
     maskSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_mask") });
@@ -9810,6 +9983,22 @@ class StudyView extends ItemView {
     phInput.style.width = "80px";
     phInput.maxLength = 4;
 
+    // 拼错重置方式（仅在启用智能拼写时显示）
+    const errorResetSetting = container.createDiv({ cls: "study-setting-item" });
+    errorResetSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_error_reset") });
+    errorResetSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_error_reset_desc") });
+    const errorResetControl = errorResetSetting.createDiv({ cls: "study-setting-control" });
+    const errorResetSelect = errorResetControl.createEl("select");
+    errorResetSelect.createEl("option", { value: "perChar", text: t("study_settings_spell_error_reset_per_char") });
+    errorResetSelect.createEl("option", { value: "fullReset", text: t("study_settings_spell_error_reset_full") });
+    errorResetSelect.value = settings.spellErrorResetMode || "perChar";
+    errorResetSelect.addEventListener("change", async (e) => {
+      settings.spellErrorResetMode = e.target.value;
+      this.plugin.settings.study.spellErrorResetMode = settings.spellErrorResetMode;
+      await this.plugin.saveSettings();
+    });
+
+
     // 拼写格子占位符字符（智能拼写开启即显示）
     const slotPhSetting = container.createDiv({ cls: "study-setting-item" });
     slotPhSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_slot_placeholder") });
@@ -9820,16 +10009,23 @@ class StudyView extends ItemView {
     slotPhInput.style.width = "80px";
     slotPhInput.maxLength = 4;
 
-    // 联动：控制三个设置项的整块显隐
+    // 联动：控制拼写相关设置项的整块显隐
     updateMaskVisibility = () => {
       const enabled = settings.enableSpellMode;
       const isPlaceholder = maskSelect.value === 'placeholder';
+
+      // 两个发音开关：仅拼写开启时显示
+      pronounceStartSetting.style.display = enabled ? "flex" : "none";
+      pronounceCompleteSetting.style.display = enabled ? "flex" : "none";
 
       // 遮罩方式：仅拼写开启时显示
       maskSetting.style.display = enabled ? "flex" : "none";
 
       // 单词遮罩占位符：仅拼写开启 + 占位符模式时显示
       phSetting.style.display = (enabled && isPlaceholder) ? "flex" : "none";
+
+      // 拼错重置方式：仅拼写开启时显示
+      errorResetSetting.style.display = enabled ? "flex" : "none";
 
       // 拼写格子占位符：仅拼写开启时显示
       slotPhSetting.style.display = enabled ? "flex" : "none";
@@ -12895,6 +13091,7 @@ class WordbookSettingTab extends PluginSettingTab {
     // 服务商映射
     const providerMap = {
       openai: { url: "https://api.openai.com/v1/chat/completions", model: "gpt-3.5-turbo" },
+      anthropic: { url: "https://api.anthropic.com/v1/messages", model: "claude-haiku-4-5" },
       deepseek: { url: "https://api.deepseek.com/v1/chat/completions", model: "deepseek-chat" },
       glm: { url: "https://open.bigmodel.cn/api/paas/v4/chat/completions", model: "glm-4" },
       tongyi: { url: "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions", model: "qwen-turbo" },
@@ -12909,6 +13106,7 @@ class WordbookSettingTab extends PluginSettingTab {
       .addDropdown(drop => {
         const options = {
           openai: t("provider_openai"),
+          anthropic: t("provider_anthropic"),
           deepseek: t("provider_deepseek"),
           glm: t("provider_glm"),
           tongyi: t("provider_tongyi"),
@@ -13319,8 +13517,10 @@ class WordbookSettingTab extends PluginSettingTab {
           .setCta()
           .onClick(async () => {
             const prompt = "Say 'OK' if you can hear me.";
+            const testSystemPrompt = "You are a connection test assistant. Reply with only 'OK' and nothing else.";
             try {
-              const result = await plugin.callAI(prompt);
+              const result = await plugin.callAI(prompt, testSystemPrompt);
+              console.log("[Simple Wordbook] AI test response:", result);
               new Notice(t("settings_ai_test_success", result.slice(0, 50) + "..."));
             } catch (err) {
               new Notice(t("settings_ai_test_fail", err.message));
@@ -15427,7 +15627,7 @@ class SimpleWordbookPlugin extends Plugin {
         }
       }
     });
-    // ===== 打开查词面板 =====
+    // 打开查词面板
     this.addCommand({
       id: "open-lookup-panel",
       name: t("command_open_lookup"),
@@ -15441,18 +15641,27 @@ class SimpleWordbookPlugin extends Plugin {
       }
     });
 
-    // ===== 打开词库管理 =====
+    // 打开词库管理
     this.addCommand({
       id: "open-library",
       name: t("command_open_library"),
       callback: () => this.activateLibrary()
     });
 
-    // ===== 朗读选中的文本 =====
+    // 朗读选中的文本
     this.addCommand({
       id: 'pronounce-selected-text',
       name: t("command_pronounce_selected"),
       callback: () => this.pronounceSelectedText()
+    });
+
+    // 停止朗读
+    this.addCommand({
+      id: "stop-pronunciation",
+      name: t("command_stop_pronunciation"),
+      callback: () => {
+        stopCurrentPlayback();
+      }
     });
 
     this.registerEvent(this.app.workspace.on("editor-menu", (menu, editor) => {
@@ -15537,11 +15746,14 @@ class SimpleWordbookPlugin extends Plugin {
       }
     }));
 
-    // ===== 注册自定义提示词命令 =====
+    // 注册自定义提示词命令
     this.registerPromptCommands();
   }
   
   async onunload() {
+    // 停止正在播放的音频
+    stopCurrentPlayback();
+
     // 1. 先断开所有监听，防止在清除过程中重新添加高亮
     if (this.highlighter) {
       this.highlighter.cleanupPDFListeners?.();
@@ -15566,7 +15778,7 @@ class SimpleWordbookPlugin extends Plugin {
     }
   }
 
-  // ===== 获取 API Key（支持两种模式） =====
+  // ----- 获取 API Key（支持两种模式） -----
   async getApiKeyPlaintext() {
     const api = this.settings.api || { mode: "secret_storage" };
 
@@ -15600,6 +15812,16 @@ class SimpleWordbookPlugin extends Plugin {
     const isOllama = settings.apiProvider === 'ollama' ||
       (url && (url.includes('ollama') || url.includes('localhost:11434')));
 
+    // 判断是否为 Anthropic：Messages API 与 OpenAI 格式不兼容，需单独处理
+    let isAnthropic = settings.apiProvider === 'anthropic';
+    if (!isAnthropic && url) {
+      try {
+        isAnthropic = new URL(url).hostname === 'api.anthropic.com';
+      } catch (e) {
+        // 无效的URL，忽略
+      }
+    }
+
     // 参数校验（Ollama 不需要 API Key）
     if (!url || (!isOllama && !apiKey)) {
       throw new Error(t("api_error_config"));
@@ -15607,23 +15829,55 @@ class SimpleWordbookPlugin extends Plugin {
 
     const headers = {
       "Content-Type": "application/json",
-      // Ollama 不发送 Authorization 头
-      ...(isOllama ? {} : { "Authorization": `Bearer ${apiKey}` })
+      // Ollama 不发送 Authorization 头；
+      // Anthropic 使用 x-api-key 并要求 anthropic-version；
+      // Obsidian 渲染进程属于浏览器环境，Anthropic 默认拒绝浏览器直连，
+      // 必须显式声明该头，否则请求在拿到 HTTP 响应前就被 CORS 拦下，
+      // 表现为「网络连接失败」而不是 401。
+      ...(isOllama
+        ? {}
+        : isAnthropic
+          ? {
+            "x-api-key": apiKey,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true"
+          }
+          : { "Authorization": `Bearer ${apiKey}` })
     };
 
-    // 构建消息体
-    const messages = [];
-    if (systemContent && systemContent.trim()) {
-      messages.push({ role: "system", content: systemContent });
+    // 构建消息体。
+    // OpenAI 兼容格式把 system 放进 messages 数组；
+    // Anthropic Messages API 则要求 system 是顶层字段，
+    let body;
+    if (isAnthropic) {
+      body = {
+        model: model,
+        max_tokens: this.settings.aiMaxTokens ?? 1500,
+        messages: [{ role: "user", content: prompt }]
+      };
+      if (systemContent && systemContent.trim()) {
+        body.system = systemContent;
+      }
+      // 仅在模型接受采样参数时发送 temperature：
+      // Haiku 等模型支持，Opus 5 / Sonnet 5 等新模型会直接返回 400。
+      // 模型名由用户自由填写，故用白名单，未知模型一律省略（失败方向更安全）。
+      if (/haiku|claude-3|claude-2/i.test(model || "")) {
+        body.temperature = this.settings.aiTemperature ?? 0.5;
+      }
+    } else {
+      const messages = [];
+      if (systemContent && systemContent.trim()) {
+        messages.push({ role: "system", content: systemContent });
+      }
+      messages.push({ role: "user", content: prompt });
+
+      body = {
+        model: model,
+        messages: messages,
+        temperature: this.settings.aiTemperature ?? 0.5,
+        max_tokens: this.settings.aiMaxTokens ?? 1500
+      };
     }
-    messages.push({ role: "user", content: prompt });
-
-    const body = {
-      model: model,
-      messages: messages,
-      temperature: this.settings.aiTemperature ?? 0.5,
-      max_tokens: this.settings.aiMaxTokens ?? 1500
-    };
 
     // 发起请求
     let response;
@@ -15663,6 +15917,26 @@ class SimpleWordbookPlugin extends Plugin {
     } catch (parseError) {
       console.error("Parse error:", parseError);
       throw new Error(t("api_error_parse"));
+    }
+
+    // Anthropic：content 是内容块数组，思考块也在其中且 text 为空，
+    // 因此必须筛选 type === "text"，不能直接取 content[0]。
+    // 注意：下方兼容分支中的 data.content 对 Anthropic 是数组而非字符串，
+    // 若不在此提前返回，会把数组当作正文交给上层渲染。
+    if (isAnthropic) {
+      if (data.stop_reason === "refusal") {
+        throw new Error(t("api_error_refusal"));
+      }
+      const text = (Array.isArray(data.content) ? data.content : [])
+        .filter(block => block && block.type === "text")
+        .map(block => block.text || "")
+        .join("")
+        .trim();
+      if (!text) {
+        console.warn("Unexpected Anthropic response format:", data);
+        throw new Error(t("api_error_unexpected"));
+      }
+      return text;
     }
 
     // 兼容多种返回格式（OpenAI 格式 + Ollama 原生格式 + 其他）
@@ -16521,6 +16795,17 @@ class SimpleWordbookPlugin extends Plugin {
       this.settings.study.selectedWordbook = "all";
       needsSave = true;
     }
+
+    // 确保 spellPronounceOnStart 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellPronounceOnStart === undefined) {
+      this.settings.study.spellPronounceOnStart = false;
+      needsSave = true;
+    }
+    // 确保 spellPronounceOnComplete 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellPronounceOnComplete === undefined) {
+      this.settings.study.spellPronounceOnComplete = false;
+      needsSave = true;
+    }
     // 确保 spellMaskMode 字段存在（兼容旧数据）
     if (this.settings.study && this.settings.study.spellMaskMode === undefined) {
       this.settings.study.spellMaskMode = "blur";
@@ -16529,6 +16814,11 @@ class SimpleWordbookPlugin extends Plugin {
     // 确保 spellMaskPlaceholder 字段存在（兼容旧数据）
     if (this.settings.study && this.settings.study.spellMaskPlaceholder === undefined) {
       this.settings.study.spellMaskPlaceholder = "•";
+      needsSave = true;
+    }
+    // 确保 spellErrorResetMode 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellErrorResetMode === undefined) {
+      this.settings.study.spellErrorResetMode = "perChar";
       needsSave = true;
     }
     // 确保 spellSlotPlaceholder 字段存在（兼容旧数据）
