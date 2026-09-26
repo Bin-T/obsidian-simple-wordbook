@@ -1,6 +1,6 @@
 # Simple Wordbook
 
-简体中文 | [English](README.md)
+简体中文 | [English](./README.md)
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/Bin-T/obsidian-simple-wordbook)
 ![Obsidian Compatibility](https://img.shields.io/badge/Obsidian-%3E%3D1.0.0-blue)
