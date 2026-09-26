@@ -212,6 +212,10 @@ const locale = {
     settings_tab_files: "Files",
     settings_tab_general: "General",
     command_open_settings: "Open Settings",
+    settings_debug_title: "Debug",
+    settings_debug_log: "Debug Log",
+    settings_debug_log_desc: "Output runtime logs to the developer console for troubleshooting. Currently used only for AI requests and responses. Logs may contain note content and AI responses; do not share publicly.",
+    notice_debug_enabled: "Debug log enabled. Check the console.",
 
     settings_tab_tts: "TTS",
     tts_pronunciation_general: "General Pronunciation Settings",
@@ -624,6 +628,8 @@ const locale = {
     study_settings_flashcard_tabs_desc: "Display multiple definition sections as tabs on the review card, press number keys 1-9 to switch.",
     study_prep_wordbook: "Wordbook",
     study_prep_all: "All Wordbooks",
+    study_prep_start_face_front: "Front",
+    study_prep_start_face_back: "Back",
     study_prep_total: "Total",
     study_prep_mastered: "Mastered",
     study_prep_ignored: "Ignored",
@@ -703,7 +709,9 @@ const locale = {
     study_settings_spell_pronounce_start: "Pronounce Before Spelling",
     study_settings_spell_pronounce_start_desc: "Read the word aloud before spelling",
     study_settings_spell_pronounce_complete: "Pronounce After Spelling",
-    study_settings_spell_pronounce_complete_desc: "Read the word aloud after spelling",
+    study_settings_spell_pronounce_complete_desc: "Read the word aloud after spelling is complete",
+    study_settings_spell_pronounce_error: "Pronounce on Error",
+    study_settings_spell_pronounce_error_desc: "Read the word aloud when a spelling error occurs",
     study_settings_spell_mask: "Word Mask",
     study_settings_spell_mask_desc: "How the word is hidden on the flashcard back",
     study_spell_mask_blur: "Blur",
@@ -713,14 +721,22 @@ const locale = {
     study_spell_mask_none: "No Mask",
     study_settings_spell_placeholder: "Mask Placeholder",
     study_settings_spell_placeholder_desc: "Character used to replace the word on the flashcard back",
+    study_settings_spell_check_mode: "Spelling Validation",
+    study_settings_spell_check_mode_desc: "How the spelling input is validated",
+    study_spell_check_mode_per_char: "Per character",
+    study_spell_check_mode_full_word: "After complete",
+    study_settings_spell_full_word_reset: "Reset After Validation",
+    study_settings_spell_full_word_reset_desc: "When enabled, all slots are cleared for another try after a failed full-word check.",
     study_settings_spell_error_reset: "Spell Error Reset",
     study_settings_spell_error_reset_desc: "Reset mode on spelling error",
     study_settings_spell_error_reset_per_char: "Reset single slot",
     study_settings_spell_error_reset_full: "Full reset",
+    study_settings_spell_feedback_delay: "Error Feedback Delay",
+    study_settings_spell_feedback_delay_desc: "How long error feedback stays before clearing (ms, 200-2000, default 600)",
     study_settings_slot_placeholder: "Slot Placeholder",
     study_settings_slot_placeholder_desc: "Character shown in empty spell slots during spelling practice (leave empty to hide)",
 
-    github_link_text: `Click to visit <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it`,
+    github_link_text: `Click to visit the <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub project page</a> to download <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Wordbooks</a>, give it a ⭐ if you like it`,
 
     builtin_prompt_default_name: "Default",
     builtin_prompt_default_content: "You are a dictionary assistant. Answer accurately and concisely. Respond in the same language as the user's query.",
@@ -940,6 +956,10 @@ const locale = {
     settings_tab_files: "文件",
     settings_tab_general: "常规",
     command_open_settings: "打开设置",
+    settings_debug_title: "调试",
+    settings_debug_log: "调试日志",
+    settings_debug_log_desc: "在开发者控制台输出运行日志，便于排查问题。目前仅用于输出 AI 请求与响应相关。日志可能包含笔记原文与 AI 返回内容，请勿公开分享。",
+    notice_debug_enabled: "调试日志已开启，可在控制台查看",
 
     settings_tab_tts: "发音",
     tts_pronunciation_general: "通用发音设置",
@@ -1352,6 +1372,8 @@ const locale = {
     study_settings_flashcard_tabs_desc: "在复习卡片上将多段释义显示为标签页形式，按数字键 1-9 快速切换。",
     study_prep_wordbook: "词库",
     study_prep_all: "综合所有词库",
+    study_prep_start_face_front: "正面",
+    study_prep_start_face_back: "背面",
     study_prep_total: "总计",
     study_prep_mastered: "已掌握",
     study_prep_ignored: "已忽略",
@@ -1431,7 +1453,9 @@ const locale = {
     study_settings_spell_pronounce_start: "拼写前发音",
     study_settings_spell_pronounce_start_desc: "在拼写前朗读该单词",
     study_settings_spell_pronounce_complete: "拼写后发音",
-    study_settings_spell_pronounce_complete_desc: "在拼写后朗读该单词",
+    study_settings_spell_pronounce_complete_desc: "在拼写完成后朗读该单词",
+    study_settings_spell_pronounce_error: "拼错时发音",
+    study_settings_spell_pronounce_error_desc: "在拼错时朗读该单词",
     study_settings_spell_mask: "单词遮罩",
     study_settings_spell_mask_desc: "闪卡背面单词的隐藏方式",
     study_spell_mask_blur: "模糊",
@@ -1441,14 +1465,22 @@ const locale = {
     study_spell_mask_none: "无遮罩",
     study_settings_spell_placeholder: "单词遮罩占位符",
     study_settings_spell_placeholder_desc: "用于替换闪卡背面单词的字符",
+    study_settings_spell_check_mode: "拼写校验方式",
+    study_settings_spell_check_mode_desc: "拼写输入的校验方式",
+    study_spell_check_mode_per_char: "逐格校验",
+    study_spell_check_mode_full_word: "全拼完校验",
+    study_settings_spell_full_word_reset: "校验后重置",
+    study_settings_spell_full_word_reset_desc: "开启后，全拼完校验失败后自动清空重拼。",
     study_settings_spell_error_reset: "拼错重置",
     study_settings_spell_error_reset_desc: "拼错后的重置方式",
     study_settings_spell_error_reset_per_char: "单格重置",
     study_settings_spell_error_reset_full: "全部重置",
+    study_settings_spell_feedback_delay: "拼错反馈延迟",
+    study_settings_spell_feedback_delay_desc: "拼错/校验后，错误展示停留多久再消失（毫秒，200-2000，默认 600）",
     study_settings_slot_placeholder: "拼写格子占位符",
     study_settings_slot_placeholder_desc: "拼写练习时空白格子显示的字符（留空则不显示）",
 
-    github_link_text: `点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">Github</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐`,
+    github_link_text: `点击进入 <a href="https://github.com/Bin-T/obsidian-simple-wordbook" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">GitHub 项目主页</a> 下载 <a href="https://github.com/Bin-T/obsidian-simple-wordbook/tree/main/wordbooks" target="_blank" rel="noopener noreferrer" class="github-link" style="color: var(--text-accent); text-decoration: none;">单词本</a>，喜欢给项目点个 ⭐`,
 
     builtin_prompt_default_name: "默认",
     builtin_prompt_default_content: "你是一位词典助手。请准确简洁地回答。使用与用户提问相同的语言回复。",
@@ -1637,6 +1669,7 @@ const DEFAULT_SETTINGS = {
   masteryMode: "global",  // 可选 "per-source" 或 "global"
   masteryFilePath: "",
   ignoredFilePath: "",
+
   pluginLanguage: "auto",
   enableHighlight: true,
   enableHoverPreview: true,
@@ -1661,6 +1694,7 @@ const DEFAULT_SETTINGS = {
   enterMode: "local_only",  // 可选 "local_only", "ai_only", "local_first"
   localSearchMode: "smart",    // "smart", "exact", "prefix", "contains", "fuzzy"
   maxLocalResults: 10,         // 默认改为10
+  enableDebugLog: false,
 
   languages: BUILTIN_LANGUAGES,
   defaultLanguage: "en",      // 默认发音语言（卡片无 lang 时回退）
@@ -1715,12 +1749,17 @@ const DEFAULT_SETTINGS = {
     enableSpellMode: false,
     spellPronounceOnStart: false,
     spellPronounceOnComplete: false,
+    spellPronounceOnError: false,
     spellMaskMode: "blur",
     spellMaskPlaceholder: "•",
+    spellCheckMode: "perChar",      // "perChar"（逐格校验）| "fullWord"（全拼完校验）
+    spellFullWordReset: true,
     spellErrorResetMode: "perChar",
+    spellFeedbackDelay: 600,
     spellSlotPlaceholder: "",
     intervalDays: [1, 2, 4, 8, 16],
     selectedWordbook: "all",
+    startFace: "front",
   },
 
   // ---- 学习算法参数 ----
@@ -7473,6 +7512,30 @@ class StudyView extends ItemView {
       this.renderPreparation(this.contentEl);
     });
 
+    // 起始面选择行（正面 / 背面）
+    const faceRow = container.createDiv({ cls: "study-prep-face-row" });
+    const currentFace = this.plugin.settings.study.startFace || "front";
+
+    const faceOptions = [
+      { value: "front", label: t("study_prep_start_face_front") },
+      { value: "back", label: t("study_prep_start_face_back") }
+    ];
+
+    for (const opt of faceOptions) {
+      const label = faceRow.createEl("label", { cls: "study-prep-face-option" });
+      const radio = label.createEl("input", { type: "radio" });
+      radio.name = "study-start-face";
+      radio.value = opt.value;
+      if (currentFace === opt.value) radio.checked = true;
+      label.createSpan({ text: opt.label });
+
+      radio.addEventListener("change", async () => {
+        if (!radio.checked) return;
+        this.plugin.settings.study.startFace = opt.value;
+        await this.plugin.saveSettings();
+      });
+    }
+
     // 获取卡片数据并统计
     const filteredCards = this.getFilteredCards();
     const total = filteredCards.length;
@@ -7747,9 +7810,12 @@ class StudyView extends ItemView {
     const sourceName = card.sourceFile.split('/').pop();
     const sourceEl = cardEl.createDiv({ cls: 'study-card-source', text: sourceName });
 
+    // 起始面是否为背面
+    const startBack = this.plugin.settings.study.startFace === "back";
+
     // 正面（单词）
     const front = cardEl.createDiv({ cls: "study-card-front" });
-    front.style.display = "flex";   // 明确显示
+    front.style.display = startBack ? "none" : "flex";
 
     const frontWord = front.createSpan({ cls: "study-card-word library-word", text: card.word });
     frontWord.setAttribute("title", "Alt + P");
@@ -7783,7 +7849,7 @@ class StudyView extends ItemView {
 
     // 背面（释义）
     const back = cardEl.createDiv({ cls: "study-card-back" });
-    back.style.display = "none"; // 初始隐藏
+    back.style.display = startBack ? "block" : "none";
 
     // ---- 背面顶部：单词 + 音标 ----
     const backTop = back.createDiv({ cls: "study-card-back-top" });
@@ -7990,15 +8056,19 @@ class StudyView extends ItemView {
       this.spellBarEl = null;
       this._spellReset = null;
     }
+    // 若起始面为背面，同步显示拼写区
+    if (startBack && this.spellBarEl) {
+      this.spellBarEl.style.display = "flex";
+    }
 
     // 保存引用
     this.cardContainer = cardEl;
     this.progressEl = progress;
-    this.isFlipped = false;
+    this.isFlipped = startBack;
 
-    // 自动翻转
+    // 自动翻转（起始面已是背面时无意义，跳过）
     const autoFlip = this.plugin.settings.study.flashcardAutoFlip || 0;
-    if (autoFlip > 0) {
+    if (autoFlip > 0 && !startBack) {
       this._autoFlipTimer = setTimeout(() => {
         if (!this.isFlipped) this.toggleCardFlip();
       }, autoFlip * 1000);
@@ -8269,6 +8339,19 @@ class StudyView extends ItemView {
       );
     };
 
+    // 拼错发音辅助
+    const pronounceError = () => {
+      if (!this.plugin.settings.study.spellPronounceOnError) return;
+      pronounceWord();
+    };
+
+    // 读取拼写校验模式配置
+    const checkMode = this.plugin.settings.study.spellCheckMode || "perChar";
+    const isFullWordMode = checkMode === "fullWord";   // 是否为全拼完校验模式
+    const fullWordReset = this.plugin.settings.study.spellFullWordReset !== false;  // 全拼完校验失败后是否重置
+    const feedbackDelay = this.plugin.settings.study.spellFeedbackDelay ?? 600;    // 拼错展示反馈延迟（ms）
+
+    // 状态变量
     let state = "idle";   // 状态：idle（未开始）| typing（拼写中）| resetting（拼错重置，临时锁定输入）| done（完成）
     let spellStartTime = 0;   // 首次进入拼写时的时间戳（毫秒）
     let spellErrorCount = 0;  // 累计错误次数
@@ -8372,8 +8455,9 @@ class StudyView extends ItemView {
       if (idx !== -1) slots[idx].addClass("is-active");
     };
 
-    const checkComplete = () => {
-      if (findNext() !== -1) return;
+    // 进入完成界面（供逐格校验 / 全拼完校验两种模式复用）
+    // skipPronounce: 为 true 时跳过"拼写后发音"（避免与 全拼完校验 + 校验后不重置 时刚触发的"拼错音"叠读）
+    const finishSpell = (skipPronounce = false) => {
       state = "done";
       // 移除光标闪烁
       slots.forEach(s => s.removeClass("is-active"));
@@ -8382,8 +8466,8 @@ class StudyView extends ItemView {
       // 拼完恢复单词显示
       if (backWord) this._removeSpellMask(backWord, card.word);
 
-      // 拼写完成后发音
-      if (this.plugin.settings.study.spellPronounceOnComplete) pronounceWord();
+      // 拼写完成后发音（全拼完校验 + 校验后不重置时，拼错和完成场景下都会发音，用 skipPronounce 跳过，避免叠读）
+      if (!skipPronounce && this.plugin.settings.study.spellPronounceOnComplete) pronounceWord();
 
       // 隐藏退出/显示答案按钮
       exitBtn.style.display = "none";
@@ -8399,6 +8483,66 @@ class StudyView extends ItemView {
         statsEl.textContent = `⏱ ${elapsed}s · ✗ ${spellErrorCount}`;
         statsEl.style.display = "block";
       }
+    };
+
+    const checkComplete = () => {
+      if (findNext() !== -1) return;
+
+      // ----- 全拼完校验模式 -----
+      if (isFullWordMode) {
+        // 统一校验所有字母格
+        let allCorrect = true;
+        for (const s of slots) {
+          if (s.dataset.isLetter === "true") {
+            s.removeClass("is-revealed");   // 清掉答案提示，避免与用户输入叠加
+            const filledChar = (s.textContent || "").toLowerCase();
+            if (filledChar === s.dataset.expected) {
+              s.addClass("is-complete");
+            } else {
+              s.addClass("is-wrong");
+              allCorrect = false;
+            }
+          }
+        }
+
+        // 校验失败：计入一次错误 + 触发拼错发音
+        if (!allCorrect) {
+          spellErrorCount++;
+          pronounceError();
+        }
+
+        // 全部正确，或校验失败但不需要自动重置 → 直接进入完成界面
+        // 拼错时跳过"拼写后发音"，避免叠读
+        if (allCorrect || !fullWordReset) {
+          finishSpell(!allCorrect);
+          return;
+        }
+
+        // 校验失败 + 需要自动重置 → 短暂展示红绿结果后，全部重置
+        state = "resetting";   // 锁定输入，避免用户继续敲键盘
+        if (statsEl) {
+          const elapsed = spellStartTime > 0
+            ? ((Date.now() - spellStartTime) / 1000).toFixed(1)
+            : "0.0";
+          statsEl.textContent = `⏱ ${elapsed}s · ✗ ${spellErrorCount}`;
+          statsEl.style.display = "block";
+        }
+        setTimeout(() => {
+          if (state !== "resetting") return;   // 期间用户已退出/重拼
+          resetSlotsOnly();
+          state = "typing";
+          revealActive = false;
+          inputEl.value = "";
+          inputEl.focus();
+          revealBtn.textContent = t("spell_reveal_btn");
+          if (backWord) this._applySpellMask(backWord, card.word);
+          highlightCursor();
+        }, feedbackDelay);
+        return;
+      }
+
+      // ----- 逐格校验模式拼完后直接走 finishSpell -----
+      finishSpell();
     };
 
     // 重置格子
@@ -8501,6 +8645,24 @@ class StudyView extends ItemView {
       if (idx === -1) return;
 
       const slot = slots[idx];
+
+      // ----- 全拼完校验模式：只填入，不做任何判定 ------
+      if (isFullWordMode) {
+        if (slot._wrongTimer) {
+          clearTimeout(slot._wrongTimer);
+          slot._wrongTimer = null;
+        }
+        // 只填入字符，不加任何红/绿标记，等全部填满后统一校验
+        slot.textContent = rawChar;
+        slot.dataset.filled = "true";
+        // 清掉旧状态类，避免样式残留
+        slot.removeClass("is-wrong", "is-complete", "is-revealed");
+        checkComplete();
+        if (state === "typing") highlightCursor();
+        return;
+      }
+
+      // ----- 逐格校验模式 -----
       const expected = slot.dataset.expected;
 
       if (ch === expected) {
@@ -8521,6 +8683,9 @@ class StudyView extends ItemView {
         // 累计错误次数
         spellErrorCount++;
 
+        // 触发拼错发音
+        pronounceError();
+
         if (isFullReset) {
           // ----- 拼写全部重置 -----
           slot.textContent = rawChar;
@@ -8539,7 +8704,7 @@ class StudyView extends ItemView {
             }
             state = "typing";
             highlightCursor();
-          }, 600);
+          }, feedbackDelay);
         } else {
           // ----- 拼写单格重置 -----
           // 拼错：计数 +1，抖动，显示错误字母 1 秒后清除
@@ -8565,7 +8730,7 @@ class StudyView extends ItemView {
               slot.removeClass("is-wrong");
             }
             slot._wrongTimer = null;
-          }, 600);
+          }, feedbackDelay);
 
           if (wc >= 3) {
             // 同一格错 3 次：自动填入正确字母，变红
@@ -8599,6 +8764,34 @@ class StudyView extends ItemView {
       //  resetSpell();
       //  return;
       //}
+
+      // 退格 Backspace 在全拼完模式下可删除回退一格
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!isFullWordMode) return;   // 仅全拼完模式下支持删除回退
+        if (state !== "typing") return;
+
+        // 从后往前找最后一个已填的字母格，清空它
+        for (let i = slots.length - 1; i >= 0; i--) {
+          const s = slots[i];
+          if (s.dataset.isLetter === "true" && s.dataset.filled === "true") {
+            s.textContent = "";
+            s.dataset.filled = "false";
+            s.removeClass("is-complete", "is-wrong", "is-active", "is-revealed");
+            highlightCursor();
+            break;
+          }
+        }
+        return;
+      }
+
+      // Delete：直接吞掉，不做处理
+      if (e.key === "Delete") {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
 
       // Tab：拼写输入失焦
       if (e.key === "Tab") {
@@ -9960,6 +10153,22 @@ class StudyView extends ItemView {
       pronounceCompleteToggle.toggleClass("is-enabled", newVal);
     });
 
+    // 拼错时发音（仅在启用智能拼写时显示）
+    const pronounceErrorSetting = container.createDiv({ cls: "study-setting-item" });
+    pronounceErrorSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_pronounce_error") });
+    pronounceErrorSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_pronounce_error_desc") });
+    const pronounceErrorControl = pronounceErrorSetting.createDiv({ cls: "study-setting-control" });
+    const pronounceErrorToggle = pronounceErrorControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.spellPronounceOnError) pronounceErrorToggle.addClass("is-enabled");
+    pronounceErrorToggle.createDiv({ cls: "checkbox-handle" });
+    pronounceErrorToggle.addEventListener("click", async () => {
+      const newVal = !settings.spellPronounceOnError;
+      settings.spellPronounceOnError = newVal;
+      this.plugin.settings.study.spellPronounceOnError = newVal;
+      await this.plugin.saveSettings();
+      pronounceErrorToggle.toggleClass("is-enabled", newVal);
+    });
+
     // 拼写遮罩方式（仅在启用智能拼写时显示）
     const maskSetting = container.createDiv({ cls: "study-setting-item" });
     maskSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_mask") });
@@ -9983,7 +10192,24 @@ class StudyView extends ItemView {
     phInput.style.width = "80px";
     phInput.maxLength = 4;
 
-    // 拼错重置方式（仅在启用智能拼写时显示）
+    // 拼写校验方式（仅在启用智能拼写时显示）
+    const checkModeSetting = container.createDiv({ cls: "study-setting-item" });
+    checkModeSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_check_mode") });
+    checkModeSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_check_mode_desc") });
+    const checkModeControl = checkModeSetting.createDiv({ cls: "study-setting-control" });
+    const checkModeSelect = checkModeControl.createEl("select");
+    checkModeSelect.createEl("option", { value: "perChar", text: t("study_spell_check_mode_per_char") });
+    checkModeSelect.createEl("option", { value: "fullWord", text: t("study_spell_check_mode_full_word") });
+    checkModeSelect.value = settings.spellCheckMode || "perChar";
+    // 校验方式切换
+    checkModeSelect.addEventListener("change", async (e) => {
+      settings.spellCheckMode = e.target.value;
+      this.plugin.settings.study.spellCheckMode = settings.spellCheckMode;
+      await this.plugin.saveSettings();
+      updateMaskVisibility();   // 切换后刷新「拼错重置」/「校验后重置」的显隐
+    });
+
+    // 逐格校验：拼错重置方式（仅在启用智能拼写且逐格校验模式下显示）
     const errorResetSetting = container.createDiv({ cls: "study-setting-item" });
     errorResetSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_error_reset") });
     errorResetSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_error_reset_desc") });
@@ -9998,6 +10224,59 @@ class StudyView extends ItemView {
       await this.plugin.saveSettings();
     });
 
+    // 全拼完校验：校验后是否重置（开关，仅在启用智能拼写且全拼完模式显示）
+    const fullWordResetSetting = container.createDiv({ cls: "study-setting-item" });
+    fullWordResetSetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_full_word_reset") });
+    fullWordResetSetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_full_word_reset_desc") });
+    const fullWordResetControl = fullWordResetSetting.createDiv({ cls: "study-setting-control" });
+    const fullWordResetToggle = fullWordResetControl.createDiv({ cls: "checkbox-container2" });
+    if (settings.spellFullWordReset !== false) fullWordResetToggle.addClass("is-enabled");
+    fullWordResetToggle.createDiv({ cls: "checkbox-handle" });
+    fullWordResetToggle.addEventListener("click", async () => {
+      const newVal = settings.spellFullWordReset === false;
+      settings.spellFullWordReset = newVal;
+      this.plugin.settings.study.spellFullWordReset = newVal;
+      await this.plugin.saveSettings();
+      fullWordResetToggle.toggleClass("is-enabled", newVal);
+    });
+
+    // 拼写反馈延迟（仅在启用智能拼写时显示）
+    const feedbackDelaySetting = container.createDiv({ cls: "study-setting-item" });
+    feedbackDelaySetting.createDiv({ cls: "study-setting-label", text: t("study_settings_spell_feedback_delay") });
+    feedbackDelaySetting.createDiv({ cls: "study-setting-desc", text: t("study_settings_spell_feedback_delay_desc") });
+    const feedbackDelayControl = feedbackDelaySetting.createDiv({ cls: "study-setting-control" });
+    const feedbackDelayInput = feedbackDelayControl.createEl("input", { type: "number" });
+    feedbackDelayInput.value = settings.spellFeedbackDelay ?? 600;
+    feedbackDelayInput.min = 200;
+    feedbackDelayInput.max = 2000;
+    feedbackDelayInput.step = 100;
+    feedbackDelayInput.style.width = "80px";
+
+    let lastValidFeedbackDelay = settings.spellFeedbackDelay ?? 600;
+
+    const validateFeedbackDelay = async () => {
+      let val = parseInt(feedbackDelayInput.value);
+
+      // 非法值或超出范围 → 回退到上次有效值
+      if (isNaN(val) || val < 200 || val > 2000) {
+        feedbackDelayInput.value = String(lastValidFeedbackDelay);
+        return;
+      }
+
+      settings.spellFeedbackDelay = val;
+      this.plugin.settings.study.spellFeedbackDelay = val;
+      lastValidFeedbackDelay = val;
+      feedbackDelayInput.value = String(val);
+      await this.plugin.saveSettings();
+    };
+
+    feedbackDelayInput.addEventListener("blur", validateFeedbackDelay);
+    feedbackDelayInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        feedbackDelayInput.blur();
+      }
+    });
 
     // 拼写格子占位符字符（智能拼写开启即显示）
     const slotPhSetting = container.createDiv({ cls: "study-setting-item" });
@@ -10013,10 +10292,12 @@ class StudyView extends ItemView {
     updateMaskVisibility = () => {
       const enabled = settings.enableSpellMode;
       const isPlaceholder = maskSelect.value === 'placeholder';
+      const isFullWordMode = checkModeSelect.value === 'fullWord';  // 是否全拼完校验模式
 
-      // 两个发音开关：仅拼写开启时显示
+      // 三个发音开关：仅拼写开启时显示
       pronounceStartSetting.style.display = enabled ? "flex" : "none";
       pronounceCompleteSetting.style.display = enabled ? "flex" : "none";
+      pronounceErrorSetting.style.display = enabled ? "flex" : "none";
 
       // 遮罩方式：仅拼写开启时显示
       maskSetting.style.display = enabled ? "flex" : "none";
@@ -10024,8 +10305,17 @@ class StudyView extends ItemView {
       // 单词遮罩占位符：仅拼写开启 + 占位符模式时显示
       phSetting.style.display = (enabled && isPlaceholder) ? "flex" : "none";
 
-      // 拼错重置方式：仅拼写开启时显示
-      errorResetSetting.style.display = enabled ? "flex" : "none";
+      // 校验方式：仅拼写开启时显示
+      checkModeSetting.style.display = enabled ? "flex" : "none";
+
+      // 「校验后重置」开关：仅拼写开启 + 全拼完校验模式时显示
+      fullWordResetSetting.style.display = (enabled && isFullWordMode) ? "flex" : "none";
+
+      // 「拼错重置」：仅拼写开启 + 逐格校验模式时显示
+      errorResetSetting.style.display = (enabled && !isFullWordMode) ? "flex" : "none";
+
+      // 拼写反馈延迟：仅拼写开启时显示
+      feedbackDelaySetting.style.display = enabled ? "flex" : "none";
 
       // 拼写格子占位符：仅拼写开启时显示
       slotPhSetting.style.display = enabled ? "flex" : "none";
@@ -12422,6 +12712,24 @@ class WordbookSettingTab extends PluginSettingTab {
 
         return text;
       });
+
+    // ===== 调试 =====
+    container.createEl("h3", { text: t("settings_debug_title") });
+
+    new Setting(container)
+      .setName(t("settings_debug_log"))
+      .setDesc(t("settings_debug_log_desc"))
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.settings.enableDebugLog)
+        .onChange(async (val) => {
+          this.plugin.settings.enableDebugLog = val;
+          await this.plugin.saveSettings();
+          if (val) {
+            this.plugin.debugLog("Settings", "debug log enabled");
+            new Notice(t("notice_debug_enabled"));
+          }
+        })
+      );
   }
 
   buildTtsTab(container) {
@@ -13516,11 +13824,12 @@ class WordbookSettingTab extends PluginSettingTab {
         btn.setButtonText(t("settings_ai_test_button"))
           .setCta()
           .onClick(async () => {
+            plugin.debugLog("AI", "test connection clicked");
             const prompt = "Say 'OK' if you can hear me.";
             const testSystemPrompt = "You are a connection test assistant. Reply with only 'OK' and nothing else.";
             try {
               const result = await plugin.callAI(prompt, testSystemPrompt);
-              console.log("[Simple Wordbook] AI test response:", result);
+              //console.log("[Simple Wordbook] AI test response:", result);
               new Notice(t("settings_ai_test_success", result.slice(0, 50) + "..."));
             } catch (err) {
               new Notice(t("settings_ai_test_fail", err.message));
@@ -15491,6 +15800,12 @@ class WordCopyMenu {
 
 // ========== 主插件类 ==========
 class SimpleWordbookPlugin extends Plugin {
+  // ----- 调试日志 -----
+  debugLog(module, ...args) {
+    if (!this.settings.enableDebugLog) return;
+    console.log(`[Simple Wordbook][${module}]`, ...args);
+  }
+
   async onload() {
     await this.loadSettings();
 
@@ -15781,23 +16096,36 @@ class SimpleWordbookPlugin extends Plugin {
   // ----- 获取 API Key（支持两种模式） -----
   async getApiKeyPlaintext() {
     const api = this.settings.api || { mode: "secret_storage" };
+    this.debugLog("AI", "getApiKeyPlaintext: mode=", api.mode);
 
     if (api.mode === "secret_storage") {
       const name = api.secretName || "";
-      if (!name) return "";
+      if (!name) {
+        this.debugLog("AI", "getApiKeyPlaintext: secretName empty");
+        return "";
+      }
       try {
-        return await this.app.secretStorage.getSecret(name) || "";
-      } catch {
+        const val = await this.app.secretStorage.getSecret(name) || "";
+        this.debugLog("AI", "getApiKeyPlaintext: secret_storage got=", !!val, "length=", val.length);
+        return val;
+      } catch (e) {
+        this.debugLog("AI", "getApiKeyPlaintext: secret_storage read failed", e);
         return "";
       }
     }
 
     if (api.mode === "local_encrypted") {
       const encrypted = api.encryptedData;
-      if (!encrypted || !encrypted.ciphertext) return "";
-      return await decryptApiKey(this.app, encrypted.ciphertext, encrypted.salt || "");
+      if (!encrypted || !encrypted.ciphertext) {
+        this.debugLog("AI", "getApiKeyPlaintext: encryptedData empty");
+        return "";
+      }
+      const val = await decryptApiKey(this.app, encrypted.ciphertext, encrypted.salt || "");
+      this.debugLog("AI", "getApiKeyPlaintext: local_encrypted got=", !!val, "length=", val.length);
+      return val;
     }
 
+    this.debugLog("AI", "getApiKeyPlaintext: unknown mode=", api.mode);
     return "";
   }
 
@@ -15807,6 +16135,8 @@ class SimpleWordbookPlugin extends Plugin {
     const url = settings.apiBaseUrl;
     const apiKey = await this.getApiKeyPlaintext();
     const model = settings.apiModel;
+    this.debugLog("AI", "callAI: provider=", settings.apiProvider, "url=", url, "model=", model,
+      "hasSystem=", !!systemContent, "promptLen=", prompt?.length);
 
     // 判断是否为 Ollama（根据 URL 或 provider） 
     const isOllama = settings.apiProvider === 'ollama' ||
@@ -15879,6 +16209,8 @@ class SimpleWordbookPlugin extends Plugin {
       };
     }
 
+    this.debugLog("AI", "request body =", JSON.stringify(body, null, 2));
+
     // 发起请求
     let response;
     try {
@@ -15891,6 +16223,7 @@ class SimpleWordbookPlugin extends Plugin {
       });
     } catch (networkError) {
       if (networkError.name === 'AbortError') {
+        this.debugLog("AI", "fetch aborted");
         throw new Error('Aborted');   // 用于上层识别中断
       }
       // 网络层错误（DNS 解析失败、连接拒绝、超时等）
@@ -15906,6 +16239,7 @@ class SimpleWordbookPlugin extends Plugin {
       } catch (e) {
         errorText = "";
       }
+      this.debugLog("AI", "http error: status=", response.status, "body=", errorText);
       // 支持参数插值
       throw new Error(t("api_error_http", response.status, errorText));
     }
@@ -15914,6 +16248,7 @@ class SimpleWordbookPlugin extends Plugin {
     let data;
     try {
       data = await response.json();
+      this.debugLog("AI", "response raw =", JSON.stringify(data, null, 2));
     } catch (parseError) {
       console.error("Parse error:", parseError);
       throw new Error(t("api_error_parse"));
@@ -15924,6 +16259,7 @@ class SimpleWordbookPlugin extends Plugin {
     // 注意：下方兼容分支中的 data.content 对 Anthropic 是数组而非字符串，
     // 若不在此提前返回，会把数组当作正文交给上层渲染。
     if (isAnthropic) {
+      this.debugLog("AI", "anthropic blocks =", JSON.stringify(data.content));
       if (data.stop_reason === "refusal") {
         throw new Error(t("api_error_refusal"));
       }
@@ -16780,6 +17116,11 @@ class SimpleWordbookPlugin extends Plugin {
       this.settings.pluginLanguage = "auto";
     }
 
+    // 确保调试日志设置有默认值
+    if (this.settings.enableDebugLog === undefined) {
+      this.settings.enableDebugLog = false;
+    }
+
     // 确保 studyParams 存在
     if (!this.settings.studyParams) {
       this.settings.studyParams = JSON.parse(JSON.stringify(DEFAULT_SETTINGS.studyParams));
@@ -16795,6 +17136,11 @@ class SimpleWordbookPlugin extends Plugin {
       this.settings.study.selectedWordbook = "all";
       needsSave = true;
     }
+    // 确保 startFace 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.startFace === undefined) {
+      this.settings.study.startFace = "front";
+      needsSave = true;
+    }
 
     // 确保 spellPronounceOnStart 字段存在（兼容旧数据）
     if (this.settings.study && this.settings.study.spellPronounceOnStart === undefined) {
@@ -16804,6 +17150,11 @@ class SimpleWordbookPlugin extends Plugin {
     // 确保 spellPronounceOnComplete 字段存在（兼容旧数据）
     if (this.settings.study && this.settings.study.spellPronounceOnComplete === undefined) {
       this.settings.study.spellPronounceOnComplete = false;
+      needsSave = true;
+    }
+    // 确保 spellPronounceOnError 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellPronounceOnError === undefined) {
+      this.settings.study.spellPronounceOnError = false;
       needsSave = true;
     }
     // 确保 spellMaskMode 字段存在（兼容旧数据）
@@ -16816,9 +17167,24 @@ class SimpleWordbookPlugin extends Plugin {
       this.settings.study.spellMaskPlaceholder = "•";
       needsSave = true;
     }
+    // 确保 spellCheckMode 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellCheckMode === undefined) {
+      this.settings.study.spellCheckMode = "perChar";
+      needsSave = true;
+    }
+    // 确保 spellFullWordReset 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellFullWordReset === undefined) {
+      this.settings.study.spellFullWordReset = true;
+      needsSave = true;
+    }
     // 确保 spellErrorResetMode 字段存在（兼容旧数据）
     if (this.settings.study && this.settings.study.spellErrorResetMode === undefined) {
       this.settings.study.spellErrorResetMode = "perChar";
+      needsSave = true;
+    }
+    // 确保 spellFeedbackDelay 字段存在（兼容旧数据）
+    if (this.settings.study && this.settings.study.spellFeedbackDelay === undefined) {
+      this.settings.study.spellFeedbackDelay = 600;
       needsSave = true;
     }
     // 确保 spellSlotPlaceholder 字段存在（兼容旧数据）

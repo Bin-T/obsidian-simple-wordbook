@@ -1,9 +1,9 @@
 {
   "id": "simple-wordbook",
   "name": "Simple Wordbook",
-  "version": "1.7.5",
+  "version": "1.7.6",
   "minAppVersion": "1.0.0",
-  "description": "Highlight words/phrases in notes & PDFs, with learning tracker.",
+  "description": "Highlight words/phrases in notes & PDFs, turning reading into vocabulary learning. Comes with a study tracker.",
   "author": "Bryn",
   "isDesktopOnly": false
 }

@@ -506,16 +506,16 @@ A:
 
 ```text
 **Definition**
-give up, forsake; abandon
+give up, forsake
 
 ---
 
-**Common Examples**
+**Examples**
 He abandoned his car in the snow.
 
 ---
 
-**Related Phrases**
+**Phrases**
 abandon hope
 ```
 

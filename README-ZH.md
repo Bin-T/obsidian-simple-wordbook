@@ -509,13 +509,13 @@ A:
 
 ---
 
-**常用例句**
+**例句**
 He abandoned his car in the snow.
 他在雪地里丢弃了他的车。
 
 ---
 
-**相关短语**
+**短语**
 abandon hope 放弃希望
 ```
 
