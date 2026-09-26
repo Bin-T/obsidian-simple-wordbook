@@ -15,7 +15,7 @@
 ## 📖 Overview
 
 **Simple Wordbook** is a word/phrase highlighting and learning management plugin for [Obsidian](https://obsidian.md/).  
-It automatically highlights words from your custom wordbooks in your notes, and provides a complete learning toolkit including a sidebar, lookup panel, library management, study center, mastery tracking, AI-assisted lookup, TTS pronunciation, and import/export.
+It automatically highlights words from your custom wordbooks in your notes, and provides a complete learning toolkit including a sidebar, lookup panel, library management, study center, mastery tracking, AI-assisted lookup, TTS pronunciation, and import/export, helping you turn everyday reading into continuous vocabulary learning.
 
 ---
 
@@ -122,6 +122,8 @@ You can also download ready-made wordbooks from the [wordbook repository](https:
 - Switch prompts via the **"Prompt"** dropdown.
 - Click **"Save Word"** to save the result into your wordbook.
 - Local lookup result cards also support right-click **Edit**, **Delete**, and **Export as Markdown**.
+- Local lookup results show match type labels, such as Exact, Prefix, Contains, Fuzzy, Alias, etc.
+- During AI lookup, you can click **"Abort"** to cancel the pending request.
 
 #### Enter Mode
 
@@ -169,19 +171,20 @@ In **Settings → General → Lookup Panel → Max Results**, set the maximum nu
 
 #### Review Tab
 
-- Choose a wordbook → view stats → click **"Let's do this! 💪"** to start reviewing.
+- Choose a wordbook → choose the starting face (Front / Back) → view stats → click **"Let's do this! 💪"** to start reviewing.
+- Before starting, it shows: Total, Mastered, Ignored, Learning counts.
 - Card front: word, phonetic; double-click or press Space to flip.
 - Card back: definition (supports multiple tabs, switch with number keys 1–9).
 - Feedback buttons:
-  - 2-button mode: **Forget (←) / Remember (→)**
-  - 4-button mode: **Forget (←) / Hard (↓) / Good (→) / Easy (↑)**
+	- 2-button mode: **Forget (←) / Remember (→)**
+	- 4-button mode: **Forget (←) / Hard (↓) / Good (→) / Easy (↑)**
 - Other shortcuts:
-  - `B`: bookmark / unbookmark (requires "Bookmark for Review" enabled)
-  - `Alt + P`: pronounce the word
-  - `Ctrl + ←/→`: previous / next
-  - `R`: review bookmarked words together
-  - `A`: one more round
-  - `Q`: back to preparation
+	- `B`: bookmark / unbookmark (requires "Bookmark for Review" enabled)
+	- `Alt + P`: pronounce the word
+	- `Ctrl + ←/→`: previous / next
+	- `R`: review bookmarked words together
+	- `A`: one more round
+	- `Q`: back to preparation
 
 ##### Smart Spell Check
 
@@ -191,10 +194,17 @@ When enabled, spell buttons appear on the card back:
 - **"Show Answer / Hide Answer"**: show a translucent hint; press `Alt + A` to toggle quickly.
 - **"Exit Spelling"**: press `Alt + E` to exit quickly.
 - **"Spell again (S)"**: restart in place after finishing a round.
-- Wrong letters shake the slot; 3 wrong attempts auto-fill the correct letter in red.
+- Press `Tab` during spelling to focus / blur the spelling input.
+- After finishing, the elapsed time and error count for the round are displayed.
+- Supports two validation modes:
+	- **Per-character**: validate each slot immediately as you type; on error you can choose single-slot reset or full reset.
+		- **Single-slot reset**: clear only the current wrong slot; after 3 wrong attempts in the same slot, the correct letter is auto-filled and marked in red.
+		- **Full reset**: clear all filled slots and start over.
+	- **Full-word**: validate all slots after the whole word is filled; optionally auto-clear and retry on failure.
+- Supports custom error feedback delay (200–2000 ms, default 600 ms).
 - Supports multiple word masks: Blur / Hidden / Transparent / Placeholder / No Mask.
-- Supports auto pronunciation before / after spelling.
-- Supports custom error reset mode (per-slot / full reset) and slot placeholder.
+- Supports custom word mask placeholder and spelling slot placeholder.
+- Supports auto pronunciation before spelling, after spelling, and on spelling error.
 
 #### Mastered Tab
 
@@ -219,15 +229,17 @@ When enabled, spell buttons appear on the card back:
 #### Settings Tab
 
 - Daily goal, daily review limit
+- Starting face (Front / Back)
 - Auto flip (seconds)
 - New word order (Sequential / Random)
 - Review order (Due first / High level first / Low level first)
 - Show phonetic, Show definition as tabs
 - Fine feedback (4-button mode)
 - Bookmark for review
-- Smart spell check (mask, pronounce before/after, mask placeholder, error reset, slot placeholder)
+- Smart spell check (including per-character / full-word validation, reset after validation, error reset, error feedback delay, pronounce before / after / on error, masks, word mask placeholder, spelling slot placeholder)
 - Review intervals (level 0–4, default 1/2/4/8/16 days)
 - Advanced algorithm parameters (base ease delta, extra ease delta, reward threshold, ease range, suspend parameters, penalty threshold)
+- Reset all review progress (clears review records and statistics, irreversible)
 
 ### 6. Right-click Menus
 
@@ -256,6 +268,7 @@ When adding/editing a word, click the quote icon in the top-right of the definit
 	- By list item: detect list markers and extract the list item where the cursor is.
 - **AI Context Explanation**: call the AI to explain the word in the selected context, and insert it into the definition.
 	- Supports custom system prompt and prompt content; prompts are saved automatically.
+	- Supports aborting a pending AI explanation request.
 
 ### 9. Import & Export
 
@@ -273,12 +286,13 @@ In **Settings → Files → Export Wordbook**, open the export dialog:
 - Select wordbooks to export (only enabled wordbooks are shown; multi-select allowed).
 - Select range: All / Learning / Mastered / Ignored.
 - Select format:
-  - **Markdown `.md` **: good for reading/printing.
-  - **Anki-compatible TXT (TSV)**: tab-separated, ready to import into Anki.
+	- **Markdown `.md`**: good for reading/printing.
+	- **Anki-compatible TXT (TSV)**: tab-separated, ready to import into Anki.
 - Optional fields: phonetic, aliases, definition, source, status, lang.
 - TXT format additionally supports:
-  - **Convert to HTML**: convert Markdown bold and line breaks to `<b>` and `<br>`.
-  - **One word per line**: no quotes, line breaks converted to spaces.
+	- **Convert to HTML**: convert Markdown bold and line breaks to `<b>` and `<br>`.
+	- **One word per line**: no quotes, line breaks converted to spaces.
+- When exporting Anki TSV, each section of the definition is output as an independent dynamic column, making it easier to map fields in Anki.
 - Choose save folder and filename.
 
 #### Export Mastered/Ignored
@@ -310,26 +324,29 @@ In **Settings → General → Highlight & Preview**, you can adjust:
 
 - When enabled, you can set **Include only** or **Exclude only** paths.
 - One path per line:
-  - Markdown files must include the `.md` extension.
-  - A folder path matches all files under it.
-  - Use `*` to match all files in the vault root (excluding subfolders).
+	- Markdown files must include the `.md` extension.
+	- A folder path matches all files under it.
+	- Use `*` to match all files in the vault root (excluding subfolders).
 
 ### 11. Pronunciation Configuration
 
 - Click a word to play its pronunciation.
 - **Network TTS**:
-  - Built-in presets: Youdao (English only), Baidu (multi-language), Google (multi-language).
-  - Supports custom URL templates with `{{word}}`, `{{type}}`, `{{accent}}`, `{{lang}}`, `{{rate}}` placeholders.
-  - Supports US / UK variant switching (only effective for templates using `{{type}}`).
-  - Supports adjusting speech rate range per preset.
+	- Built-in presets: Youdao (English only), Baidu (multi-language), Google (multi-language).
+	- Supports custom URL templates with `{{word}}`, `{{type}}`, `{{accent}}`, `{{lang}}`, `{{rate}}` placeholders.
+	- Supports US / UK variant switching (only effective for templates using `{{type}}`).
+	- Supports adjusting speech rate range per preset.
 - **System TTS**:
-  - Uses the browser/OS built-in speech synthesis engine, fully offline.
-  - Can specify system voice, speech rate, pitch.
-  - "Default" voice matches automatically based on the word's `lang` field; falls back to Network TTS if no match.
+	- Uses the browser/OS built-in speech synthesis engine, fully offline.
+	- Can specify system voice, speech rate, pitch.
+	- "Default" voice matches automatically based on the word's `lang` field; if the field is not set, it uses the "Default Pronunciation Language".
+	- If the system lacks the corresponding language voice pack, it will notify you about the missing voice pack and will not automatically fall back to Network TTS in "Default" voice mode; please install the voice pack, or disable "System TTS" to use Network TTS.
+	- If the System TTS engine is unavailable or throws an error, the plugin will attempt to fall back to Network TTS.
+	- After choosing a specific voice, it will prefer to use that voice; if the voice is unavailable, it will try to match by language and notify you.
 - **Multi-language Management**:
-  - Add/edit/delete languages.
-  - Configure the code used by each language under Google / Baidu / System / Custom presets.
-  - Set the default pronunciation language.
+	- Add/edit/delete languages.
+	- Configure the code used by each language under Google / Baidu / System / Custom presets.
+	- Set the default pronunciation language.
 
 ---
 
@@ -355,6 +372,7 @@ In **Settings → General → Highlight & Preview**, you can adjust:
 | Highlight Styles | Underline style, bold, underline color |
 | Highlight Scope | Include/exclude files by path |
 | Lookup Panel | Enter mode, local search mode, max results |
+| Debug Log | Output runtime logs to the developer console; currently used for AI request/response troubleshooting; logs may contain note content and AI responses, do not share publicly |
 
 ### Pronunciation
 
@@ -363,16 +381,16 @@ In **Settings → General → Highlight & Preview**, you can adjust:
 | Default Pronunciation Language | Used when a word has no `lang` field |
 | Language Management | Add/edit/delete languages and configure preset codes |
 | Network TTS | Preset (Youdao/Baidu/Google/Custom), URL template, variant, speech rate |
-| System TTS | Enable toggle, voice selection, speech rate, pitch |
+| System TTS | Enable toggle, voice selection, speech rate, pitch; falls back to Network TTS when the engine is unavailable or errors; prompts when the corresponding language voice pack is missing |
 | Pronunciation Test | Enter a word to test the current Network TTS configuration |
 
 ### AI
 
 | Item          | Description                                     |
 | ------------ | -------------------------------------- |
-| Service Provider        | OpenAI, DeepSeek, GLM (Zhipu), Tongyi Qianwen, Ollama, Custom |
+| Service Provider        | OpenAI, Anthropic (Claude), DeepSeek, GLM (Zhipu), Tongyi Qianwen, Ollama, Custom |
 | API URL/Key/Model | Auto-filled based on provider, manually editable |
-| API Key Storage Mode   | Official Keychain / Local Encrypted (Vault-derived key) |
+| API Key Storage Mode   | Official Keychain / Local Encrypted (Vault-derived key); supports migrating the key when switching modes |
 | Temperature           | 0–2, controls response randomness |
 | Max Output Tokens   | 100–4000 |
 | Built-in System Prompts | Default, Cute & Soft, Trendy & Cool, Daily Colloquial, Business Formal, Academic Solemn, Literary Aesthetic |
@@ -389,6 +407,7 @@ In **Settings → General → Highlight & Preview**, you can adjust:
 |---|---|
 | Daily Goal | Number of words to review per day |
 | Daily Review Limit | Maximum words per review session |
+| Starting Face | Front / Back |
 | Review Order | Due first / High level first / Low level first |
 | New Word Order | Sequential / Random |
 | Auto Flip | 0 (off) / 1 / 2 / 3 / 5 seconds |
@@ -396,9 +415,23 @@ In **Settings → General → Highlight & Preview**, you can adjust:
 | Definition as Tabs | Show multi-section definitions as tabs, switch with 1–9 |
 | Fine Feedback | Show 4 feedback buttons |
 | Bookmark for Review | Show bookmark button; can review bookmarked words together at the end |
-| Smart Spell Check | Show spell button and input; supports multiple mask modes |
+| Smart Spell Check | Show spell button and input; supports per-character / full-word validation, reset after validation, error reset, error feedback delay, pronounce before / after / on error, multiple masks, word mask placeholder, spelling slot placeholder |
 | Review Intervals | Base interval days for levels 0–4 |
 | Advanced Algorithm Parameters | Base/extra ease delta, reward threshold, ease range, suspend parameters, penalty threshold |
+| Reset All Review Progress | Clears all review records and statistics, irreversible |
+
+---
+
+## 🧪 Debug Log
+
+After enabling **Settings → Simple Wordbook → General → Debug Log**, the plugin outputs runtime logs to the developer console.
+
+- Logs are prefixed with `[Simple Wordbook]` and formatted as: `[Simple Wordbook][Module] message`.
+- Currently mainly covers **AI lookup** related flows, such as reading the API key, building requests, HTTP errors, and response content.
+- Logs may contain: query words, note context, full AI responses, API URLs, and model names.
+- **Do not share console logs publicly.** Turn the switch off after troubleshooting.
+
+See [`DEBUG_LOG_GUIDE.md`](./DEBUG_LOG_GUIDE.md) for details.
 
 ---
 
@@ -462,7 +495,7 @@ A: PDF highlighting is supported by default. Ensure auto highlight is enabled an
 A: Check whether the "Mastery File" path is correct and writable. When switching mastery mode (Global/Per-source), the plugin migrates data automatically.
 
 **Q: System TTS has no sound?**  
-A: Check whether the OS has the corresponding language voice pack installed. If no match, the plugin falls back to Network TTS automatically.
+A: Check whether the OS has the corresponding language voice pack installed. If no match is found, the plugin will notify you about the missing voice pack and will not automatically fall back to Network TTS in "Default" voice mode; install the voice pack, or disable "System TTS" in Settings to use Network TTS.
 
 **Q: How are the tabs in the hover preview / word card split?**  
 A: 
@@ -487,22 +520,47 @@ abandon hope
 ```
 
 3. If a section does not start with `**Title**`, the plugin assigns default names:
-   - The first section → default name `Definition`
-   - Subsequent sections → default names `Content 2`, `Content 3`, ...
+	- The first section → default name `Definition`
+	- Subsequent sections → default names `Content 2`, `Content 3`, ...
 
 **Q: How to quickly bind hotkeys to custom prompts?**  
 A: In `AI Configuration → Custom Prompts`, click the "Set Hotkeys" button to jump to the Obsidian Hotkeys settings page with this plugin's commands filtered automatically. You can bind an independent hotkey for each `Lookup with prompt: xxx` command for one-key lookup.
 
 **Q: How does the Study Center review algorithm work?**  
 A: The plugin uses a simplified SM-2 algorithm:
+
 - Each word has a level from 0 to 5; reaching 5 means mastered.
 - Each review adjusts the level and ease factor based on feedback (Forget/Hard/Good/Easy).
 - Actual review interval = base interval (customizable by level) × ease factor.
 - Consecutive Good/Easy feedback grants an extra ease reward; consecutive Forget/Hard triggers a suspend.
 - Advanced parameters can be adjusted in "Study Center → Settings → Advanced Settings".
 
-**Q: Can wordbook files be placed anywhere?**  
-A: Yes. Wordbook files can be placed anywhere in the vault. If a file is renamed or moved, the plugin updates the path automatically.
+**Q: How does the review level change in the Study Center?**  
+A: Word levels range from **0 to 5**, and level 5 means mastered (no longer enters the flashcard review queue).
+
+| Button | Level Change | Description |
+|---|---|---|
+| 😣 Forget | → 0 | Reset to zero and start over |
+| 😐 Hard | → 2 if ≥3; unchanged if <3 | High levels are penalized downward; low levels stay |
+| 🙂 Good / 😊 Remember | +1 | Normal level up |
+| 😊 Easy | +2 if <2 (0→2, 1→3); +1 if ≥2 | Low levels skip ahead; high levels level up normally |
+
+> "Remember" is the display name of "Good" in 2-button mode; both have exactly the same effect.  
+> "Hard" and "Easy" only appear in 4-button mode (fine feedback).
+
+Reaching 5 automatically marks the word as **Mastered** and removes it from the review queue.
+
+**Q: How are the type filters in the Levels tab (Newbie / Steady / Efficient / Struggling / Stubborn) classified?**  
+A: Classification is based on the word's **review count** and **current level**, checked in the following order; once a condition matches, the word is assigned to that type:
+
+1. **Stubborn**: review count ≥ 8 and level ≤ 2
+2. **Struggling**: review count ≥ 5 and level ≤ 2 (not meeting Stubborn)
+3. **Efficient**: review count ≤ 5 and level ≥ 4
+4. **Newbie**: review count ≤ 2
+5. **Steady**: all remaining words not matching the above
+
+> The checks run in the order above, so if a word satisfies multiple conditions, it is assigned to the first matching type. For example, a word with review count ≤ 2 and level ≥ 4 is classified as "Efficient" rather than "Newbie".  
+> This classification is only used for filtering and display in the Levels tab; it does not affect the review algorithm itself.
 
 ---
 
