@@ -2226,12 +2226,20 @@ function processLineBreaks(text) {
   return text.replace(/(?<!\n)\n(?!\n)/g, '  \n');
 }
 
-// ========== 修复内部链接（支持完整 Obsidian 原生组合键行为） ==========
+// ========== 释义内链接（支持完整 Obsidian 原生组合键行为） ==========
 function fixInternalLinks(container, app, sourcePath) {
   if (!container) return;
+
+  // 获取 shell（桌面端可用，移动端为 null）
+  let shell = null;
+  try {
+    const electron = require('electron');
+    if (electron && electron.shell) shell = electron.shell;
+  } catch (e) { /* 移动端，忽略 */ }
+
   container.querySelectorAll('a[href]').forEach(a => {
     const href = a.getAttribute('href');
-    // 仅处理内部链接（非 http/https 开头，且不为空或 "#"）
+    // 仅处理（非 http/https 开头，且不为空或 "#"）的链接
     if (href && !/^https?:\/\//i.test(href) && href !== '#') {
       a.removeEventListener('click', clickHandler);
       a.removeEventListener('auxclick', auxClickHandler);
@@ -2241,8 +2249,42 @@ function fixInternalLinks(container, app, sourcePath) {
     }
   });
 
-  // 核心打开逻辑
+  // 链接核心打开逻辑
   async function openLink(e, linkText, forceNewTab = false) {
+    // 库外本地文件 → shell.openPath
+    if (/^file:\/\//i.test(linkText)) {
+      if (!shell) return;   // 移动端无法打开，静默返回
+      let filePath = decodeURIComponent(linkText.replace(/^file:\/\//i, ''));
+      // Windows: file:///E:/xxx → /E:/xxx → E:/xxx
+      if (/^\/[A-Za-z]:/.test(filePath)) filePath = filePath.slice(1);
+      const err = await shell.openPath(filePath);
+      if (err) console.warn('[Simple Wordbook] Failed to open external file:', filePath, err);
+      return;
+    }
+
+    // Obsidian URI（obsidian://） → shell.openExternal
+    if (/^obsidian:\/\//i.test(linkText)) {
+      if (!shell) return;   // 移动端无法打开，静默返回
+      try {
+        await shell.openExternal(linkText);
+      } catch (err) {
+        console.warn('[Simple Wordbook] Failed to open obsidian URI:', linkText, err);
+      }
+      return;
+    }
+
+    // 其他应用注册的系统协议白名单 → shell.openExternal
+    if (/^(vscode|smb|zotero|notion|slack|tel|mailto):/i.test(linkText)) {
+      if (!shell) return;   // 移动端无法打开，静默返回
+      try {
+        await shell.openExternal(linkText);
+      } catch (err) {
+        console.warn('[Simple Wordbook] Failed to open system protocol:', linkText, err);
+      }
+      return;
+    }
+
+    // 内部链接
     const isCtrlCmd = e.ctrlKey || e.metaKey;
     const isAlt = e.altKey;
     const isShift = e.shiftKey;

@@ -2,6 +2,81 @@
    Simple Wordbook 插件样式
    ============================================================ */
 
+/* ===== Obsidian 1.14.4+ 彩色高亮（插件容器内适配） ===== */
+
+/* 在插件根容器上定义变量，后代自动继承 */
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) {
+  --swb-hl-default: color-mix(in oklch, var(--color-yellow) 30%, transparent);
+  --swb-hl-red: color-mix(in oklch, var(--color-red) 30%, transparent);
+  --swb-hl-orange: color-mix(in oklch, var(--color-orange) 30%, transparent);
+  --swb-hl-yellow: color-mix(in oklch, var(--color-yellow) 30%, transparent);
+  --swb-hl-green: color-mix(in oklch, var(--color-green) 30%, transparent);
+  --swb-hl-blue: color-mix(in oklch, var(--color-blue) 30%, transparent);
+  --swb-hl-purple: color-mix(in oklch, var(--color-purple) 30%, transparent);
+}
+
+/* 应用颜色：限定在插件容器内 */
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight=""] {
+  background-color: var(--swb-hl-default);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="red"] {
+  background-color: var(--swb-hl-red);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="orange"] {
+  background-color: var(--swb-hl-orange);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="yellow"] {
+  background-color: var(--swb-hl-yellow);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="green"] {
+  background-color: var(--swb-hl-green);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="blue"] {
+  background-color: var(--swb-hl-blue);
+}
+
+:is(.simple-wordbook-sidebar,
+    .simple-wordbook-lookup-panel,
+    .simple-wordbook-library,
+    .simple-wordbook-study,
+    .simple-wordbook-tooltip) mark[data-highlight="purple"] {
+  background-color: var(--swb-hl-purple);
+}
+
+
 /* ===== 模块一：侧边栏布局 ===== */
 
 /* 部件：侧边栏主容器 */
