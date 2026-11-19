@@ -3416,6 +3416,7 @@ class Highlighter {
     this._matchCache = new WeakMap();
     this._setupTimer = null;
     this._currentEditorPath = null;   // 缓存当前编辑器的文件路径
+    this._lastActiveFilePath = null; // 缓存活动文件路径，仅供 active-leaf-change 守卫使用
   }
 
   // ---------- 样式辅助 ----------
@@ -3602,6 +3603,19 @@ class Highlighter {
     if (this._matchCache) {
       this._matchCache = new WeakMap();
     }
+
+    // 计算词表签名，判断是否变化
+    const sig = allCards
+      .filter(c => {
+        const k = getStudyKey(c.word, c.sourceFile);
+        return !mastery.isMastered(k) && !mastery.isIgnored(k);
+      })
+      .map(c => `${c.word}|${c.sourceFile}`)
+      .sort()
+      .join(",");
+    const changed = (this._lastTrieSig !== sig);
+    this._lastTrieSig = sig;
+    return changed;
   }
 
   debouncedRefresh() {
@@ -3615,7 +3629,9 @@ class Highlighter {
       await this.clearAllHighlights();
       return;
     }
-    await this.rebuildTrie();
+
+    const trieChanged = await this.rebuildTrie();   // 接收词表变化标志
+
     requestAnimationFrame(() => {
       this.applyToMarkdownPreviews();
       // 多次延迟重试，确保手机端渲染完成
@@ -3650,7 +3666,10 @@ class Highlighter {
       }
     }
     this.applyToPDFs(0);
-    this.plugin.app.workspace.trigger("simple-wordbook:highlighter-updated");
+    // 只有词表真正变化时才广播事件（PDF 下的高频刷新不再惊动侧边栏）
+    if (trieChanged) {
+      this.plugin.app.workspace.trigger("simple-wordbook:highlighter-updated");
+    }
   }
 
   // ---------- 阅读模式高亮 ----------
@@ -3902,7 +3921,10 @@ class Highlighter {
 
     // 监听文件打开事件，刷新高亮
     this.plugin.registerEvent(
-      this.plugin.app.workspace.on('file-open', () => this.debouncedRefresh())
+      this.plugin.app.workspace.on('file-open', (file) => {
+        if (file) this._lastActiveFilePath = file.path;
+        this.debouncedRefresh();
+      })
     );
 
     // 监听数据更新事件（词库、掌握状态变化），刷新高亮
@@ -3913,7 +3935,17 @@ class Highlighter {
     // 监听活动叶子切换事件（包括编辑器焦点切换）
     // 当用户切换编辑器标签或点击不同文档时，触发刷新，确保每个编辑器使用正确的路径进行高亮判断
     this.plugin.registerEvent(
-      this.plugin.app.workspace.on('active-leaf-change', () => this.debouncedRefresh())
+      this.plugin.app.workspace.on('active-leaf-change', () => {
+        const activeFile = this.plugin.app.workspace.getActiveFile();
+        // 焦点落在侧边栏/查词面板等无文件 leaf 上（getActiveFile() 为 null）→ 忽略
+        if (!activeFile) {
+          return;
+        }
+        // 活动文件没变 → 忽略
+        if (activeFile.path === this._lastActiveFilePath) return;
+        this._lastActiveFilePath = activeFile.path;
+        this.debouncedRefresh();
+      })
     );
   }
 
@@ -4159,7 +4191,8 @@ class Highlighter {
 
   applyToPDFs(retry = 0) {
     if (!this.plugin.settings.enableHighlight) return;
-
+    // 没有任何 PDF 视图时直接退出，不进入重试链（纯 Markdown 工作流不空转定时器）
+    if (this.plugin.app.workspace.getLeavesOfType('pdf').length === 0) return;
     const textLayers = document.querySelectorAll('.pdf-container .textLayer, .mod-pdf .textLayer');
     if (textLayers.length === 0 && retry < 5) {
       setTimeout(() => this.applyToPDFs(retry + 1), 200);
@@ -4195,11 +4228,25 @@ class Highlighter {
     // 重新建立 MutationObserver，监听新的 textLayer 加入
     if (textLayers.length > 0) {
       if (!this._textLayerObserver) {
-        this._textLayerObserver = new MutationObserver(() => {
+        this._textLayerObserver = new MutationObserver((mutations) => {
+          // 过滤：如果变化全部来自插件自己插入/移除的高亮 span，则忽略，
+          // 避免插件高亮 → Observer 触发 refresh → 再高亮 的自反馈死循环
+          const isSelfCaused = mutations.every(m => {
+            const nodes = [...m.addedNodes, ...m.removedNodes];
+            // 没有节点增删的记录（如纯 characterData 变化）一律视为外部变化，不忽略
+            if (nodes.length === 0) return false;
+            // 所有增删节点都是插件的高亮 span → 本条记录由插件引起
+            return nodes.every(node =>
+              node.nodeType === Node.ELEMENT_NODE &&
+              node.classList?.contains('simple-wordbook-pdf-highlight')
+            );
+          });
+          if (isSelfCaused) return; // 插件自己的高亮操作，忽略
+          // 存在非插件引起的变化 → 刷新
           this.debouncedRefresh();
         });
       }
-      const config = { childList: true, subtree: true, characterData: true };
+      const config = { childList: true, subtree: true };
       for (const layer of textLayers) {
         if (layer.isConnected) {
           this._textLayerObserver.observe(layer, config);
@@ -4212,22 +4259,30 @@ class Highlighter {
     if (this.pdfObserver) return this.pdfObserver;
 
     const observer = new MutationObserver((mutations) => {
+      // 高亮关闭时不做任何事
+      if (!this.plugin.settings.enableHighlight) return;
+
       let newLayers = [];
       for (const mutation of mutations) {
-        if (mutation.type === 'childList') {
-          for (const node of mutation.addedNodes) {
-            if (node.nodeType === Node.ELEMENT_NODE) {
-              // 检查是否是新 textLayer 或包含 textLayer
-              let layer = null;
-              if (node.classList && node.classList.contains('textLayer')) {
-                layer = node;
-              } else {
-                layer = node.querySelector('.textLayer');
-              }
-              if (layer) {
-                newLayers.push(layer);
-              }
-            }
+        if (mutation.type !== 'childList') continue;
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+          // 跳过插件自己插入的高亮元素（防自反馈 + 免去无意义的 closest 调用）
+          if (node.classList?.contains('simple-wordbook-pdf-highlight')) continue;
+
+          let layer = null;
+          if (node.classList?.contains('textLayer')) {
+            // 情况 A：插入的就是 textLayer 本身（pdf.js 渲染新页面）
+            layer = node;
+          } else if (node.closest?.('.pdf-container, .mod-pdf')) {
+            // 情况 B：插入发生在 PDF 容器内部
+            layer = node.querySelector('.textLayer');
+          } else if (node.querySelector?.('.pdf-container, .mod-pdf')) {
+            // 情况 C：插入的大块容器里包含 PDF 视图（如新建 PDF leaf）——罕见路径
+            layer = node.querySelector('.textLayer');
+          }
+          if (layer) {
+            newLayers.push(layer);
           }
         }
       }
@@ -4743,6 +4798,8 @@ class SidebarView extends ItemView {
     this.activeTab = "learning";
     this.cardCache = new Map();
     this.foldState = new Map();
+    this._pdfTextCache = null;   // PDF 全文缓存 { path, mtime, text }
+    this._refreshing = false;    // refresh 防重入标志
   }
   getViewType() { return VIEW_TYPE_SIDEBAR; }
   getDisplayText() { return t("sidebar_view_title"); }
@@ -4750,8 +4807,8 @@ class SidebarView extends ItemView {
   async onOpen() {
     this.containerEl.empty();
     this.containerEl.addClass("simple-wordbook-sidebar");
-    this.registerEvent(this.plugin.app.workspace.on("file-open", () => this.refresh()));
-    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.refresh()));
+    this.registerEvent(this.plugin.app.workspace.on("file-open", () => this.debouncedRefresh()));
+    this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:data-updated", () => this.debouncedRefresh()));
     // 监听高亮刷新事件，仅 PDF 时刷新
     this.registerEvent(this.plugin.app.workspace.on("simple-wordbook:highlighter-updated", () => {
       const activeFile = this.plugin.app.workspace.getActiveFile();
@@ -4760,6 +4817,7 @@ class SidebarView extends ItemView {
       }
     }));
     this._lastFoldEnabled = this.plugin.settings.enableFoldDefinition;
+    this.buildChrome();   // 搜索框/标签栏/列表容器只在这里建一次
     await this.refresh();
   }
 
@@ -4768,6 +4826,70 @@ class SidebarView extends ItemView {
       clearTimeout(this._refreshTimer);
       this._refreshTimer = null;
     }
+  }
+
+  // 只构建一次的侧边栏"外壳"（搜索框 + 标签栏 + 列表容器）
+  buildChrome() {
+    const container = this.containerEl;
+
+    // —— 搜索框（只创建一次，之后 refresh 永不销毁它，焦点不会再丢）——
+    const searchDiv = container.createDiv({ cls: "sidebar-search" });
+    const searchInput = searchDiv.createEl("input", { type: "text", placeholder: t("search_placeholder") });
+    searchInput.value = this.searchQuery;
+
+    // ----- 搜索输入事件 -----
+    searchInput.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase();
+      this.searchQuery = query;
+      if (query) {
+        const getCardsForTab = (tab) => {
+          if (tab === 'learning') return this.currentFileWords.filter(w => !w.mastered && !w.ignored);
+          if (tab === 'mastered') return this.currentFileWords.filter(w => w.mastered);
+          return this.currentFileWords.filter(w => w.ignored);
+        };
+        const tabOrder = ['learning', 'mastered', 'ignored'];
+        let targetTab = null;
+        let bestScore = 0;
+        for (const tab of tabOrder) {
+          const cardsInTab = getCardsForTab(tab);
+          let score = 0;
+          for (const w of cardsInTab) {
+            const wordLower = w.word.toLowerCase();
+            const aliasExact = w.aliases && w.aliases.some(a => a.toLowerCase() === query);
+            if (wordLower === query || aliasExact) {
+              score = Math.max(score, 2);
+            } else if (
+              wordLower.includes(query) ||
+              (w.aliases && w.aliases.some(a => a.toLowerCase().includes(query)))
+            ) {
+              score = Math.max(score, 1);
+            }
+          }
+          if (score > bestScore) {
+            bestScore = score;
+            targetTab = tab;
+          }
+        }
+        if (targetTab && targetTab !== this.activeTab) {
+          this.switchTab(targetTab);
+          return;
+        }
+        this.filterWords();
+        this.updateCardVisibility();
+        this._scheduleBatchRendering(this.filteredWords);
+      } else {
+        this.filterWords();
+        this.updateCardVisibility();
+        this._scheduleBatchRendering(this.filteredWords);
+      }
+    });
+    this.searchInput = searchInput;
+
+    // —— 标签栏 ——
+    this.tabBarEl = container.createDiv({ cls: "sidebar-tabs" });
+
+    // —— 列表容器 ——
+    this.listContainer = container.createDiv({ cls: "word-list" });
   }
 
   debouncedRefresh() {
@@ -4779,16 +4901,33 @@ class SidebarView extends ItemView {
   }
 
   async refresh() {
-    // 检测折叠开关是否发生变化，若变化则清空所有折叠状态
-    const currentFoldEnabled = this.plugin.settings.enableFoldDefinition;
-    if (this._lastFoldEnabled !== undefined && this._lastFoldEnabled !== currentFoldEnabled) {
-      this.foldState.clear();
+    // 等待式防重入：上一次刷新未完成时先等它结束，保证调用方 await 后拿到最新数据
+    while (this._refreshing) {
+      await new Promise(r => setTimeout(r, 30));
     }
-    this._lastFoldEnabled = currentFoldEnabled;
+    this._refreshing = true;
+    try {
+      // 检测折叠开关变化，清空折叠状态
+      const currentFoldEnabled = this.plugin.settings.enableFoldDefinition;
+      if (this._lastFoldEnabled !== undefined && this._lastFoldEnabled !== currentFoldEnabled) {
+        this.foldState.clear();
+      }
+      this._lastFoldEnabled = currentFoldEnabled;
 
-    await this.scanCurrentDocument();
-    this.filterWords();
-    this.render();
+      await this.scanCurrentDocument();
+      this.filterWords();
+
+      // 内容签名：单词列表没变就不重建 DOM
+      const sig = this.currentFileWords
+        .map(w => `${w.studyKey}:${w.mastered ? 1 : 0}:${w.ignored ? 1 : 0}:${w.color || ""}`)
+        .join("|");
+      if (sig !== this._lastRenderSig) {
+        this._lastRenderSig = sig;
+        this.render();
+      }
+    } finally {
+      this._refreshing = false;
+    }
   }
 
   async scanCurrentDocument() {
@@ -4808,7 +4947,7 @@ class SidebarView extends ItemView {
 
     let content = "";
     if (activeFile.extension === "pdf") {
-      content = await this.extractPDFTextFromDOM();
+      content = await this.extractPDFText(activeFile);
     } else {
       content = await this.plugin.app.vault.read(activeFile);
     }
@@ -4906,97 +5045,79 @@ class SidebarView extends ItemView {
     return text.trim();
   }
 
-  render() {
-    const container = this.containerEl;
-    container.empty();
-    this.cardCache.clear();
-
-    // 清理无效折叠状态
-    const currentKeys = new Set(this.currentFileWords.map(w => w.studyKey));
-    for (const key of this.foldState.keys()) {
-      if (!currentKeys.has(key)) {
-        this.foldState.delete(key);
-      }
+  // PDF 全文提取（带缓存，优先 pdf.js 文档对象，失败回退 DOM 提取）
+  async extractPDFText(activeFile) {
+    // 缓存命中（同文件且未修改）直接返回
+    if (
+      this._pdfTextCache &&
+      this._pdfTextCache.path === activeFile.path &&
+      this._pdfTextCache.mtime === activeFile.stat.mtime
+    ) {
+      return this._pdfTextCache.text;
     }
 
+    // 首选：pdf.js 文档对象全文提取（不依赖页面是否已渲染）
+    const fullText = await this.extractPDFTextViaPdfJs(activeFile);
+    if (fullText !== null) {
+      this._pdfTextCache = { path: activeFile.path, mtime: activeFile.stat.mtime, text: fullText };
+      return fullText;
+    }
+
+    // 回退：DOM 提取（不做缓存，因为内容会随滚动变化）
+    return await this.extractPDFTextFromDOM();
+  }
+
+  // 通过 pdf.js 的 pdfDocument 提取全文
+  async extractPDFTextViaPdfJs(activeFile, retries = 5) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const leaves = this.plugin.app.workspace.getLeavesOfType("pdf");
+        let doc = null;
+        for (const leaf of leaves) {
+          const v = leaf.view;
+          if (!v) continue;
+          if (activeFile && v.file && v.file.path !== activeFile.path) continue;
+          // 兼容不同版本 Obsidian 的 PdfView 内部结构
+          doc = v.viewer?.pdfViewer?.pdfDocument
+            || v.pdfViewer?.pdfDocument
+            || v.viewer?.pdfDocument
+            || null;
+          if (doc) break;
+        }
+        if (doc && doc.numPages > 0) {
+          let text = "";
+          for (let i = 1; i <= doc.numPages; i++) {
+            const page = await doc.getPage(i);
+            const tc = await page.getTextContent();
+            for (const item of tc.items) {
+              if (typeof item.str !== "string") continue;
+              text += item.str + (item.hasEOL ? "\n" : " ");
+            }
+            text += "\n";
+          }
+          return text;
+        }
+      } catch (e) {
+        // 静默，进入重试
+      }
+      // PDF 可能还在加载中，稍等再试
+      await new Promise(r => setTimeout(r, 100));
+    }
+    return null;
+  }
+
+  render() {
+    // 只重建卡片列表，不重建搜索框（搜索框由 buildChrome() 一次性创建）
+    if (!this.listContainer) return;
+
+    this.cardCache.clear();
     // 清除旧的渲染定时器，防止冲突
     if (this._renderTimer) {
       clearTimeout(this._renderTimer);
       this._renderTimer = null;
     }
 
-    const searchDiv = container.createDiv({ cls: "sidebar-search" });
-    const searchInput = searchDiv.createEl("input", { type: "text", placeholder: t("search_placeholder") });
-    searchInput.value = this.searchQuery;
-
-    // ----- 搜索输入事件 -----
-    searchInput.addEventListener("input", (e) => {
-      const query = e.target.value.toLowerCase();
-      this.searchQuery = query;
-
-      if (query) {
-        // 按优先级查找匹配的卡片所在的标签页
-        let targetTab = null;
-        const tabOrder = ['learning', 'mastered', 'ignored'];
-
-        for (const tab of tabOrder) {
-          let cardsInTab;
-          if (tab === 'learning') {
-            cardsInTab = this.currentFileWords.filter(w => !w.mastered && !w.ignored);
-          } else if (tab === 'mastered') {
-            cardsInTab = this.currentFileWords.filter(w => w.mastered);
-          } else {
-            cardsInTab = this.currentFileWords.filter(w => w.ignored);
-          }
-
-          const hasMatch = cardsInTab.some(w =>
-            w.word.toLowerCase().includes(query) ||
-            (w.aliases && w.aliases.some(a => a.toLowerCase().includes(query)))
-          );
-
-          if (hasMatch) {
-            targetTab = tab;
-            break;
-          }
-        }
-
-        if (targetTab && targetTab !== this.activeTab) {
-          // 切换到匹配的标签页（内部会触发过滤和渲染）
-          this.switchTab(targetTab);
-          return; // switchTab 已处理所有更新
-        }
-
-        // 没有匹配的卡片，或目标标签页就是当前标签页 → 正常过滤
-        this.filterWords();
-        this.updateCardVisibility();
-        this._scheduleBatchRendering(this.filteredWords);
-      } else {
-        // 搜索词为空 → 显示当前标签页的所有卡片
-        this.filterWords();
-        this.updateCardVisibility();
-        this._scheduleBatchRendering(this.filteredWords);
-      }
-    });
-
-    const tabBar = container.createDiv({ cls: "sidebar-tabs" });
-    const updateTabCounts = () => {
-      const learningCount = this.currentFileWords.filter(w => !w.mastered && !w.ignored).length;
-      const masteredCount = this.currentFileWords.filter(w => w.mastered).length;
-      const ignoredCount = this.currentFileWords.filter(w => w.ignored).length;
-      const tabs = [
-        { id: "learning", label: `${t("tab_learning")} (${learningCount})` },
-        { id: "mastered", label: `${t("tab_mastered")} (${masteredCount})` },
-        { id: "ignored", label: `${t("tab_ignored")} (${ignoredCount})` }
-      ];
-      tabBar.empty();
-      for (const tab of tabs) {
-        const tabEl = tabBar.createDiv({ cls: `sidebar-tab ${this.activeTab === tab.id ? "active" : ""}`, text: tab.label });
-        tabEl.addEventListener("click", () => this.switchTab(tab.id));
-      }
-    };
-    updateTabCounts();
-
-    this.listContainer = container.createDiv({ cls: "word-list" });
+    this.listContainer.empty();
 
     // 第一轮只建DOM骨架，不渲染Markdown
     for (const word of this.currentFileWords) {
@@ -5004,10 +5125,29 @@ class SidebarView extends ItemView {
       this.cardCache.set(word.studyKey, card);
     }
     this.updateCardVisibility();
-    this.updateTabCounts = updateTabCounts;
-
+    this.updateTabCounts();
     // 第二轮分批异步渲染释义（首批10个立即显示）
     this._scheduleBatchRendering(this.filteredWords);
+  }
+
+  updateTabCounts() {
+    if (!this.tabBarEl) return;
+    const learningCount = this.currentFileWords.filter(w => !w.mastered && !w.ignored).length;
+    const masteredCount = this.currentFileWords.filter(w => w.mastered).length;
+    const ignoredCount = this.currentFileWords.filter(w => w.ignored).length;
+    const tabs = [
+      { id: "learning", label: `${t("tab_learning")} (${learningCount})` },
+      { id: "mastered", label: `${t("tab_mastered")} (${masteredCount})` },
+      { id: "ignored", label: `${t("tab_ignored")} (${ignoredCount})` }
+    ];
+    this.tabBarEl.empty();
+    for (const tab of tabs) {
+      const tabEl = this.tabBarEl.createDiv({
+        cls: `sidebar-tab ${this.activeTab === tab.id ? "active" : ""}`,
+        text: tab.label
+      });
+      tabEl.addEventListener("click", () => this.switchTab(tab.id));
+    }
   }
 
   switchTab(tabId) {
@@ -5015,7 +5155,7 @@ class SidebarView extends ItemView {
     this.activeTab = tabId;
     this.filterWords();
     this.updateCardVisibility();
-    if (this.updateTabCounts) this.updateTabCounts();
+    this.updateTabCounts(); 
     // 触发新标签页中卡片的渲染
     this._scheduleBatchRendering(this.filteredWords);
   }
@@ -5027,6 +5167,11 @@ class SidebarView extends ItemView {
     else base = base.filter(w => w.ignored);
     if (this.searchQuery) {
       base = base.filter(w => w.word.toLowerCase().includes(this.searchQuery) || (w.aliases && w.aliases.some(a => a.toLowerCase().includes(this.searchQuery))));
+      // 精准匹配排最前（单词或别名完全等于搜索词），其余保持原有顺序
+      base = [
+        ...base.filter(w => w.word.toLowerCase() === this.searchQuery || (w.aliases && w.aliases.some(a => a.toLowerCase() === this.searchQuery))),
+        ...base.filter(w => !(w.word.toLowerCase() === this.searchQuery || (w.aliases && w.aliases.some(a => a.toLowerCase() === this.searchQuery))))
+      ];
     }
     this.filteredWords = base;
   }
@@ -5068,7 +5213,6 @@ class SidebarView extends ItemView {
         await this.plugin.masteryStore.setMastered(wordObj._stateKey, newState);
         await this.plugin.highlighter.refresh();
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-        await this.refresh();
       });
 
       const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
@@ -5081,7 +5225,6 @@ class SidebarView extends ItemView {
         await this.plugin.masteryStore.setIgnored(wordObj._stateKey, newIgnore);
         await this.plugin.highlighter.refresh();
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-        await this.refresh();
       });
     }
 
@@ -5267,32 +5410,45 @@ class SidebarView extends ItemView {
     await renderContent(0);
   }
 
+  // 带重试的查找单词卡片
   async focusWord(wordObj, preferredSource = null) {
-    // 0. 先清除搜索框内容（让所有卡片可见）
-    const searchInput = this.containerEl?.querySelector('.sidebar-search input');
+    // 0. 清除搜索框内容
+    const searchInput = this.searchInput;
     if (searchInput) {
       searchInput.value = "";
     }
     this.searchQuery = "";
 
-    // 1. 优先使用缓存数据，避免不必要的刷新
-    let targetCard = this.currentFileWords.find(w =>
+    // 查找函数
+    const find = () => this.currentFileWords.find(w =>
       w.word.toLowerCase() === wordObj.word.toLowerCase() &&
       (preferredSource ? w.sourceFile === preferredSource : true)
     );
+
+    // 1. 先查当前缓存
+    let targetCard = find();
+
+    // 2. 没找到 → 强制刷新后再查
     if (!targetCard) {
       await this.refresh();
-      targetCard = this.currentFileWords.find(w =>
-        w.word.toLowerCase() === wordObj.word.toLowerCase() &&
-        (preferredSource ? w.sourceFile === preferredSource : true)
-      );
+      targetCard = find();
     }
+
+    // 3. 仍没找到 → 重试几次（覆盖 PDF 刚打开、pdf.js 还在加载的窗口期）
+    if (!targetCard) {
+      for (let i = 0; i < 5 && !targetCard; i++) {
+        await new Promise(r => setTimeout(r, 200));
+        await this.refresh();
+        targetCard = find();
+      }
+    }
+
     if (!targetCard) {
       new Notice(t("notice_word_not_found", wordObj.word));
       return;
     }
 
-    // 2. 切换到正确的标签页
+    // 4. 切换到正确的标签页
     if (targetCard.mastered) {
       this.activeTab = "mastered";
     } else if (targetCard.ignored) {
@@ -5301,33 +5457,29 @@ class SidebarView extends ItemView {
       this.activeTab = "learning";
     }
 
-    // 3. 更新可见性（不重建 DOM）
+    // 5. 更新可见性
     this.filterWords();
     this.updateCardVisibility();
     if (this.updateTabCounts) this.updateTabCounts();
 
-    // 4. 等待两个动画帧，确保 DOM 完全重排
+    // 6. 等待两帧，确保 DOM 重排完成
     await new Promise(resolve => requestAnimationFrame(resolve));
     await new Promise(resolve => requestAnimationFrame(resolve));
 
-    // 5. 获取卡片元素，强制回流确保高度已计算
+    // 7. 滚动定位 + 高亮提示
     const cardKey = targetCard.studyKey;
     const cardElement = this.cardCache.get(cardKey);
     if (!cardElement) {
       new Notice(t("notice_card_data_not_found"));
       return;
     }
-    // 强制触发浏览器回流
-    cardElement.offsetHeight;
-
-    // 6. 使用 scrollIntoView 居中滚动
+    cardElement.offsetHeight; // 强制回流
     cardElement.scrollIntoView({ block: "center", behavior: "smooth" });
-
-    // 7. 高亮提示
     cardElement.style.transition = "background-color 0.3s";
     cardElement.style.backgroundColor = "var(--interactive-accent)";
     setTimeout(() => {
       cardElement.style.backgroundColor = "";
+      cardElement.style.transition = "";
     }, 1500);
   }
 }
@@ -5549,7 +5701,6 @@ class LookupView extends ItemView {
         await this.plugin.masteryStore.setMastered(card._stateKey || card.word, newState);
         await this.plugin.highlighter.refresh();
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-        this.doLocalLookup(this.currentWord);
       });
 
       const ignoreBtn = actionsDiv.createDiv({ cls: "action-icon" });
@@ -5563,7 +5714,6 @@ class LookupView extends ItemView {
         await this.plugin.masteryStore.setIgnored(card._stateKey || card.word, newIgnore);
         await this.plugin.highlighter.refresh();
         this.plugin.app.workspace.trigger("simple-wordbook:data-updated");
-        this.doLocalLookup(this.currentWord);
       });
     }
 
@@ -5860,7 +6010,7 @@ class LookupView extends ItemView {
 
     // 渲染卡片
     for (const card of matches) {
-      const stateKey = this.plugin.settings.masteryMode === "global" ? card.word : `${card.sourceFile}::${card.word}`;
+      const stateKey = getStudyKey(card.word, card.sourceFile);
       card._stateKey = stateKey;
       this.createLocalCard(card, this.resultContainer);
     }

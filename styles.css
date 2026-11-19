@@ -2,7 +2,18 @@
    Simple Wordbook 插件样式
    ============================================================ */
 
-/* ===== Obsidian 1.14.4+ 彩色高亮（插件容器内适配） ===== */
+/* ===== 模块 0：全局变量与基础排版重置 ===== */
+
+/* ----- 统一覆盖 Obsidian <p> 段落间距（防止卡片和弹窗间距过大） ----- */
+.word-card-content p,
+.lookup-result p,
+.study-card-content p,
+.simple-wordbook-tooltip .tooltip-content p {
+  margin-top: 0.3em;
+  margin-bottom: 0.3em;
+}
+
+/* ----- 多种高亮色适配 ----- */
 
 /* 在插件根容器上定义变量，后代自动继承 */
 :is(.simple-wordbook-sidebar,
@@ -683,7 +694,7 @@
 .word-card-content ul,
 .lookup-result ul {
   list-style-type: disc;
-  padding-left: 1.2em;
+  padding-left: 2em;
   margin: 0.5em 0;
 }
 
@@ -691,7 +702,7 @@
 .word-card-content ol,
 .lookup-result ol {
   list-style-type: decimal;
-  padding-left: 1em;
+  padding-left: 2em;
   margin: 0.5em 0;
 }
 
