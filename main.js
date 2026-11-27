@@ -1,4 +1,4 @@
-const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField, SecretComponent, Menu } = require('obsidian');
+const { Plugin, ItemView, Notice, MarkdownRenderer, TFile, TFolder, Modal, Setting, FuzzySuggestModal, setIcon, normalizePath, PluginSettingTab, editorInfoField, SecretComponent, Menu, requestUrl } = require('obsidian');
 const { EditorView, Decoration } = require('@codemirror/view');
 const { StateField, RangeSetBuilder, StateEffect } = require('@codemirror/state');
 
@@ -309,6 +309,8 @@ const locale = {
     settings_ai_temperature_desc: "Controls randomness of responses (0-2). Higher = more creative. Some providers cap at 1. Default: 0.5",
     settings_ai_max_tokens: "Max Output Tokens",
     settings_ai_max_tokens_desc: "Maximum length of AI response (100-4000). Default: 1500.",
+    settings_ai_timeout: "Request Timeout (seconds)",
+    settings_ai_timeout_desc: "Automatically abort the AI request after this many seconds and show a timeout message (5-120). Default: 30.",
     settings_prompts: "Prompts",
     settings_system_prompts: "Custom System Prompts",
     settings_system_prompt_desc: "Set AI's persona (style/format of AI responses)",
@@ -478,7 +480,7 @@ const locale = {
     example_system_prompt: "System Prompt",
     example_prompt_content: "Prompt Content",
     example_prompt_desc: "Use {word} and {context} as placeholders",
-    example_ai_default_prompt: 'Please give an accurate and concise explanation of "{word}" based on the following context: {context}',
+    example_ai_default_prompt: 'Please give an accurate and concise explanation of "{word}" based on the following context: "{context}"',
     example_ai_explain_btn: "AI Explain",
     example_ai_generating: "Calling AI...",
     example_ai_failed: "AI interpretation failed: {0}",
@@ -495,6 +497,7 @@ const locale = {
     example_ai_abort_btn: "Abort",
     example_ai_aborting: "Aborting...",
     example_ai_aborted: "AI interpretation aborted",
+    example_ai_timeout: "AI request timed out. This query has been abandoned.",
 
     library_view_title: "Library",
     library_search_placeholder: "Search words or aliases...",
@@ -1053,6 +1056,8 @@ const locale = {
     settings_ai_temperature_desc: "控制回复的随机性（0-2）。越高越有创意，部分服务商上限为 1。默认值：0.5",
     settings_ai_max_tokens: "最大输出长度（Token）",
     settings_ai_max_tokens_desc: "AI 回复的最大长度（100-4000），默认值：1500。",
+    settings_ai_timeout: "请求超时时间（秒）",
+    settings_ai_timeout_desc: "超过该时长仍未收到 AI 回复，将自动放弃本次查询并提示超时（5-120）。默认值：30。",
     settings_prompts: "提示词",
     settings_system_prompts: "自定义系统提示词",
     settings_system_prompt_desc: "设定 AI 的“人设”（AI 回复的风格/格式）",
@@ -1222,7 +1227,7 @@ const locale = {
     example_system_prompt: "系统提示词",
     example_prompt_content: "提示词内容",
     example_prompt_desc: "使用 {word} 和 {context} 作为占位符",
-    example_ai_default_prompt: '请根据 {context} ，准确简洁的解释 "{word}" 的含义。',
+    example_ai_default_prompt: '请根据 "{context}" ，准确简洁的解释 "{word}" 的含义。',
     example_ai_explain_btn: "AI 解释",
     example_ai_generating: "正在调用 AI ...",
     example_ai_failed: "AI 解释失败：{0}",
@@ -1239,6 +1244,7 @@ const locale = {
     example_ai_abort_btn: "中断",
     example_ai_aborting: "中断中...",
     example_ai_aborted: "已中断 AI 解释",
+    example_ai_timeout: "AI 请求超时，已自动放弃本次查询。",
 
     library_view_title: "词库管理",
     library_search_placeholder: "搜索单词或别名...",
@@ -1726,6 +1732,7 @@ const DEFAULT_SETTINGS = {
   apiModel: "gpt-3.5-turbo",
   aiTemperature: 0.5,
   aiMaxTokens: 1500,
+  aiRequestTimeout: 30,
   aiContextMode: "line",
   pdfContextChars: 150,
   systemPrompts: [],
@@ -6059,10 +6066,9 @@ class LookupView extends ItemView {
     }
 
     // 替换占位符
-    let finalPrompt = promptContent.replace(/{word}/g, this.currentWord);
-    if (context && finalPrompt.includes('{context}')) {
-      finalPrompt = finalPrompt.replace(/{context}/g, context);
-    }
+    let finalPrompt = promptContent
+      .replace(/{word}/g, this.currentWord)
+      .replace(/{context}/g, context || this.currentWord);
 
     // 获取系统提示词内容
     let systemContent = null;
@@ -6135,6 +6141,8 @@ class LookupView extends ItemView {
       if (err.message === 'Aborted') {
         // 用户主动取消 → 显示取消提示
         this.resultContainer.setText(t("example_ai_aborted"));
+      } else if (err.message === 'Timeout') {
+        this.resultContainer.setText(t("example_ai_timeout"));
       } else {
         new Notice(t("lookup_error_prefix") + err.message);
         this.resultContainer.setText(t("lookup_error_prefix") + err.message);
@@ -9745,7 +9753,7 @@ class StudyView extends ItemView {
       const height = 130;
       const padding = { top: 12, bottom: 18 };
       const chartH = height - padding.top - padding.bottom;
-      const margin = 10;
+      const margin = 15;
 
       // 计算 x 坐标（左右对称边距）
       const getX = (index, total) => {
@@ -9818,7 +9826,7 @@ class StudyView extends ItemView {
           text.setAttribute("x", x);
           text.setAttribute("y", height - padding.bottom + 16); // 日期标签y坐标位置
           text.setAttribute("text-anchor", "middle");
-          text.setAttribute("font-size", "10px");
+          text.setAttribute("font-size", "8px");
           text.setAttribute("fill", "var(--text-muted)");
           text.textContent = label;
 
@@ -14009,6 +14017,21 @@ class WordbookSettingTab extends PluginSettingTab {
         return slider;
       });
 
+    // ---- 请求超时 ----
+    new Setting(container)
+      .setName(t("settings_ai_timeout"))
+      .setDesc(t("settings_ai_timeout_desc"))
+      .addSlider(slider => {
+        slider.setDynamicTooltip()
+          .setLimits(5, 120, 5)
+          .setValue(this.plugin.settings.aiRequestTimeout ?? 30)
+          .onChange(async (value) => {
+            this.plugin.settings.aiRequestTimeout = value;
+            await this.plugin.saveSettings();
+          });
+        return slider;
+      });
+
     // ---- 测试连接 ----
     new Setting(container)
       .setName(t("settings_ai_test_connection"))
@@ -16352,17 +16375,14 @@ class SimpleWordbookPlugin extends Plugin {
     const headers = {
       "Content-Type": "application/json",
       // Ollama 不发送 Authorization 头；
-      // Anthropic 使用 x-api-key 并要求 anthropic-version；
-      // Obsidian 渲染进程属于浏览器环境，Anthropic 默认拒绝浏览器直连，
-      // 必须显式声明该头，否则请求在拿到 HTTP 响应前就被 CORS 拦下，
-      // 表现为「网络连接失败」而不是 401。
+      // Anthropic 使用 x-api-key 并要求 anthropic-version。
+      // （请求经 requestUrl 由主进程发出，不受浏览器 CORS 限制）
       ...(isOllama
         ? {}
         : isAnthropic
           ? {
             "x-api-key": apiKey,
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-direct-browser-access": "true"
+            "anthropic-version": "2023-06-01"
           }
           : { "Authorization": `Bearer ${apiKey}` })
     };
@@ -16380,11 +16400,15 @@ class SimpleWordbookPlugin extends Plugin {
       if (systemContent && systemContent.trim()) {
         body.system = systemContent;
       }
-      // 仅在模型接受采样参数时发送 temperature：
-      // Haiku 等模型支持，Opus 5 / Sonnet 5 等新模型会直接返回 400。
-      // 模型名由用户自由填写，故用白名单，未知模型一律省略（失败方向更安全）。
-      if (/haiku|claude-3|claude-2/i.test(model || "")) {
-        body.temperature = this.settings.aiTemperature ?? 0.5;
+      // temperature 兼容性（依据 Anthropic 2026-10-21 迁移公告）：
+      // - API 版本 2026-10-21：所有模型都拒绝 temperature/top_p/top_k（一律 400）
+      // - API 版本 2023-06-01（本插件固定使用）：Claude 4.7+/5.x/5.5 等新一代模型
+      //   拒绝非默认采样参数；claude-2/3、Haiku ≤4.5、Sonnet/Opus ≤4.6 仍接受。
+      // 故仅对已知接受的旧模型发送；未知模型一律省略（省略 = 使用模型默认值）。
+      // 注意：若未来把 anthropic-version 升级到 2026-10-21，此整段必须删除。
+      // 旧模型温度上限为 1，设置界面允许 0~2，超出部分钳制到 1。
+      if (/claude-(2|3)|haiku-[34]|sonnet-4[-.]?[0-6]|opus-4[-.]?[0-6]/i.test(model || "")) {
+        body.temperature = Math.min(1, Math.max(0, this.settings.aiTemperature ?? 0.5));
       }
     } else {
       const messages = [];
@@ -16403,47 +16427,104 @@ class SimpleWordbookPlugin extends Plugin {
 
     this.debugLog("AI", "request body =", JSON.stringify(body, null, 2));
 
-    // 发起请求
-    let response;
+    // 发起请求（requestUrl 走 Electron 主进程，不受渲染进程 CORS 限制，
+    // 可直连智谱/DeepSeek/通义等服务端 API）
+    let data;
     try {
-      // 将 fetch 放在 try-catch 中，单独捕获网络层错误
-      response = await fetch(url, {
+      const reqOptions = {
+        url: url,
         method: "POST",
         headers: headers,
         body: JSON.stringify(body),
-        signal: signal
+        contentType: "application/json",
+        throw: false, // 非 2xx 不抛异常，由我们自己读取状态码分类
+      };
+      const requestPromise = requestUrl(reqOptions);
+
+      // requestUrl 不支持 AbortController（官方 RequestUrlParam 无中断选项），
+      // 故采用「软中断 + 超时」三路竞速：请求返回 / 用户中断 / 超时，谁先到用谁。
+      // 中断或超时立即向上抛出，UI 即刻响应；后台请求会继续完成，但结果被丢弃。
+      // 空 catch 用于吞掉被丢弃请求的残留 rejection，避免 unhandled promise。
+      requestPromise.catch(() => { });
+
+      // 超时路：超过设置时长（秒）即 reject。时长来自设置页「请求超时时间」，
+      // 默认 30 秒；使用本地 Ollama 等慢模型时可在设置中调大。
+      const timeoutMs = (this.settings.aiRequestTimeout ?? 30) * 1000;
+      let timeoutTimer = null; // 局部变量：避免并发调用时实例级定时器互相覆盖/误清
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutTimer = setTimeout(
+          () => reject(new Error("Request timeout")),
+          timeoutMs
+        );
       });
-    } catch (networkError) {
-      if (networkError.name === 'AbortError') {
-        this.debugLog("AI", "fetch aborted");
-        throw new Error('Aborted');   // 用于上层识别中断
-      }
-      // 网络层错误（DNS 解析失败、连接拒绝、超时等）
-      console.error("Network error:", networkError);
-      throw new Error(t("api_error_network"));
-    }
 
-    // HTTP 状态错误单独处理，显示状态码
-    if (!response.ok) {
-      let errorText;
+      // 中断路：signal abort 即 reject（中断按钮点击后 signal 被 abort）
+      let abortPromise = null;
+      let removeAbortListener = null;
+      if (signal) {
+        abortPromise = new Promise((_, reject) => {
+          const onAbort = () => reject(new Error("Aborted"));
+          if (signal.aborted) { onAbort(); return; }
+          signal.addEventListener("abort", onAbort, { once: true });
+          removeAbortListener = () => signal.removeEventListener("abort", onAbort);
+        });
+      }
+
+      let response;
       try {
-        errorText = await response.text();
-      } catch (e) {
-        errorText = "";
+        response = abortPromise
+          ? await Promise.race([requestPromise, timeoutPromise, abortPromise])
+          : await Promise.race([requestPromise, timeoutPromise]);
+      } finally {
+        // 无论谁胜出，都清掉计时器和监听，避免残留
+        clearTimeout(timeoutTimer);
+        if (removeAbortListener) removeAbortListener();
       }
-      this.debugLog("AI", "http error: status=", response.status, "body=", errorText);
-      // 支持参数插值
-      throw new Error(t("api_error_http", response.status, errorText));
-    }
 
-    // 解析响应数据，增加更详细的错误提示
-    let data;
-    try {
-      data = await response.json();
-      this.debugLog("AI", "response raw =", JSON.stringify(data, null, 2));
-    } catch (parseError) {
-      console.error("Parse error:", parseError);
-      throw new Error(t("api_error_parse"));
+      // HTTP 状态错误单独处理，显示状态码
+      if (response.status >= 400) {
+        let errorText = "";
+        try {
+          errorText = typeof response.text === "string" ? response.text : "";
+          if (!errorText) errorText = JSON.stringify(response.json);
+        } catch (e) {
+          errorText = "";
+        }
+        this.debugLog("AI", "http error: status=", response.status, "body=", errorText);
+        const httpErr = new Error(t("api_error_http", response.status, errorText));
+        httpErr.isClassified = true; // 标记为已分类，外层直接上抛
+        throw httpErr;
+      }
+
+      // 解析响应数据，增加更详细的错误提示
+      try {
+        data = response.json;
+        this.debugLog("AI", "response raw =", JSON.stringify(data, null, 2));
+      } catch (parseError) {
+        console.error("Parse error:", parseError);
+        const parseErr = new Error(t("api_error_parse"));
+        parseErr.isClassified = true; // 标记为已分类，外层直接上抛
+        throw parseErr;
+      }
+    } catch (requestError) {
+      // 超时：竞速中「超时路」先到（Error("Request timeout")），自动放弃本次查询
+      if (/timeout/i.test(requestError?.message || "")) {
+        this.debugLog("AI", "request timeout, abandoning this query");
+        throw new Error('Timeout'); // 用于上层识别超时（与 'Aborted' 同一套约定）
+      }
+      // 中断：软中断竞速中「中断路」先到（Error("Aborted")），
+      // 保留 AbortError 兼容判断以防万一
+      if (requestError.name === 'AbortError' || /abort/i.test(requestError.message || "")) {
+        this.debugLog("AI", "request aborted");
+        throw new Error('Aborted'); // 用于上层识别中断
+      }
+      // 已经是上面分类好的 HTTP/解析错误，直接上抛，避免被误报为网络错误
+      if (requestError.isClassified) {
+        throw requestError;
+      }
+      // 真正的网络层错误（DNS 解析失败、连接拒绝等）
+      console.error("Network error:", requestError);
+      throw new Error(t("api_error_network"));
     }
 
     // Anthropic：content 是内容块数组，思考块也在其中且 text 为空，
